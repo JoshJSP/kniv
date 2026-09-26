@@ -1,0 +1,26 @@
+{
+  "sourceLanguage": "nl",
+  "strings": {
+    "CFBundleDisplayName": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv"
+          }
+        }
+      }
+    },
+    "CFBundleName": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

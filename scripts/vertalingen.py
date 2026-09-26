@@ -1,0 +1,131 @@
+"""Maakt de Engelse String Catalogs uit één woordenboek. python scripts/vertalingen.py
+
+Sleutels komen uit `xcodebuild -exportLocalizations` (workflow teksten.yml). Nieuwe tekst in de app?
+Draai die workflow, voeg de ontbrekende sleutels hieronder toe en draai dit script opnieuw.
+"""
+import json
+import pathlib
+
+EN = {
+    "%@ %lldm": "%1$@ %2$lldm", "%@ = %lld": "%1$@ = %2$lld", "%@ betaalde · voor %@": "%1$@ paid · for %2$@",
+    "%@ cm": "%@ cm", "%@ stemt": "%@ is voting", "%@ → %@": "%1$@ → %2$@", "%@, tik om te verwijderen": "%@, tap to remove",
+    "%@°": "%@°", "%lld": "%lld", "%lld %@": "%1$lld %2$@", "%lld graden scheef": "%lld degrees off", "%lld minuten": "%lld minutes",
+    "%lld personen": "%lld people", "%lld personen · %@": "%1$lld people · %2$@", "%lld teams": "%lld teams",
+    "%lld van 5 sterren": "%lld of 5 stars", "%lld × ja": "%lld × yes", "%lld%%": "%lld%%", "%lld/5": "%lld/5", "0,00": "0.00",
+    "Aan de slag": "Get started", "Afgevinkt": "Checked", "Afrekenen": "Settle up", "Afvinklijstje": "Checklist",
+    "Afvinklijstje toevoegen": "Add checklist",
+    "Alles belandt vanzelf in het juiste bakje. Twijfelt Kniv, dan vraagt hij het even.":
+        "Everything lands in the right tray by itself. When Kniv isn't sure, it just asks.",
+    "Alles staat op n.v.t., dus er valt niks te berekenen.": "Everything is set to N/A, so there's nothing to calculate.",
+    "Ander": "Other", "Andere bon scannen": "Scan another receipt", "Annuleer": "Cancel", "Bakje": "Tray",
+    "Bedrag in %@": "Amount in %@", "Betaald door": "Paid by", "Betaalverzoek": "Payment request", "Bewaar": "Save",
+    "Bewaard": "Saved", "Bon lezen…": "Reading receipt…", "Camera niet beschikbaar": "Camera unavailable",
+    "Countdown": "Countdown", "Countdowns": "Countdowns", "Dag": "Day", "Datum": "Date",
+    "De screenshot staat straks op je klembord. Plak hem in het issue.": "The screenshot will be on your clipboard. Paste it into the issue.",
+    "Deel PDF": "Share PDF", "Deel verdeling": "Share split", "Delen": "Split", "Dobbelstenen": "Dice", "Draai": "Spin",
+    "Drinken": "Drinks", "Druk": "Busy",
+    "Een potje houdt bij wie wat voorschoot, bijvoorbeeld op vakantie.": "A pot keeps track of who paid for what, for example on holiday.",
+    "Eén zakmes": "One pocket knife", "En de winnaar is…": "And the winner is…", "Er stond niks in.": "There was nothing in it.",
+    "Eten": "Food", "Even checken": "Quick check", "Focus": "Focus", "Focus deze week": "Focus this week", "Fooi": "Tip",
+    "Foto kiezen": "Choose photo", "Foto maken": "Take photo", "Foto, tik om te vergroten": "Photo, tap to enlarge",
+    "Fout melden": "Report a bug", "Geef Kniv toegang tot de camera in Instellingen.": "Give Kniv access to the camera in Settings.",
+    "Geen AR op dit toestel": "No AR on this device", "Geen fooi": "No tip", "Geen herinnering": "No reminder",
+    "Gesprek": "Conversation", "Gooi": "Roll", "Heel stil": "Very quiet", "Herinner me op deze plek": "Remind me at this place",
+    "Herinneren %@?": "Remind %@?", "Houd je telefoon tegen de rand": "Hold your phone against the edge",
+    "Huidige plek is School": "Current place is School", "Huidige plek is Thuis": "Current place is Home",
+    "IBAN wijzigen": "Change IBAN", "Iedereen staat quitte.": "Everyone is square.", "Ik luister…": "Listening…",
+    "Inspreken": "Dictate", "Inspreken in Kniv": "Dictate in Kniv", "Instellingen": "Settings", "JA": "YES", "Ja": "Yes",
+    "Je bent bij de supermarkt": "You're at the supermarket", "Jouw IBAN": "Your IBAN", "Kies uit dit lijstje": "Pick from this list",
+    "Kiezen": "Choose", "Klaar": "Done", "Kniv": "Kniv", "Kniv herinnert je hier": "Kniv will remind you here",
+    "Kniv ruimt op": "Kniv tidies up", "Komt binnenkort": "Coming soon", "Kop": "Heads", "Kopieer": "Copy",
+    "Leg alles vast": "Capture everything", "Leg je telefoon op het oppervlak": "Lay your phone on the surface",
+    "Legt tekst vast in Kniv en sorteert hem in het juiste bakje.": "Captures text in Kniv and sorts it into the right tray.",
+    "Lijstje": "List", "Locatie niet gevonden": "Location not found", "Luid, pas op je oren": "Loud, mind your ears",
+    "Maak": "Create", "Meld": "Report", "Melding bij de supermarkt": "Notify at the supermarket",
+    "Met het slotje open je een bakje alleen met Face ID. Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en leert hij van jouw keuzes.":
+        "With the lock, a tray only opens with Face ID. Kniv recognises your own trays as soon as you use their name, and learns from your choices.",
+    "Meten": "Measure", "Mijn bakjes": "My trays", "Minuten": "Minutes", "Misschien bedoel je": "Maybe you mean", "Munt": "Tails",
+    "N.v.t.": "N/A", "NEE": "NO", "Naam": "Name", "Naam toevoegen": "Add name", "Naam, bijv. Barcelona": "Name, e.g. Barcelona",
+    "Nee": "No", "Niet vergrendeld": "Not locked", "Nieuw": "New", "Nieuw bakje": "New tray", "Nieuw in Kniv": "New in Kniv",
+    "Nieuw item": "New item", "Nieuw potje": "New pot", "Nieuwe countdown": "New countdown", "Nieuwe stemming": "New vote",
+    "Nieuwe timer": "New timer", "Nog %lld minuten": "%lld minutes left",
+    "Nog geen idee wat ik hiermee moet. Probeer bijvoorbeeld \"12 oz\" of \"20 gbp\".": "Not sure what to do with this yet. Try \"12 oz\" or \"20 gbp\".",
+    "Nog geen potjes": "No pots yet", "Nog geen timers. Tik op + voor pasta, thee of de was.": "No timers yet. Tap + for pasta, tea or the laundry.",
+    "Nog niet gesorteerd": "Not sorted yet", "Nog niks vastgelegd": "Nothing captured yet", "Normale fooi: %@%%": "Usual tip: %@%%",
+    "Notitie": "Note", "Onderdeel": "Section", "Oorverdovend": "Deafening", "Op naam van": "Account holder", "Op school": "At school",
+    "Open": "Open", "Open met Face ID": "Open with Face ID",
+    "Opent Kniv en begint meteen met luisteren. Handig op de Actieknop.": "Opens Kniv and starts listening right away. Handy on the Action button.",
+    "Opent het mesje": "Opens the blade", "Opnieuw": "Reset", "Optie toevoegen": "Add option", "Pauze": "Pause",
+    "Per persoon": "Per person", "Plekken": "Places", "Prijs zonder fooi": "Price without tip",
+    "Prijskaartje fotograferen": "Photograph price tag", "Probeer": "Try", "Punt": "Point", "QR": "QR",
+    "QR-code voor de bankapp": "QR code for your banking app", "Rad van fortuin": "Wheel of fortune",
+    "Rechts = ja, links = nee": "Right = yes, left = no", "Richt het kruisje op het beginpunt": "Aim the crosshair at the start point",
+    "Richt op een QR-code of streepjescode": "Point at a QR code or barcode", "Richt op het eindpunt en tik op +": "Aim at the end point and tap +",
+    "Rustig": "Calm", "Scan een bon": "Scan a receipt", "Scan een document": "Scan a document", "Scan met je bankapp": "Scan with your banking app",
+    "Scanner": "Scanner", "Schatting via de microfoon, geen geijkte meter.": "Estimate via the microphone, not a calibrated meter.",
+    "School": "School", "Schud of tik om te gooien": "Shake or tap to roll",
+    "Schudden om een fout te melden staat aan": "Shake to report a bug is on", "Service": "Service", "Sluiten": "Close",
+    "Splitten": "Split", "Splitten met deze bon": "Split this receipt", "Staat erin!": "Got it!", "Staat erin, bij %@!": "Got it, in %@!",
+    "Start": "Start", "Start een focusronde van 25 minuten.": "Start a 25-minute focus round.", "Start focus": "Start focus",
+    "Start focus in Kniv": "Start focus in Kniv", "Start stemming": "Start vote", "Stop": "Stop", "Stop met inspreken": "Stop dictating",
+    "Stuur verzoek": "Send request", "Team %lld": "Team %lld", "Tekst uit de foto": "Text from the photo",
+    "Tel af naar een deadline, festival of vakantie.": "Count down to a deadline, festival or holiday.", "Thuis": "Home",
+    "Thuis zie je je to-do's, op school je schoolnotities, bij de supermarkt je boodschappen. Alleen als er sinds de vorige keer iets nieuws is.":
+        "At home you see your to-dos, at school your school notes, at the supermarket your groceries. Only when something is new since last time.",
+    "Tik aan wie wat had": "Tap who had what", "Tik om af te vinken": "Tap to check off", "Tik om ongedaan te maken": "Tap to undo",
+    "Tik op tekst om hem te kopiëren": "Tap text to copy it", "Timer": "Timer", "Timer loopt": "Timer running",
+    "Timer: %@, %@": "Timer: %1$@, %2$@", "Timers": "Timers", "Toch meetellen": "Count it after all", "Top!": "Great!",
+    "Totaal %@, mooi afgerond": "Total %@, nicely rounded", "Totaalbedrag": "Total amount", "Trillingen": "Haptics",
+    "Typ iets om om te zetten": "Type something to convert",
+    "Typ, spreek in of maak een foto. Kniv sorteert het voor je.": "Type, dictate or take a photo. Kniv sorts it for you.",
+    "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri.": "Type, dictate or take a photo. Also with the Action button or Siri.",
+    "Uitgave": "Expense", "Uitgaven": "Expenses", "Valuta": "Currency", "Vandaag %lld rondes": "Today %lld rounds",
+    "Vandaag!": "Today!", "Vastleggen": "Capture", "Verdeel": "Split up", "Verder": "Resume", "Vergrendeld met Face ID": "Locked with Face ID",
+    "Versie": "Version", "Versie %@": "Version %@", "Verwijder": "Delete", "Verwijder notitie": "Delete note",
+    "Vier handige mesjes in één app. Strak, snel en altijd bij de hand.": "Handy blades in one app. Clean, fast and always at hand.",
+    "Voeg toe": "Add", "Volgende": "Next", "Voor wie": "For whom", "Voorbij": "Over", "Waar tel je naar af?": "What are you counting down to?",
+    "Waarvoor?": "What for?", "Wat ging er mis?": "What went wrong?", "Wat wil je kwijt?": "What's on your mind?", "Waterpas": "Level",
+    "Welkom thuis": "Welcome home", "Wie doen er mee? (komma's)": "Who's in? (commas)", "Wie stemmen er? (komma's)": "Who's voting? (commas)",
+    "Wie waren er? (komma's)": "Who was there? (commas)", "Zet in Kniv": "Add to Kniv", "Zoek in alles": "Search everything",
+    "dB": "dB", "dag": "day", "dagen": "days", "morgen": "tomorrow", "n.v.t.": "N/A", "niet van toepassing": "not applicable",
+    "vandaag": "today", "≈ %@": "≈ %@", "1": "1",
+    # widgets
+    "Kniv vastleggen": "Kniv capture", "Leg iets vast": "Capture something",
+    "Leg met één tik iets vast: typen, inspreken, foto of lijstje.": "Capture something in one tap: type, dictate, photo or list.",
+    # niet door de export gevonden, wel zichtbaar via LocalizedStringKey(...)
+    "Potjes": "Pots", "Bon": "Receipt", "Omzetten": "Convert", "Rad": "Wheel", "Dobbelen": "Dice",
+    "Teams": "Teams", "Stemmen": "Vote", "QR-code": "QR code", "Document": "Document", "Tekst": "Text", "Liniaal": "Ruler",
+    "Geluid": "Sound", "Typ": "Type", "Spreek": "Speak", "Foto": "Photo", "Lijst": "List",
+}
+
+SIRI = {"Inspreken in ${applicationName}": "Dictate in ${applicationName}",
+        "Start focus in ${applicationName}": "Start focus in ${applicationName}",
+        "Zet iets in ${applicationName}": "Add something to ${applicationName}"}
+
+PLIST = {"CFBundleDisplayName": "Kniv", "CFBundleName": "Kniv",
+         "NSCalendarsFullAccessUsageDescription": "Kniv checks your calendar to set a reminder at a free moment.",
+         "NSCameraUsageDescription": "Kniv takes photos of notes, whiteboards and receipts.",
+         "NSFaceIDUsageDescription": "Kniv opens locked trays with Face ID.",
+         "NSLocationAlwaysAndWhenInUseUsageDescription": "Kniv shows your list at the supermarket, at school or at home, even when the app is closed.",
+         "NSLocationWhenInUseUsageDescription": "Kniv saves a place so it can remind you there.",
+         "NSMicrophoneUsageDescription": "Kniv only listens while you dictate.",
+         "NSSpeechRecognitionUsageDescription": "Kniv transcribes your dictated notes, on your iPhone itself."}
+
+WIDGET = {"Kniv", "Kniv vastleggen", "Leg iets vast", "Leg met één tik iets vast: typen, inspreken, foto of lijstje.",
+          "Typ", "Spreek", "Foto", "Lijst"}
+
+
+def catalogus(pad, vertaling, sleutels=None):
+    items = {k: {"localizations": {"en": {"stringUnit": {"state": "translated", "value": v}}}}
+             for k, v in vertaling.items() if sleutels is None or k in sleutels}
+    pathlib.Path(pad).write_text(json.dumps({"sourceLanguage": "nl", "strings": items, "version": "1.0"},
+                                            ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+if __name__ == "__main__":
+    catalogus("Kniv/Localizable.xcstrings", EN)
+    catalogus("Kniv/AppShortcuts.xcstrings", SIRI)
+    catalogus("Kniv/InfoPlist.xcstrings", PLIST)
+    catalogus("KnivWidgets/Localizable.xcstrings", EN, WIDGET)
+    catalogus("KnivWidgets/InfoPlist.xcstrings", PLIST, {"CFBundleDisplayName", "CFBundleName"})
+    print(f"{len(EN)} teksten vertaald")

@@ -1,0 +1,36 @@
+{
+  "sourceLanguage": "nl",
+  "strings": {
+    "Inspreken in ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictate in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Start focus in ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start focus in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Zet iets in ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add something to ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

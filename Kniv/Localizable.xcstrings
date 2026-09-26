@@ -1,0 +1,2576 @@
+{
+  "sourceLanguage": "nl",
+  "strings": {
+    "%@ %lldm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lldm"
+          }
+        }
+      }
+    },
+    "%@ = %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ = %2$lld"
+          }
+        }
+      }
+    },
+    "%@ betaalde · voor %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ paid · for %2$@"
+          }
+        }
+      }
+    },
+    "%@ cm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ cm"
+          }
+        }
+      }
+    },
+    "%@ stemt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is voting"
+          }
+        }
+      }
+    },
+    "%@ → %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@, tik om te verwijderen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, tap to remove"
+          }
+        }
+      }
+    },
+    "%@°": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@°"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@"
+          }
+        }
+      }
+    },
+    "%lld graden scheef": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld degrees off"
+          }
+        }
+      }
+    },
+    "%lld minuten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld minutes"
+          }
+        }
+      }
+    },
+    "%lld personen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld people"
+          }
+        }
+      }
+    },
+    "%lld personen · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld people · %2$@"
+          }
+        }
+      }
+    },
+    "%lld teams": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld teams"
+          }
+        }
+      }
+    },
+    "%lld van 5 sterren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of 5 stars"
+          }
+        }
+      }
+    },
+    "%lld × ja": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld × yes"
+          }
+        }
+      }
+    },
+    "%lld%%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "%lld/5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/5"
+          }
+        }
+      }
+    },
+    "0,00": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0.00"
+          }
+        }
+      }
+    },
+    "Aan de slag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get started"
+          }
+        }
+      }
+    },
+    "Afgevinkt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked"
+          }
+        }
+      }
+    },
+    "Afrekenen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settle up"
+          }
+        }
+      }
+    },
+    "Afvinklijstje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checklist"
+          }
+        }
+      }
+    },
+    "Afvinklijstje toevoegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add checklist"
+          }
+        }
+      }
+    },
+    "Alles belandt vanzelf in het juiste bakje. Twijfelt Kniv, dan vraagt hij het even.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything lands in the right tray by itself. When Kniv isn't sure, it just asks."
+          }
+        }
+      }
+    },
+    "Alles staat op n.v.t., dus er valt niks te berekenen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is set to N/A, so there's nothing to calculate."
+          }
+        }
+      }
+    },
+    "Ander": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "Andere bon scannen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan another receipt"
+          }
+        }
+      }
+    },
+    "Annuleer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Bakje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tray"
+          }
+        }
+      }
+    },
+    "Bedrag in %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount in %@"
+          }
+        }
+      }
+    },
+    "Betaald door": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid by"
+          }
+        }
+      }
+    },
+    "Betaalverzoek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Payment request"
+          }
+        }
+      }
+    },
+    "Bewaar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "Bewaard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved"
+          }
+        }
+      }
+    },
+    "Bon lezen…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading receipt…"
+          }
+        }
+      }
+    },
+    "Camera niet beschikbaar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera unavailable"
+          }
+        }
+      }
+    },
+    "Countdown": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Countdown"
+          }
+        }
+      }
+    },
+    "Countdowns": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Countdowns"
+          }
+        }
+      }
+    },
+    "Dag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day"
+          }
+        }
+      }
+    },
+    "Datum": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        }
+      }
+    },
+    "De screenshot staat straks op je klembord. Plak hem in het issue.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The screenshot will be on your clipboard. Paste it into the issue."
+          }
+        }
+      }
+    },
+    "Deel PDF": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share PDF"
+          }
+        }
+      }
+    },
+    "Deel verdeling": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share split"
+          }
+        }
+      }
+    },
+    "Delen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split"
+          }
+        }
+      }
+    },
+    "Dobbelstenen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dice"
+          }
+        }
+      }
+    },
+    "Draai": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spin"
+          }
+        }
+      }
+    },
+    "Drinken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drinks"
+          }
+        }
+      }
+    },
+    "Druk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Busy"
+          }
+        }
+      }
+    },
+    "Een potje houdt bij wie wat voorschoot, bijvoorbeeld op vakantie.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pot keeps track of who paid for what, for example on holiday."
+          }
+        }
+      }
+    },
+    "Eén zakmes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One pocket knife"
+          }
+        }
+      }
+    },
+    "En de winnaar is…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "And the winner is…"
+          }
+        }
+      }
+    },
+    "Er stond niks in.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There was nothing in it."
+          }
+        }
+      }
+    },
+    "Eten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Food"
+          }
+        }
+      }
+    },
+    "Even checken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick check"
+          }
+        }
+      }
+    },
+    "Focus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus"
+          }
+        }
+      }
+    },
+    "Focus deze week": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus this week"
+          }
+        }
+      }
+    },
+    "Fooi": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip"
+          }
+        }
+      }
+    },
+    "Foto kiezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose photo"
+          }
+        }
+      }
+    },
+    "Foto maken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take photo"
+          }
+        }
+      }
+    },
+    "Foto, tik om te vergroten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo, tap to enlarge"
+          }
+        }
+      }
+    },
+    "Fout melden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report a bug"
+          }
+        }
+      }
+    },
+    "Geef Kniv toegang tot de camera in Instellingen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Give Kniv access to the camera in Settings."
+          }
+        }
+      }
+    },
+    "Geen AR op dit toestel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No AR on this device"
+          }
+        }
+      }
+    },
+    "Geen fooi": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tip"
+          }
+        }
+      }
+    },
+    "Geen herinnering": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reminder"
+          }
+        }
+      }
+    },
+    "Gesprek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversation"
+          }
+        }
+      }
+    },
+    "Gooi": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll"
+          }
+        }
+      }
+    },
+    "Heel stil": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very quiet"
+          }
+        }
+      }
+    },
+    "Herinner me op deze plek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me at this place"
+          }
+        }
+      }
+    },
+    "Herinneren %@?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind %@?"
+          }
+        }
+      }
+    },
+    "Houd je telefoon tegen de rand": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold your phone against the edge"
+          }
+        }
+      }
+    },
+    "Huidige plek is School": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current place is School"
+          }
+        }
+      }
+    },
+    "Huidige plek is Thuis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current place is Home"
+          }
+        }
+      }
+    },
+    "IBAN wijzigen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change IBAN"
+          }
+        }
+      }
+    },
+    "Iedereen staat quitte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone is square."
+          }
+        }
+      }
+    },
+    "Ik luister…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening…"
+          }
+        }
+      }
+    },
+    "Inspreken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictate"
+          }
+        }
+      }
+    },
+    "Inspreken in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictate in Kniv"
+          }
+        }
+      }
+    },
+    "Instellingen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "JA": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YES"
+          }
+        }
+      }
+    },
+    "Ja": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes"
+          }
+        }
+      }
+    },
+    "Je bent bij de supermarkt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're at the supermarket"
+          }
+        }
+      }
+    },
+    "Jouw IBAN": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your IBAN"
+          }
+        }
+      }
+    },
+    "Kies uit dit lijstje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick from this list"
+          }
+        }
+      }
+    },
+    "Kiezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose"
+          }
+        }
+      }
+    },
+    "Klaar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv"
+          }
+        }
+      }
+    },
+    "Kniv herinnert je hier": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv will remind you here"
+          }
+        }
+      }
+    },
+    "Kniv ruimt op": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv tidies up"
+          }
+        }
+      }
+    },
+    "Komt binnenkort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coming soon"
+          }
+        }
+      }
+    },
+    "Kop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heads"
+          }
+        }
+      }
+    },
+    "Kopieer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "Leg alles vast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture everything"
+          }
+        }
+      }
+    },
+    "Leg je telefoon op het oppervlak": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lay your phone on the surface"
+          }
+        }
+      }
+    },
+    "Legt tekst vast in Kniv en sorteert hem in het juiste bakje.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Captures text in Kniv and sorts it into the right tray."
+          }
+        }
+      }
+    },
+    "Lijstje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    },
+    "Locatie niet gevonden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location not found"
+          }
+        }
+      }
+    },
+    "Luid, pas op je oren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loud, mind your ears"
+          }
+        }
+      }
+    },
+    "Maak": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create"
+          }
+        }
+      }
+    },
+    "Meld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "Melding bij de supermarkt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notify at the supermarket"
+          }
+        }
+      }
+    },
+    "Met het slotje open je een bakje alleen met Face ID. Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en leert hij van jouw keuzes.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With the lock, a tray only opens with Face ID. Kniv recognises your own trays as soon as you use their name, and learns from your choices."
+          }
+        }
+      }
+    },
+    "Meten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measure"
+          }
+        }
+      }
+    },
+    "Mijn bakjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My trays"
+          }
+        }
+      }
+    },
+    "Minuten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutes"
+          }
+        }
+      }
+    },
+    "Misschien bedoel je": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maybe you mean"
+          }
+        }
+      }
+    },
+    "Munt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tails"
+          }
+        }
+      }
+    },
+    "N.v.t.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N/A"
+          }
+        }
+      }
+    },
+    "NEE": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NO"
+          }
+        }
+      }
+    },
+    "Naam": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "Naam toevoegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add name"
+          }
+        }
+      }
+    },
+    "Naam, bijv. Barcelona": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, e.g. Barcelona"
+          }
+        }
+      }
+    },
+    "Nee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        }
+      }
+    },
+    "Niet vergrendeld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not locked"
+          }
+        }
+      }
+    },
+    "Nieuw": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New"
+          }
+        }
+      }
+    },
+    "Nieuw bakje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New tray"
+          }
+        }
+      }
+    },
+    "Nieuw in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New in Kniv"
+          }
+        }
+      }
+    },
+    "Nieuw item": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New item"
+          }
+        }
+      }
+    },
+    "Nieuw potje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New pot"
+          }
+        }
+      }
+    },
+    "Nieuwe countdown": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New countdown"
+          }
+        }
+      }
+    },
+    "Nieuwe stemming": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New vote"
+          }
+        }
+      }
+    },
+    "Nieuwe timer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New timer"
+          }
+        }
+      }
+    },
+    "Nog %lld minuten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld minutes left"
+          }
+        }
+      }
+    },
+    "Nog geen idee wat ik hiermee moet. Probeer bijvoorbeeld \"12 oz\" of \"20 gbp\".": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sure what to do with this yet. Try \"12 oz\" or \"20 gbp\"."
+          }
+        }
+      }
+    },
+    "Nog geen potjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pots yet"
+          }
+        }
+      }
+    },
+    "Nog geen timers. Tik op + voor pasta, thee of de was.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No timers yet. Tap + for pasta, tea or the laundry."
+          }
+        }
+      }
+    },
+    "Nog niet gesorteerd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sorted yet"
+          }
+        }
+      }
+    },
+    "Nog niks vastgelegd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing captured yet"
+          }
+        }
+      }
+    },
+    "Normale fooi: %@%%": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usual tip: %@%%"
+          }
+        }
+      }
+    },
+    "Notitie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Note"
+          }
+        }
+      }
+    },
+    "Onderdeel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Section"
+          }
+        }
+      }
+    },
+    "Oorverdovend": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deafening"
+          }
+        }
+      }
+    },
+    "Op naam van": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account holder"
+          }
+        }
+      }
+    },
+    "Op school": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At school"
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        }
+      }
+    },
+    "Open met Face ID": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open with Face ID"
+          }
+        }
+      }
+    },
+    "Opent Kniv en begint meteen met luisteren. Handig op de Actieknop.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Kniv and starts listening right away. Handy on the Action button."
+          }
+        }
+      }
+    },
+    "Opent het mesje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the blade"
+          }
+        }
+      }
+    },
+    "Opnieuw": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "Optie toevoegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add option"
+          }
+        }
+      }
+    },
+    "Pauze": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
+        }
+      }
+    },
+    "Per persoon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per person"
+          }
+        }
+      }
+    },
+    "Plekken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Places"
+          }
+        }
+      }
+    },
+    "Prijs zonder fooi": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price without tip"
+          }
+        }
+      }
+    },
+    "Prijskaartje fotograferen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photograph price tag"
+          }
+        }
+      }
+    },
+    "Probeer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try"
+          }
+        }
+      }
+    },
+    "Punt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point"
+          }
+        }
+      }
+    },
+    "QR": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR"
+          }
+        }
+      }
+    },
+    "QR-code voor de bankapp": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR code for your banking app"
+          }
+        }
+      }
+    },
+    "Rad van fortuin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wheel of fortune"
+          }
+        }
+      }
+    },
+    "Rechts = ja, links = nee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Right = yes, left = no"
+          }
+        }
+      }
+    },
+    "Richt het kruisje op het beginpunt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aim the crosshair at the start point"
+          }
+        }
+      }
+    },
+    "Richt op een QR-code of streepjescode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point at a QR code or barcode"
+          }
+        }
+      }
+    },
+    "Richt op het eindpunt en tik op +": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aim at the end point and tap +"
+          }
+        }
+      }
+    },
+    "Rustig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calm"
+          }
+        }
+      }
+    },
+    "Scan een bon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan a receipt"
+          }
+        }
+      }
+    },
+    "Scan een document": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan a document"
+          }
+        }
+      }
+    },
+    "Scan met je bankapp": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan with your banking app"
+          }
+        }
+      }
+    },
+    "Scanner": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanner"
+          }
+        }
+      }
+    },
+    "Schatting via de microfoon, geen geijkte meter.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimate via the microphone, not a calibrated meter."
+          }
+        }
+      }
+    },
+    "School": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "School"
+          }
+        }
+      }
+    },
+    "Schud of tik om te gooien": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shake or tap to roll"
+          }
+        }
+      }
+    },
+    "Schudden om een fout te melden staat aan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shake to report a bug is on"
+          }
+        }
+      }
+    },
+    "Service": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Service"
+          }
+        }
+      }
+    },
+    "Sluiten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "Splitten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split"
+          }
+        }
+      }
+    },
+    "Splitten met deze bon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split this receipt"
+          }
+        }
+      }
+    },
+    "Staat erin!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it!"
+          }
+        }
+      }
+    },
+    "Staat erin, bij %@!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it, in %@!"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        }
+      }
+    },
+    "Start een focusronde van 25 minuten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a 25-minute focus round."
+          }
+        }
+      }
+    },
+    "Start focus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start focus"
+          }
+        }
+      }
+    },
+    "Start focus in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start focus in Kniv"
+          }
+        }
+      }
+    },
+    "Start stemming": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start vote"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
+          }
+        }
+      }
+    },
+    "Stop met inspreken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop dictating"
+          }
+        }
+      }
+    },
+    "Stuur verzoek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send request"
+          }
+        }
+      }
+    },
+    "Team %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team %lld"
+          }
+        }
+      }
+    },
+    "Tekst uit de foto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text from the photo"
+          }
+        }
+      }
+    },
+    "Tel af naar een deadline, festival of vakantie.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Count down to a deadline, festival or holiday."
+          }
+        }
+      }
+    },
+    "Thuis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
+          }
+        }
+      }
+    },
+    "Thuis zie je je to-do's, op school je schoolnotities, bij de supermarkt je boodschappen. Alleen als er sinds de vorige keer iets nieuws is.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At home you see your to-dos, at school your school notes, at the supermarket your groceries. Only when something is new since last time."
+          }
+        }
+      }
+    },
+    "Tik aan wie wat had": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap who had what"
+          }
+        }
+      }
+    },
+    "Tik om af te vinken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to check off"
+          }
+        }
+      }
+    },
+    "Tik om ongedaan te maken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to undo"
+          }
+        }
+      }
+    },
+    "Tik op tekst om hem te kopiëren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap text to copy it"
+          }
+        }
+      }
+    },
+    "Timer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timer"
+          }
+        }
+      }
+    },
+    "Timer loopt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timer running"
+          }
+        }
+      }
+    },
+    "Timer: %@, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timer: %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Timers": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timers"
+          }
+        }
+      }
+    },
+    "Toch meetellen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Count it after all"
+          }
+        }
+      }
+    },
+    "Top!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great!"
+          }
+        }
+      }
+    },
+    "Totaal %@, mooi afgerond": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total %@, nicely rounded"
+          }
+        }
+      }
+    },
+    "Totaalbedrag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total amount"
+          }
+        }
+      }
+    },
+    "Trillingen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haptics"
+          }
+        }
+      }
+    },
+    "Typ iets om om te zetten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type something to convert"
+          }
+        }
+      }
+    },
+    "Typ, spreek in of maak een foto. Kniv sorteert het voor je.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type, dictate or take a photo. Kniv sorts it for you."
+          }
+        }
+      }
+    },
+    "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type, dictate or take a photo. Also with the Action button or Siri."
+          }
+        }
+      }
+    },
+    "Uitgave": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expense"
+          }
+        }
+      }
+    },
+    "Uitgaven": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expenses"
+          }
+        }
+      }
+    },
+    "Valuta": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Currency"
+          }
+        }
+      }
+    },
+    "Vandaag %lld rondes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today %lld rounds"
+          }
+        }
+      }
+    },
+    "Vandaag!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today!"
+          }
+        }
+      }
+    },
+    "Vastleggen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture"
+          }
+        }
+      }
+    },
+    "Verdeel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split up"
+          }
+        }
+      }
+    },
+    "Verder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
+          }
+        }
+      }
+    },
+    "Vergrendeld met Face ID": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked with Face ID"
+          }
+        }
+      }
+    },
+    "Versie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        }
+      }
+    },
+    "Versie %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
+          }
+        }
+      }
+    },
+    "Verwijder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Verwijder notitie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete note"
+          }
+        }
+      }
+    },
+    "Vier handige mesjes in één app. Strak, snel en altijd bij de hand.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handy blades in one app. Clean, fast and always at hand."
+          }
+        }
+      }
+    },
+    "Voeg toe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "Volgende": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        }
+      }
+    },
+    "Voor wie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For whom"
+          }
+        }
+      }
+    },
+    "Voorbij": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Over"
+          }
+        }
+      }
+    },
+    "Waar tel je naar af?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What are you counting down to?"
+          }
+        }
+      }
+    },
+    "Waarvoor?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What for?"
+          }
+        }
+      }
+    },
+    "Wat ging er mis?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What went wrong?"
+          }
+        }
+      }
+    },
+    "Wat wil je kwijt?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's on your mind?"
+          }
+        }
+      }
+    },
+    "Waterpas": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "Welkom thuis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome home"
+          }
+        }
+      }
+    },
+    "Wie doen er mee? (komma's)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who's in? (commas)"
+          }
+        }
+      }
+    },
+    "Wie stemmen er? (komma's)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who's voting? (commas)"
+          }
+        }
+      }
+    },
+    "Wie waren er? (komma's)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who was there? (commas)"
+          }
+        }
+      }
+    },
+    "Zet in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Kniv"
+          }
+        }
+      }
+    },
+    "Zoek in alles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search everything"
+          }
+        }
+      }
+    },
+    "dB": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dB"
+          }
+        }
+      }
+    },
+    "dag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "day"
+          }
+        }
+      }
+    },
+    "dagen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "days"
+          }
+        }
+      }
+    },
+    "morgen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tomorrow"
+          }
+        }
+      }
+    },
+    "n.v.t.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N/A"
+          }
+        }
+      }
+    },
+    "niet van toepassing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not applicable"
+          }
+        }
+      }
+    },
+    "vandaag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "today"
+          }
+        }
+      }
+    },
+    "≈ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈ %@"
+          }
+        }
+      }
+    },
+    "1": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1"
+          }
+        }
+      }
+    },
+    "Kniv vastleggen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv capture"
+          }
+        }
+      }
+    },
+    "Leg iets vast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture something"
+          }
+        }
+      }
+    },
+    "Leg met één tik iets vast: typen, inspreken, foto of lijstje.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture something in one tap: type, dictate, photo or list."
+          }
+        }
+      }
+    },
+    "Potjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pots"
+          }
+        }
+      }
+    },
+    "Bon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receipt"
+          }
+        }
+      }
+    },
+    "Omzetten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convert"
+          }
+        }
+      }
+    },
+    "Rad": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wheel"
+          }
+        }
+      }
+    },
+    "Dobbelen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dice"
+          }
+        }
+      }
+    },
+    "Teams": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teams"
+          }
+        }
+      }
+    },
+    "Stemmen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vote"
+          }
+        }
+      }
+    },
+    "QR-code": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR code"
+          }
+        }
+      }
+    },
+    "Document": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Document"
+          }
+        }
+      }
+    },
+    "Tekst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
+          }
+        }
+      }
+    },
+    "Liniaal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruler"
+          }
+        }
+      }
+    },
+    "Geluid": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sound"
+          }
+        }
+      }
+    },
+    "Typ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "Spreek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speak"
+          }
+        }
+      }
+    },
+    "Foto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo"
+          }
+        }
+      }
+    },
+    "Lijst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

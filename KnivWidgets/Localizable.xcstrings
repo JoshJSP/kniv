@@ -1,0 +1,86 @@
+{
+  "sourceLanguage": "nl",
+  "strings": {
+    "Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv"
+          }
+        }
+      }
+    },
+    "Kniv vastleggen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv capture"
+          }
+        }
+      }
+    },
+    "Leg iets vast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture something"
+          }
+        }
+      }
+    },
+    "Leg met één tik iets vast: typen, inspreken, foto of lijstje.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture something in one tap: type, dictate, photo or list."
+          }
+        }
+      }
+    },
+    "Typ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "Spreek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speak"
+          }
+        }
+      }
+    },
+    "Foto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo"
+          }
+        }
+      }
+    },
+    "Lijst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
