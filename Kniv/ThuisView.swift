@@ -35,6 +35,8 @@ struct ThuisView: View {
     @State private var pad = NavigationPath()
     @State private var uitklappend: Mes?
     @State private var toonNieuw = false
+    @State private var update: Updater.Update?
+    @Environment(\.scenePhase) private var fase
     @AppStorage("laatstGezieneVersie") private var laatstGezien = ""
     @Environment(\.accessibilityReduceMotion) private var minderBeweging
     @Query(filter: #Predicate<Notitie> { $0.bakjeNaam == nil }) private var teSorteren: [Notitie]
@@ -44,6 +46,7 @@ struct ThuisView: View {
     var body: some View {
         NavigationStack(path: $pad) {
             ScrollView {
+                if let update { UpdateBalk(update: update).padding([.horizontal, .top]) }
                 LazyVGrid(columns: kolommen, spacing: 12) {
                     ForEach(Mes.allCases) { mes in
                         Button { open(mes) } label: {
@@ -90,6 +93,11 @@ struct ThuisView: View {
             if nu { pad = NavigationPath([Mes.kiezen]); AppStatus.shared.openKiezen = false }
         }
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
+        .task(id: fase) {
+            guard fase == .active else { return }
+            let gevonden = await Updater.zoek()
+            withAnimation(.snappy) { update = gevonden }
+        }
         .sheet(isPresented: $toonNieuw, onDismiss: { laatstGezien = VersieInfo.huidig?.versie ?? "" }) {
             if let info = VersieInfo.huidig { NieuwView(info: info) }
         }

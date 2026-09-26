@@ -43,7 +43,9 @@ jobs:
       - name: Versie lezen
         id: v
         run: |
-          echo "versie=$(python3 -c 'import json;print(json.load(open("Kniv/versie.json"))["versie"])')" >> "$GITHUB_OUTPUT"
+          # Elke build een eigen versie (0.7.<build>), anders ziet SideStore geen update.
+          BASIS=$(python3 -c 'import json;v=json.load(open("Kniv/versie.json"))["versie"].split(".");print(v[0]+"."+v[1])')
+          echo "versie=${BASIS}.${BUILD}" >> "$GITHUB_OUTPUT"
           echo "mesnaam=$(python3 -c 'import json;print(json.load(open("Kniv/versie.json"))["mesnaam"])')" >> "$GITHUB_OUTPUT"
 
       - name: Xcode-project maken

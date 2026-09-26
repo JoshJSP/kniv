@@ -2570,6 +2570,26 @@
           }
         }
       }
+    },
+    "Update beschikbaar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update available"
+          }
+        }
+      }
+    },
+    "Versie %@. Tik om te installeren via SideStore.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@. Tap to install via SideStore."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

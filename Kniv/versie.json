@@ -1,9 +1,9 @@
 {
-  "versie": "0.7.0",
-  "mesnaam": "Stanley",
+  "versie": "0.8.0",
+  "mesnaam": "Kerambit",
   "nieuw": [
-    "Nieuw mesje: Scanner. QR-codes, documenten naar PDF, en tekst van papier kopiëren",
-    "Nieuw mesje: Meten. Waterpas, AR-liniaal en een decibelmeter",
-    "Het startscherm is nu een 3x2-raster met zes mesjes"
+    "Kniv ziet zelf wanneer er een update is: één tik en SideStore installeert hem",
+    "Engelse vertaling: Kniv volgt de taal van je telefoon",
+    "Schudden om een fout te melden (tik 5× op de versie in Instellingen)"
   ]
 }

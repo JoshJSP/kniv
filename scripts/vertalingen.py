@@ -95,7 +95,8 @@ EN = {
     # niet door de export gevonden, wel zichtbaar via LocalizedStringKey(...)
     "Potjes": "Pots", "Bon": "Receipt", "Omzetten": "Convert", "Rad": "Wheel", "Dobbelen": "Dice",
     "Teams": "Teams", "Stemmen": "Vote", "QR-code": "QR code", "Document": "Document", "Tekst": "Text", "Liniaal": "Ruler",
-    "Geluid": "Sound", "Typ": "Type", "Spreek": "Speak", "Foto": "Photo", "Lijst": "List",
+    "Geluid": "Sound", "Update beschikbaar": "Update available",
+    "Versie %@. Tik om te installeren via SideStore.": "Version %@. Tap to install via SideStore.", "Typ": "Type", "Spreek": "Speak", "Foto": "Photo", "Lijst": "List",
 }
 
 SIRI = {"Inspreken in ${applicationName}": "Dictate in ${applicationName}",
