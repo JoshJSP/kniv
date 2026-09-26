@@ -2531,6 +2531,206 @@
         }
       }
     },
+    "Vandaag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        }
+      }
+    },
+    "Jouw week": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your week"
+          }
+        }
+      }
+    },
+    "gefocust": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "focused"
+          }
+        }
+      }
+    },
+    "vastgelegd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "captured"
+          }
+        }
+      }
+    },
+    "in potjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in pots"
+          }
+        }
+      }
+    },
+    "%lld boodschappen open": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld groceries left"
+          }
+        }
+      }
+    },
+    "Je krijgt nog %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're owed %@"
+          }
+        }
+      }
+    },
+    "Je moet nog %@ betalen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You still owe %@"
+          }
+        }
+      }
+    },
+    "Groente & fruit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fruit & veg"
+          }
+        }
+      }
+    },
+    "Brood": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bread"
+          }
+        }
+      }
+    },
+    "Vlees & vis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meat & fish"
+          }
+        }
+      }
+    },
+    "Zuivel & eieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dairy & eggs"
+          }
+        }
+      }
+    },
+    "Kaas & beleg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheese & spreads"
+          }
+        }
+      }
+    },
+    "Pasta, rijst & blik": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasta, rice & tins"
+          }
+        }
+      }
+    },
+    "Ontbijt & koffie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breakfast & coffee"
+          }
+        }
+      }
+    },
+    "Koek, snoep & chips": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biscuits, sweets & crisps"
+          }
+        }
+      }
+    },
+    "Diepvries": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frozen"
+          }
+        }
+      }
+    },
+    "Verzorging": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal care"
+          }
+        }
+      }
+    },
+    "Huishouden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Household"
+          }
+        }
+      }
+    },
+    "Overig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
     "Welkom bij Kniv": {
       "localizations": {
         "en": {

@@ -74,4 +74,11 @@ check(teams.map(\.count).sorted() == [2, 3] && Set(teams.flatMap { $0 }).count =
 check(Stemming.winnaars(["An": ["Pizza", "Sushi"], "Bo": ["Sushi"]], opties: ["Pizza", "Sushi", "Thai"]) == ["Sushi"], "stemming")
 check(Stemming.winnaars(["An": []], opties: ["Pizza"]).isEmpty, "niemand ja")
 
+check(Gangpad.van("Melk") == .zuivel && Gangpad.van("2 appels") == .groente && Gangpad.van("wc-papier") == .huishouden, "gangpad basis")
+check(Gangpad.van("pindakaas") == .kaas, "pindakaas is beleg, niet kaas-woord of zuivel")
+check(Gangpad.van("volkorenbrood") == .brood, "samenstelling eindigt op brood")
+check(Gangpad.van("iets raars") == .overig, "onbekend = overig")
+let route = Gangpad.route(["cola", "melk", "appels", "brood"]) { $0 }
+check(route.map(\.0) == [.groente, .brood, .zuivel, .drinken], "looproute-volgorde")
+
 print("Alle Kniv-checks geslaagd")

@@ -1,11 +1,9 @@
 {
-  "versie": "0.9.0",
-  "mesnaam": "Damascus",
+  "versie": "0.10.0",
+  "mesnaam": "Karambit",
   "nieuw": [
-    "Inloggen met Google",
-    "Je notities staan nu ook in de cloud, zodat je laptop ze ziet (kies per notitie: alleen telefoon, ook laptop of gedeeld)",
-    "Lijstjes delen: nodig vrienden uit met een link, zie live wie wat toevoegde",
-    "Kniv werkt offline gewoon door en synchroniseert zodra er internet is",
-    "Account verwijderen kan in Instellingen"
+    "Vandaag: lopende timers, herinneringen, open boodschappen en wie wie nog geld schuldig is, bovenaan in één blik",
+    "Boodschappen staan in de volgorde van een rondje door de supermarkt",
+    "Op zondag een rustige terugblik op je week"
   ]
 }

@@ -47,6 +47,11 @@ struct ThuisView: View {
         NavigationStack(path: $pad) {
             ScrollView {
                 if let update { UpdateBalk(update: update).padding([.horizontal, .top]) }
+                VStack(spacing: 12) {
+                    TerugblikKaart()
+                    VandaagKaart { mes in pad = NavigationPath([mes]) }
+                }
+                .padding([.horizontal, .top])
                 LazyVGrid(columns: kolommen, spacing: 12) {
                     ForEach(Mes.allCases) { mes in
                         Button { open(mes) } label: {

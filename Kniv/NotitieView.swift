@@ -36,28 +36,17 @@ struct NotitieView: View {
             }
 
             if notitie.isLijst || lijstAan {
-                Section("Lijstje") {
-                    ForEach(notitie.gesorteerdeItems) { item in
-                        let weg = doorgestreept.contains(item.persistentModelID)
-                        Button { vink(item) } label: {
-                            HStack {
-                                Image(systemName: weg ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(weg ? Color.accentColor : Color.secondary)
-                                Text(item.tekst)
-                                    .strikethrough(weg)
-                                    .foregroundStyle(weg ? .secondary : .primary)
-                                if notitie.groepID != nil {
-                                    Spacer()
-                                    ProfielBolletje(id: item.door)
-                                }
-                            }
-                        }
-                        .accessibilityValue(weg ? "Afgevinkt" : "")
-                        .accessibilityHint(weg ? "Tik om ongedaan te maken" : "Tik om af te vinken")
+                if notitie.bakjeNaam == "Boodschappen" && notitie.items.count > 2 {
+                    // In de volgorde van een rondje door de supermarkt.
+                    ForEach(Gangpad.route(notitie.gesorteerdeItems) { $0.tekst }, id: \.0) { groep in
+                        Section(LocalizedStringKey(groep.0.naam)) { ForEach(groep.1) { itemRij($0) } }
                     }
-                    TextField("Nieuw item", text: $nieuwItem)
-                        .onSubmit(voegToe)
-                        .submitLabel(.next)
+                    Section { nieuwItemVeld }
+                } else {
+                    Section("Lijstje") {
+                        ForEach(notitie.gesorteerdeItems) { itemRij($0) }
+                        nieuwItemVeld
+                    }
                 }
             } else {
                 Button { lijstAan = true } label: { Label("Afvinklijstje toevoegen", systemImage: "checklist") }
@@ -185,6 +174,31 @@ struct NotitieView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.impact(weight: .light), trigger: doorgestreept.count) { _, _ in haptiek }
         .fullScreenCover(isPresented: $toonFoto) { FotoView(bestand: notitie.fotoBestand) }
+    }
+
+    private var nieuwItemVeld: some View {
+        TextField("Nieuw item", text: $nieuwItem)
+            .onSubmit(voegToe)
+            .submitLabel(.next)
+    }
+
+    private func itemRij(_ item: LijstItem) -> some View {
+        let weg = doorgestreept.contains(item.persistentModelID)
+        return Button { vink(item) } label: {
+            HStack {
+                Image(systemName: weg ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(weg ? Color.accentColor : Color.secondary)
+                Text(item.tekst)
+                    .strikethrough(weg)
+                    .foregroundStyle(weg ? .secondary : .primary)
+                if notitie.groepID != nil {
+                    Spacer()
+                    ProfielBolletje(id: item.door)
+                }
+            }
+        }
+        .accessibilityValue(weg ? "Afgevinkt" : "")
+        .accessibilityHint(weg ? "Tik om ongedaan te maken" : "Tik om af te vinken")
     }
 
     private func zetDeling(_ nieuw: String) {
