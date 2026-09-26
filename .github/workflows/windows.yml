@@ -42,6 +42,7 @@ jobs:
 
       - name: Zelftest (sorteren, lijstjes, rekenen)
         run: |
+          if (-not (Test-Path publish/Kniv.pri)) { Write-Error "Kniv.pri ontbreekt: de app crasht dan meteen"; exit 1 }
           $p = Start-Process publish/Kniv.exe -ArgumentList '--selftest', "$env:RUNNER_TEMP\zelftest.txt" -Wait -PassThru
           Get-Content "$env:RUNNER_TEMP\zelftest.txt"
           if ($p.ExitCode -ne 0) { exit 1 }
