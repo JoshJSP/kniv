@@ -46,7 +46,7 @@ check(!BonParser.lijktBon("morgen oma bellen"), "notitie is geen bon")
 
 Omzetter.locale = Locale(identifier: "nl_NL")
 let bloem = Omzetter.reken("3 cups bloem") ?? ""
-check(bloem.contains("710 ml") && bloem.contains("375 g bloem"), "cups bloem: \(bloem)")
+check(bloem.contains("720 ml") && bloem.contains("375 g bloem"), "cups bloem: \(bloem)")
 check((Omzetter.reken("10 mijl") ?? "").contains("16,1 km"), "mijl: \(Omzetter.reken("10 mijl") ?? "nil")")
 check((Omzetter.reken("100 f") ?? "").contains("37,8 °C"), "fahrenheit: \(Omzetter.reken("100 f") ?? "nil")")
 check((Omzetter.reken("10 km in mijl") ?? "").contains("6,21 mijl"), "km in mijl")
