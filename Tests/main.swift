@@ -35,4 +35,24 @@ check(TimerParser.vind(in: "1 uur")?.naam == "Timer", "naamloze timer")
 check(TimerParser.vind(in: "tandarts om 14:30") == nil, "kloktijd is geen timer")
 check(TimerParser.klok(125) == "02:05" && TimerParser.klok(3725) == "1:02:05", "klokweergave")
 
+let saldi = Afrekenen.saldi([("A", 90, ["A", "B", "C"]), ("B", 30, ["A", "B", "C"])])
+let betalingen = Afrekenen.minsteBetalingen(saldi)
+check(betalingen == [.init(van: "C", naar: "A", bedrag: 40), .init(van: "B", naar: "A", bedrag: 10)], "minste betalingen: \(betalingen)")
+
+let bon = BonParser.regels("ALBERT HEIJN\nMelk 1,29\nBrood 2,49\nTOTAAL 3,78\nPIN 3,78")
+check(bon == [.init(naam: "Melk", prijs: 1.29), .init(naam: "Brood", prijs: 2.49)], "bon lezen: \(bon)")
+check(BonParser.lijktBon("Melk 1,29\nBrood 2,49\nTotaal 3,78"), "bon herkennen")
+check(!BonParser.lijktBon("morgen oma bellen"), "notitie is geen bon")
+
+Omzetter.locale = Locale(identifier: "nl_NL")
+let bloem = Omzetter.reken("3 cups bloem") ?? ""
+check(bloem.contains("710 ml") && bloem.contains("375 g bloem"), "cups bloem: \(bloem)")
+check((Omzetter.reken("10 mijl") ?? "").contains("16,1 km"), "mijl: \(Omzetter.reken("10 mijl") ?? "nil")")
+check((Omzetter.reken("100 f") ?? "").contains("37,8 °C"), "fahrenheit: \(Omzetter.reken("100 f") ?? "nil")")
+check((Omzetter.reken("10 km in mijl") ?? "").contains("6,21 mijl"), "km in mijl")
+check((Omzetter.reken("30% korting op 89") ?? "").contains("62,30"), "korting: \(Omzetter.reken("30% korting op 89") ?? "nil")")
+check((Omzetter.reken("45 usd", koersen: ["USD": 1.1]) ?? "").contains("40,91"), "valuta: \(Omzetter.reken("45 usd", koersen: ["USD": 1.1]) ?? "nil")")
+check((Omzetter.reken("$12.99", koersen: ["USD": 1.1]) ?? "").contains("11,81"), "dollarteken")
+check(Omzetter.reken("gewoon tekst") == nil, "geen omzetting")
+
 print("Alle Kniv-checks geslaagd")

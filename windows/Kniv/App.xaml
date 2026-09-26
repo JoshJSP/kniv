@@ -1,0 +1,20 @@
+<Application
+    x:Class="Kniv.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Zakmesrood als accentkleur, in licht en donker -->
+            <Color x:Key="SystemAccentColor">#D52B1E</Color>
+            <Color x:Key="SystemAccentColorLight1">#E0493D</Color>
+            <Color x:Key="SystemAccentColorLight2">#EA6C62</Color>
+            <Color x:Key="SystemAccentColorLight3">#F39089</Color>
+            <Color x:Key="SystemAccentColorDark1">#B82317</Color>
+            <Color x:Key="SystemAccentColorDark2">#961C12</Color>
+            <Color x:Key="SystemAccentColorDark3">#74150D</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

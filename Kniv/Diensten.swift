@@ -80,10 +80,27 @@ enum TekstHerkenning {
                 verzoek.recognitionLanguages = ["nl-NL", "en-US"]
                 verzoek.usesLanguageCorrection = true
                 try? VNImageRequestHandler(cgImage: cg, orientation: richting).perform([verzoek])
-                let regels = verzoek.results?.compactMap { $0.topCandidates(1).first?.string } ?? []
-                c.resume(returning: regels.joined(separator: "\n"))
+                c.resume(returning: rijen(verzoek.results ?? []).joined(separator: "\n"))
             }
         }
+    }
+}
+
+/// Zet losse tekststukken die op dezelfde hoogte staan op één regel, links naar rechts.
+/// Zo komt op een bon "Melk" naast "1,29" in plaats van in een aparte kolom.
+func rijen(_ stukken: [VNRecognizedTextObservation]) -> [String] {
+    var rijen: [(midden: CGFloat, hoogte: CGFloat, stukken: [VNRecognizedTextObservation])] = []
+    for s in stukken.sorted(by: { $0.boundingBox.midY > $1.boundingBox.midY }) {
+        if let i = rijen.indices.last, abs(rijen[i].midden - s.boundingBox.midY) < rijen[i].hoogte * 0.5 {
+            rijen[i].stukken.append(s)
+        } else {
+            rijen.append((s.boundingBox.midY, s.boundingBox.height, [s]))
+        }
+    }
+    return rijen.map { rij in
+        rij.stukken.sorted { $0.boundingBox.minX < $1.boundingBox.minX }
+            .compactMap { $0.topCandidates(1).first?.string }
+            .joined(separator: " ")
     }
 }
 

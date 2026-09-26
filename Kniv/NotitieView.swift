@@ -63,6 +63,15 @@ struct NotitieView: View {
                 }
             }
 
+            if BonParser.lijktBon(notitie.fotoTekst) {
+                Section {
+                    Button {
+                        AppStatus.shared.bonTekst = notitie.fotoTekst
+                        AppStatus.shared.openSplitten = true
+                    } label: { Label("Splitten met deze bon", systemImage: "divide") }
+                }
+            }
+
             if let voorstel = TimerParser.vind(in: notitie.tekst) {
                 Section {
                     Button {

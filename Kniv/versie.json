@@ -1,11 +1,12 @@
 {
-  "versie": "0.2.0",
-  "mesnaam": "Santoku",
+  "versie": "0.3.0",
+  "mesnaam": "Nakiri",
   "nieuw": [
-    "Nieuw mesje: Timers",
-    "Pomodoro met een lemmet dat langzaam inklapt, en een weekoverzicht van je focus",
-    "Losse timers met naam (pasta, thee, de was) en countdowns naar een datum",
-    "Siri: \"Start focus in Kniv\"",
-    "Staat er \"over 20 min oven uit\" in een notitie? Eén tik en de timer loopt"
+    "Nieuw mesje: Splitten",
+    "Rekening delen met fooi, en een betaalverzoek met QR-code voor elke bankapp",
+    "Potjes voor vakanties, ook in vreemde valuta, afgerekend met zo min mogelijk betalingen",
+    "Bon scannen en per persoon aantikken wie wat had",
+    "Omzetten door gewoon te typen: \"3 cups bloem\", \"45 usd\", \"30% korting op 89\"",
+    "Fix: tikken op een notitie opent hem nu echt"
   ]
 }

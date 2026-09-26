@@ -5,7 +5,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
     case vastleggen, timers, splitten, kiezen
 
     var id: String { rawValue }
-    var klaar: Bool { self == .vastleggen || self == .timers }
+    var klaar: Bool { self != .kiezen }
 
     var naam: LocalizedStringKey {
         switch self {
@@ -28,7 +28,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
 
 struct ThuisView: View {
     @Namespace private var ns
-    @State private var pad: [Mes] = []
+    @State private var pad = NavigationPath()
     @State private var uitklappend: Mes?
     @State private var toonNieuw = false
     @AppStorage("laatstGezieneVersie") private var laatstGezien = ""
@@ -64,7 +64,8 @@ struct ThuisView: View {
                     switch mes {
                     case .vastleggen: VastleggenView()
                     case .timers: TimersView()
-                    case .splitten, .kiezen: EmptyView()
+                    case .splitten: SplittenView()
+                    case .kiezen: EmptyView()
                     }
                 }
                 .navigationTransition(.zoom(sourceID: mes, in: ns))
@@ -72,10 +73,13 @@ struct ThuisView: View {
             }
         }
         .onChange(of: AppStatus.shared.startInspreken, initial: true) { _, nu in
-            if nu && pad.last != .vastleggen { pad = [.vastleggen] }
+            if nu && pad.isEmpty { pad.append(Mes.vastleggen) }
         }
         .onChange(of: AppStatus.shared.openTimers) { _, nu in
-            if nu { pad = [.timers]; AppStatus.shared.openTimers = false }
+            if nu { pad = NavigationPath([Mes.timers]); AppStatus.shared.openTimers = false }
+        }
+        .onChange(of: AppStatus.shared.openSplitten) { _, nu in
+            if nu { pad = NavigationPath([Mes.splitten]); AppStatus.shared.openSplitten = false }
         }
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .sheet(isPresented: $toonNieuw, onDismiss: { laatstGezien = VersieInfo.huidig?.versie ?? "" }) {
