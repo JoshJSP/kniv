@@ -1,0 +1,91 @@
+name: Kniv Windows
+
+# Bouwt het WinUI 3-programma (self-contained), maakt er met Velopack een installer van
+# en zet die in het openbare repo JoshJSP/kniv-releases:
+#   - release "win-v<versie>"  : Kniv-Setup.exe + portable zip voor die versie
+#   - release "win" (vast)     : de updatefeed (releases.win.json + nupkg) + altijd de nieuwste Kniv-Setup.exe
+# De app leest alleen de vaste "win"-release, dus de iOS-releases (v*-bN) tellen nooit mee.
+
+on:
+  push:
+    branches: [main]
+    paths: ['windows/**', '.github/workflows/windows.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      VERSIE: 0.1.${{ github.run_number }}
+      REPO: JoshJSP/kniv-releases
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Bouwen
+        run: dotnet publish windows/Kniv/Kniv.csproj -c Release -r win-x64 --self-contained -p:Version=$env:VERSIE -o publish
+
+      - name: Zelftest (sorteren, lijstjes, rekenen)
+        run: |
+          $p = Start-Process publish/Kniv.exe -ArgumentList '--selftest', "$env:RUNNER_TEMP\zelftest.txt" -Wait -PassThru
+          Get-Content "$env:RUNNER_TEMP\zelftest.txt"
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Installer maken (Velopack)
+        run: |
+          dotnet tool install -g vpk --version 1.2.158
+          vpk pack -u KnivApp -v $env:VERSIE -p publish -e Kniv.exe --packTitle Kniv --packAuthors Josh -i windows/Kniv/kniv.ico -c win -o Releases
+          Copy-Item Releases/KnivApp-win-Setup.exe Releases/Kniv-Setup.exe
+          Copy-Item Releases/KnivApp-win-Portable.zip Releases/Kniv-Portable.zip
+          Get-ChildItem Releases
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Kniv-Windows
+          path: |
+            Releases/Kniv-Setup.exe
+            Releases/Kniv-Portable.zip
+          retention-days: 7
+
+      - name: Publiceren in kniv-releases
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        run: |
+          $nupkg = "Releases/KnivApp-$env:VERSIE-full.nupkg"
+          gh release create "win-v$env:VERSIE" Releases/Kniv-Setup.exe Releases/Kniv-Portable.zip $nupkg Releases/releases.win.json `
+            -R $env:REPO --title "Kniv voor Windows $env:VERSIE" --latest=false `
+            --notes "Download **Kniv-Setup.exe** en start hem. Windows SmartScreen waarschuwt omdat Kniv niet ondertekend is: kies *Meer info* en dan *Toch uitvoeren*. Daarna werkt Kniv zichzelf automatisch bij."
+          gh release view win -R $env:REPO *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create win -R $env:REPO --prerelease --latest=false --title "Kniv voor Windows (updatefeed)" `
+              --notes "Vaste plek waar Kniv voor Windows naar updates kijkt. Hier staat ook altijd de nieuwste Kniv-Setup.exe."
+          }
+          # eerst het pakket, dan pas de feed die ernaar wijst
+          gh release upload win $nupkg Releases/Kniv-Setup.exe -R $env:REPO --clobber
+          gh release upload win Releases/releases.win.json -R $env:REPO --clobber
+          $global:LASTEXITCODE = 0
+
+      - name: Updatepad testen (portable leest de feed)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          Expand-Archive Releases/Kniv-Portable.zip -DestinationPath port
+          $p = Start-Process port/current/Kniv.exe -ArgumentList '--updatetest', "$env:RUNNER_TEMP\update.txt" -Wait -PassThru
+          Get-Content "$env:RUNNER_TEMP\update.txt"
+          if ($p.ExitCode -ne 0) { exit 1 }
+          if (-not (Select-String -Path "$env:RUNNER_TEMP\update.txt" -Pattern '^OK' -Quiet)) { exit 1 }
