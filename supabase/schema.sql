@@ -135,7 +135,12 @@ language sql stable security definer set search_path = public as $$
         'eigenaar', (select naam from profielen where id = g.eigenaar),
         'records', coalesce((select jsonb_agg(jsonb_build_object('id', r.id, 'soort', r.soort, 'data', r.data, 'door', p.naam, 'avatar', p.avatar) order by r.gewijzigd)
                              from records r left join profielen p on p.id = coalesce(r.gewijzigd_door, r.eigenaar)
-                             where r.groep = g.id and not r.verwijderd), '[]'::jsonb))
+                             where r.groep = g.id and not r.verwijderd), '[]'::jsonb),
+        -- naam + foto van iedereen die een item toevoegde, voor het profielbolletje per item
+        'mensen', coalesce((select jsonb_object_agg(p.id, jsonb_build_object('naam', p.naam, 'avatar', p.avatar))
+                            from profielen p
+                            where p.id in (select (i->>'door')::uuid from records r, jsonb_array_elements(coalesce(r.data->'items', '[]'::jsonb)) i
+                                           where r.groep = g.id and not r.verwijderd and i->>'door' is not null)), '{}'::jsonb))
     from groepen g where g.deel_token = token and (g.verloopt is null or g.verloopt > now())
 $$;
 grant execute on function deelpagina(text) to anon, authenticated;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { dagenTot, doelVan, haalDeel, samenvatting, type KnivRecord } from "../../lib";
+import { dagenTot, doelVan, haalDeel, samenvatting, type Deel, type KnivRecord } from "../../lib";
 import Ververs from "./Ververs";
 
 type Props = { params: Promise<{ token: string }> };
@@ -27,7 +27,7 @@ function Bol({ naam, avatar }: { naam: string | null; avatar: string | null }) {
   );
 }
 
-function Record({ r }: { r: KnivRecord }) {
+function Record({ r, mensen }: { r: KnivRecord; mensen: Deel["mensen"] }) {
   const items = [...(r.data?.items ?? [])].sort((a, b) => (a.volgorde ?? 0) - (b.volgorde ?? 0));
   const tekst = typeof r.data?.tekst === "string" ? r.data.tekst.trim() : "";
   if (!tekst && !items.length) return null;
@@ -39,8 +39,7 @@ function Record({ r }: { r: KnivRecord }) {
           {items.map((it, i) => (
             <li key={i}>
               <span>{it.tekst}</span>
-              {/* ponytail: de rpc geeft alleen naam/avatar van de laatste wijziger per record, niet per item. */}
-              <Bol naam={r.door} avatar={r.avatar} />
+              {it.door && mensen?.[it.door] ? <Bol naam={mensen[it.door].naam} avatar={mensen[it.door].avatar} /> : <Bol naam={r.door} avatar={r.avatar} />}
             </li>
           ))}
         </ul>
@@ -91,7 +90,7 @@ export default async function Gedeeld({ params }: Props) {
       )}
 
       {notities.map((r) => (
-        <Record key={r.id} r={r} />
+        <Record key={r.id} r={r} mensen={deel.mensen} />
       ))}
 
       {!doel && notities.length === 0 && (

@@ -4,3 +4,4 @@ dd/
 *.ipa
 .DS_Store
 KnivWidgets/Info.plist
+.claude/

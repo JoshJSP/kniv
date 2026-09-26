@@ -20,6 +20,7 @@ export type Deel = {
   verloopt: string | null;
   eigenaar: string | null;
   records: KnivRecord[];
+  mensen?: Record<string, { naam: string; avatar: string | null }>;
 };
 
 /** Haalt een gedeelde groep op; null = onbekend of verlopen. */
