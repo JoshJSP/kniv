@@ -1,11 +1,9 @@
 {
-  "versie": "0.6.0",
-  "mesnaam": "Tanto",
+  "versie": "0.7.0",
+  "mesnaam": "Stanley",
   "nieuw": [
-    "Plekmeldingen: bij de supermarkt je boodschappen, op school je schoolnotities, thuis je to-do's",
-    "Alleen als er sinds de vorige keer iets nieuws is, dus nooit twee keer hetzelfde",
-    "Bij een notitie: \"Herinner me op deze plek\"",
-    "Slim zoeken: \"Misschien bedoel je\" vindt ook notities zonder dezelfde woorden",
-    "Zet Thuis en School in Instellingen → Plekken"
+    "Nieuw mesje: Scanner. QR-codes, documenten naar PDF, en tekst van papier kopiëren",
+    "Nieuw mesje: Meten. Waterpas, AR-liniaal en een decibelmeter",
+    "Het startscherm is nu een 3x2-raster met zes mesjes"
   ]
 }

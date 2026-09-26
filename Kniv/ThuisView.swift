@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 
 enum Mes: String, CaseIterable, Identifiable, Hashable {
-    case vastleggen, timers, splitten, kiezen
+    case vastleggen, timers, splitten, kiezen, scanner, meten
 
     var id: String { rawValue }
     var klaar: Bool { true }
@@ -13,6 +13,8 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
         case .timers: "Timers"
         case .splitten: "Splitten"
         case .kiezen: "Kiezen"
+        case .scanner: "Scanner"
+        case .meten: "Meten"
         }
     }
 
@@ -22,6 +24,8 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
         case .timers: "timer"
         case .splitten: "divide"
         case .kiezen: "dice"
+        case .scanner: "qrcode.viewfinder"
+        case .meten: "ruler"
         }
     }
 }
@@ -35,12 +39,12 @@ struct ThuisView: View {
     @Environment(\.accessibilityReduceMotion) private var minderBeweging
     @Query(filter: #Predicate<Notitie> { $0.bakjeNaam == nil }) private var teSorteren: [Notitie]
 
-    private let kolommen = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    private let kolommen = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
 
     var body: some View {
         NavigationStack(path: $pad) {
             ScrollView {
-                LazyVGrid(columns: kolommen, spacing: 14) {
+                LazyVGrid(columns: kolommen, spacing: 12) {
                     ForEach(Mes.allCases) { mes in
                         Button { open(mes) } label: {
                             Tegel(mes: mes, uitgeklapt: uitklappend == mes, info: info(voor: mes))
@@ -66,6 +70,8 @@ struct ThuisView: View {
                     case .timers: TimersView()
                     case .splitten: SplittenView()
                     case .kiezen: KiezenView()
+                    case .scanner: ScannerView()
+                    case .meten: MetenView()
                     }
                 }
                 .navigationTransition(.zoom(sourceID: mes, in: ns))
@@ -125,17 +131,17 @@ struct Tegel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Image(systemName: mes.symbool)
-                .font(.system(size: 30, weight: .medium))
+                .font(.system(size: 26, weight: .medium))
                 .foregroundStyle(mes.klaar ? Color.accentColor : Color.secondary)
                 .rotationEffect(.degrees(uitgeklapt ? -38 : 0), anchor: .bottomLeading)
             Spacer(minLength: 0)
-            Text(mes.naam).font(.headline)
+            Text(mes.naam).font(.subheadline.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
             Text(info ?? (mes.klaar ? " " : "Binnenkort"))
                 .font(.caption)
                 .foregroundStyle(info == nil ? Color.secondary : Color.accentColor)
         }
-        .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
-        .padding(18)
+        .frame(maxWidth: .infinity, minHeight: 118, alignment: .leading)
+        .padding(14)
         .contentShape(Rectangle())
         .glas(26)
         .opacity(mes.klaar ? 1 : 0.55)
