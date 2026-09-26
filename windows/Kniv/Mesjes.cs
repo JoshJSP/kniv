@@ -412,7 +412,7 @@ public sealed class KiezenPagina : UserControl
         var wiel = new Canvas { Width = 2 * R, Height = 2 * R };
         var draai = new RotateTransform { CenterX = R, CenterY = R };
         wiel.RenderTransform = draai;
-        var wijzer = new Polygon { Points = { new Point(R - 12, -4), new Point(R + 12, -4), new Point(R, 22) }, Fill = Ui.Kwast("AccentFillColorDefaultBrush") };
+        var wijzer = new Polygon { Points = { new Point(R - 12, -4), new Point(R + 12, -4), new Point(R, 22) }, Fill = Ui.Kwast("TextFillColorPrimaryBrush") };
         var houder = new Grid { Width = 2 * R, Height = 2 * R };
         houder.Children.Add(wiel);
         var wijzerLaag = new Canvas();
