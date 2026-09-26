@@ -20,7 +20,8 @@ public static class Program
 
         WinRT.ComWrappersSupport.InitializeComWrappers();
         // Eén Kniv tegelijk: een tweede start (Startmenu, melding) opent gewoon het bestaande venster.
-        var sleutel = AppInstance.FindOrRegisterForKey("Kniv-hoofd");
+        var testMap = Environment.GetEnvironmentVariable("KNIV_MAP");
+        var sleutel = AppInstance.FindOrRegisterForKey(string.IsNullOrEmpty(testMap) ? "Kniv-hoofd" : "Kniv-test");
         if (!sleutel.IsCurrent)
         {
             var a = AppInstance.GetCurrent().GetActivatedEventArgs();
@@ -59,6 +60,8 @@ public partial class App : Application
         Ui = DispatcherQueue.GetForCurrentThread();
         Opslag.Laad();
         Meldingen.Start();
+        Sync.Start();
+        _ = SplittenPagina.HaalKoersen();   // voor "45 usd" in het snelvenster
         Hoofd = new HoofdVenster();
         Hoofd.Activate();
         Win32.Sneltoets = ToonSnel;
@@ -243,6 +246,53 @@ static class Zelftest
         Is(Rekenen.FooiAdvies(60, 10) == (5, 65), "fooi afronden vijf");
         Is(Rekenen.FooiAdvies(20, 0) == (0, 20), "geen fooi");
         Is(Rekenen.FooiAdvies(50.2, 1) == (0, 50.2), "nooit onder de prijs");
+
+        // Snelvenster-commando's, dezelfde gevallen als Tests/main.swift
+        string R(string t, Dictionary<string, double>? k = null) => Omzetter.Reken(t, k) ?? "nil";
+        var usd = new Dictionary<string, double> { ["USD"] = 1.1 };
+        Is(R("3 cups bloem").Contains("720 ml") && R("3 cups bloem").Contains("375 g bloem"), "cups bloem: " + R("3 cups bloem"));
+        Is(R("10 mijl").Contains("16,1 km"), "mijl: " + R("10 mijl"));
+        Is(R("100 f").Contains("37,8 °C"), "fahrenheit: " + R("100 f"));
+        Is(R("10 km in mijl").Contains("6,21 mijl"), "km in mijl: " + R("10 km in mijl"));
+        Is(R("30% korting op 89").Contains("62,30"), "korting: " + R("30% korting op 89"));
+        Is(R("45 usd", usd).Contains("40,91"), "valuta: " + R("45 usd", usd));
+        Is(R("$12.99", usd).Contains("11,81"), "dollarteken: " + R("$12.99", usd));
+        Is(R("20 min pasta") == "nil" && R("gewoon tekst") == "nil", "geen omzetting");
+        Is(SnelCommando.Kern("10 km = 6,21 mijl") == "6,21 mijl" && SnelCommando.Kern("3 cups = 720 ml ≈ 375 g bloem") == "720 ml", "kern");
+
+        Is(TimerParser.Vind("over 20 min oven uit") == ("Oven uit", 1200), "timer uit notitie: " + TimerParser.Vind("over 20 min oven uit"));
+        Is(TimerParser.Vind("20 min pasta") == ("Pasta", 1200), "20 min pasta");
+        Is(TimerParser.Vind("over 10 minuten thee") == ("Thee", 600), "10 minuten thee");
+        Is(TimerParser.Vind("pasta 9 minuten")?.seconden == 540, "pasta 9 minuten");
+        Is(TimerParser.Vind("1 uur")?.naam == "Timer", "naamloze timer");
+        Is(TimerParser.Vind("tandarts om 14:30") == null, "kloktijd is geen timer");
+        Is(SnelCommando.Klok(125) == "02:05" && SnelCommando.Klok(3725) == "1:02:05", "klok");
+        Is(SnelCommando.Timer("morgen om 3 uur tandarts") == null, "moment blijft notitie");
+        Is(SnelCommando.Timer("10 km in mijl") == null && SnelCommando.Timer("45 usd") == null, "omzetten is geen timer");
+
+        var zaterdag = new DateTime(2026, 9, 26, 10, 0, 0);
+        Is(Herinnering.Vind("morgen oma bellen", zaterdag)?.dag == new DateTime(2026, 9, 27), "morgen");
+        Is(Herinnering.Vind("zaterdag feest", zaterdag)?.dag == new DateTime(2026, 10, 3), "zelfde weekdag = volgende week");
+        Is(Herinnering.Vind("maandag om 14:30", zaterdag)?.dag == new DateTime(2026, 9, 28, 14, 30, 0), "maandag 14:30");
+        Is(Herinnering.Vind("feestje 3 mei", zaterdag)?.dag.Year == 2027, "voorbije datum = volgend jaar");
+        Is(Herinnering.Vind("om 9 bellen", zaterdag)?.dag.Day == 27, "tijd al voorbij = morgen");
+        Is(Herinnering.Vind("gewoon tekst", zaterdag) == null && Herinnering.Vind("morgenochtend", zaterdag) == null, "geen moment");
+
+        // Sync: een rij van de server wordt een notitie, een oudere rij wint niet, verwijderd haalt hem weg.
+        var id = Guid.NewGuid();
+        var json = "{\"id\":\"" + id + "\",\"eigenaar\":\"" + Guid.NewGuid() + "\",\"groep\":null,\"soort\":\"notitie\",\"gewijzigd\":\"2026-09-27T10:00:00.123+00:00\",\"gewijzigd_door\":null,\"verwijderd\":false,"
+            + "\"data\":{\"tekst\":\"Weekend\",\"fotoTekst\":\"\",\"bakje\":\"Boodschappen\",\"gemaakt\":\"2026-09-27T09:00:00.000Z\",\"items\":[{\"tekst\":\"kaas\",\"volgorde\":1,\"door\":null},{\"tekst\":\"melk\",\"volgorde\":0,\"door\":null}]}}";
+        var rij = System.Text.Json.JsonSerializer.Deserialize<Rij>(json)!;
+        Is(Sync.Verwerk(rij, null), "sync nieuw");
+        var sn = Opslag.Data.Notities.FirstOrDefault(n => n.Id == id);
+        Is(sn != null && sn.Bakje == "Boodschappen" && string.Join(",", sn.Items.Select(i => i.Tekst)) == "melk,kaas"
+            && sn.Gewijzigd == new DateTime(2026, 9, 27, 10, 0, 0, 123, DateTimeKind.Utc), "sync velden");
+        rij.Gewijzigd = rij.Gewijzigd.AddSeconds(-1);
+        Is(!Sync.Verwerk(rij, null), "sync ouder wint niet");
+        rij.Gewijzigd = rij.Gewijzigd.AddSeconds(5);
+        rij.Verwijderd = true;
+        Is(Sync.Verwerk(rij, null) && !Opslag.Data.Notities.Any(n => n.Id == id), "sync zacht verwijderd");
+        Is(Sync.Iso(new DateTime(2026, 9, 27, 10, 0, 0, 5, DateTimeKind.Utc)) == "2026-09-27T10:00:00.005Z", "iso");
 
         var tekst = fouten.Count == 0 ? "OK" : "FOUT " + string.Join("; ", fouten);
         if (uit != null) File.WriteAllText(uit, tekst);

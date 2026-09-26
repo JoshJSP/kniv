@@ -379,7 +379,7 @@ public sealed class SplittenPagina : UserControl
 
     record Frankfurter(string date, Dictionary<string, double> rates);
 
-    static async Task HaalKoersen(Action klaar)
+    public static async Task HaalKoersen(Action? klaar = null)
     {
         try
         {
@@ -389,7 +389,7 @@ public sealed class SplittenPagina : UserControl
             Opslag.Data.Koersen = new(f.rates) { ["EUR"] = 1 };
             Opslag.Data.KoersDatum = DateTime.TryParse(f.date, out var d) ? d.ToString("d MMMM yyyy", Nl.Cultuur) : f.date;
             Opslag.Bewaar();
-            klaar();
+            klaar?.Invoke();
         }
         catch (Exception) { /* offline: de bewaarde koersen blijven staan */ }
     }

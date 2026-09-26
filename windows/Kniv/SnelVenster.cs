@@ -13,7 +13,9 @@ public sealed class SnelVenster : Window
     readonly TextBox _invoer = new() { PlaceholderText = "Wat wil je kwijt?", FontSize = 20, MaxHeight = 160, BorderThickness = new Thickness(0), Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
     readonly StackPanel _recent = new() { Spacing = 2 };
     readonly StackPanel _vraag = new() { Spacing = 8, Visibility = Visibility.Collapsed };
-    readonly TextBlock _status = Ui.Tekst("Enter bewaart · Shift+Enter nieuwe regel · plak een screenshot of sleep een bestand · Esc sluit", "CaptionTextBlockStyle", zacht: true);
+    const string Uitleg = "Enter bewaart · Shift+Enter nieuwe regel · \"20 min pasta\" start een timer · \"10 km in mijl\" rekent · Esc sluit";
+    readonly TextBlock _status = Ui.Tekst(Uitleg, "CaptionTextBlockStyle", zacht: true);
+    readonly TextBlock _uitkomst = new() { FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, Visibility = Visibility.Collapsed, Margin = new Thickness(28, 0, 0, 0) };
     readonly IntPtr _hwnd;
 
     public SnelVenster()
@@ -54,17 +56,63 @@ public sealed class SnelVenster : Window
         Grid.SetRow(_vraag, 2);
         Grid.SetRow(recentBlok, 3);
         Grid.SetRow(_status, 4);
-        foreach (var e in new UIElement[] { balk, lijn, _vraag, recentBlok, _status }) wortel.Children.Add(e);
+        foreach (var e in new UIElement[] { Ui.Stapel(4, balk, _uitkomst), lijn, _vraag, recentBlok, _status }) wortel.Children.Add(e);
         wortel.PreviewKeyDown += (_, e) => { if (e.Key == Windows.System.VirtualKey.Escape) { e.Handled = true; AppWindow.Hide(); } };
         Content = wortel;
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(_invoer, "Nieuwe notitie");
-        Invoer.Koppel(_invoer, wortel, Bewaard);
+        Invoer.Koppel(_invoer, wortel, Bewaard, Commando);
+        _invoer.TextChanged += (_, _) => ToonCommando();
+    }
+
+    /// Terwijl je typt: laat zien wat Enter gaat doen.
+    void ToonCommando()
+    {
+        var t = _invoer.Text;
+        if (SnelCommando.Reken(t) is { } u) Zet(u, "Enter kopieert de uitkomst · Ctrl+Enter bewaart als notitie · Esc sluit");
+        else if (SnelCommando.Timer(t) is { } tm) Zet($"Timer {tm.naam} · {SnelCommando.Klok(tm.seconden)}", "Enter start de timer · Ctrl+Enter bewaart als notitie · Esc sluit");
+        else
+        {
+            _uitkomst.Visibility = Visibility.Collapsed;
+            if (t != "") _status.Text = Uitleg;   // leeg: laat "Bewaard"/"Gekopieerd" staan
+        }
+
+        void Zet(string uitkomst, string status)
+        {
+            _uitkomst.Text = uitkomst;
+            _uitkomst.Visibility = Visibility.Visible;
+            _status.Text = status;
+        }
+    }
+
+    bool Commando(string t)
+    {
+        if (SnelCommando.Reken(t) is { } u)
+        {
+            var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
+            var kern = SnelCommando.Kern(u);
+            dp.SetText(kern);
+            Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+            _invoer.Text = "";
+            Klaar($"Gekopieerd: {kern}");
+            return true;
+        }
+        if (SnelCommando.Timer(t) is { } tm)
+        {
+            var eind = DateTime.Now.AddSeconds(tm.seconden);
+            Opslag.Data.Timers.Add(new LosseTimer { Naam = tm.naam, Eind = eind });
+            Opslag.Bewaar();
+            _invoer.Text = "";
+            Klaar($"Timer {tm.naam} loopt, klaar om {eind:HH:mm}.");
+            return true;
+        }
+        return false;
     }
 
     public void Toon()
     {
         _vraag.Visibility = Visibility.Collapsed;
-        _status.Text = "Enter bewaart · Shift+Enter nieuwe regel · plak een screenshot of sleep een bestand · Esc sluit";
+        _status.Text = Uitleg;
+        ToonCommando();
         VulRecent();
         var schaal = Win32.GetDpiForWindow(_hwnd) / 96.0;
         var scherm = DisplayArea.GetFromWindowId(App.Huidig!.Hoofd.AppWindow.Id, DisplayAreaFallback.Primary).WorkArea;
