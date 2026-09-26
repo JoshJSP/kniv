@@ -32,7 +32,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
 
     var supermarktAan: Bool {
         get { opslag.bool(forKey: "supermarktMeldingen") }
-        set { opslag.set(newValue, forKey: "supermarktMeldingen"); start() }
+        set { opslag.set(newValue, forKey: "supermarktMeldingen"); Task { @MainActor in self.start() } }
     }
 
     override init() {
@@ -41,7 +41,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     }
 
     /// Bij het opstarten: alleen aan de slag als er iets te bewaken is, zodat Kniv niet zomaar om je locatie vraagt.
-    func start() {
+    @MainActor func start() {
         let heeftPlekken = ((try? KnivOpslag.container.mainContext.fetchCount(FetchDescriptor<Plek>())) ?? 0) > 0
         guard heeftPlekken || supermarktAan else { return }
         switch lm.authorizationStatus {
@@ -74,8 +74,8 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    func herlaadGebieden() {
-        DispatchQueue.main.async { [self] in
+    @MainActor func herlaadGebieden() {
+        do {
             lm.monitoredRegions.forEach(lm.stopMonitoring)
             let plekken = (try? KnivOpslag.container.mainContext.fetch(FetchDescriptor<Plek>())) ?? []
             var gebieden = plekken.prefix(20).map {
@@ -108,7 +108,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
                 .prefix(14)
                 .map { [$0.coordinate.latitude, $0.coordinate.longitude] }
             self.opslag.set(Array(dichtbij), forKey: "supermarkten")
-            self.herlaadGebieden()
+            Task { @MainActor in self.herlaadGebieden() }
         }
     }
 
@@ -116,7 +116,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
 
     func locationManagerDidChangeAuthorization(_ m: CLLocationManager) {
         if m.authorizationStatus == .authorizedWhenInUse { m.requestAlwaysAuthorization() }
-        if m.authorizationStatus == .authorizedAlways || m.authorizationStatus == .authorizedWhenInUse { herlaadGebieden() }
+        if m.authorizationStatus == .authorizedAlways || m.authorizationStatus == .authorizedWhenInUse { Task { @MainActor in self.herlaadGebieden() } }
     }
 
     func locationManager(_ m: CLLocationManager, didUpdateLocations plekken: [CLLocation]) {
