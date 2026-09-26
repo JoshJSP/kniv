@@ -1,0 +1,25 @@
+name: Teksten exporteren
+
+# Haalt alle vertaalbare teksten uit de app (xcodebuild -exportLocalizations),
+# zodat de Engelse vertaling in Kniv/Localizable.xcstrings precies de goede sleutels krijgt.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen && xcodegen generate
+      - run: |
+          xcodebuild -exportLocalizations -project Kniv.xcodeproj -localizationPath teksten -exportLanguage en \
+            -sdk iphoneos CODE_SIGNING_ALLOWED=NO -quiet
+          find teksten -name '*.xliff'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teksten
+          path: teksten

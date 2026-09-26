@@ -28,6 +28,7 @@ struct KnivApp: App {
                 KnivOpslag.zaaiBakjes()
                 PlekWachter.shared.start()
             }
+            .modifier(MeldSchudden())
             .onOpenURL { url in
                 switch url.host() {
                 case "inspreken": AppStatus.shared.startInspreken = true

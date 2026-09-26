@@ -215,6 +215,8 @@ struct InstellingenView: View {
     @Query(sort: \Bakje.volgorde) private var bakjes: [Bakje]
     @AppStorage("haptiek") private var haptiek = true
     @AppStorage("supermarktMeldingen") private var supermarkt = false
+    @AppStorage("ontwikkelaar") private var ontwikkelaar = false
+    @State private var versieTikken = 0
     @Query private var plekken: [Plek]
     @State private var nieuwBakje = ""
 
@@ -259,6 +261,15 @@ struct InstellingenView: View {
 
             Section {
                 LabeledContent("Versie", value: VersieInfo.huidig.map { "\($0.mesnaam) · \($0.versie)" } ?? "?")
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        versieTikken += 1
+                        if versieTikken >= 5 { ontwikkelaar.toggle(); versieTikken = 0 }
+                    }
+                if ontwikkelaar {
+                    Label("Schudden om een fout te melden staat aan", systemImage: "iphone.gen3.radiowaves.left.and.right")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
             }
         }
         .navigationTitle("Instellingen")

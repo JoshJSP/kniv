@@ -1,6 +1,7 @@
 name: Kniv
 options:
   bundleIdPrefix: com.joshjsp
+  developmentLanguage: nl
   deploymentTarget:
     iOS: "18.0"
 settings:
