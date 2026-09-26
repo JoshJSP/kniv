@@ -49,6 +49,9 @@ public partial class App : Application
     {
         InitializeComponent();
         Huidig = this;
+        UnhandledException += (_, e) => { Log(e.Exception); e.Handled = true; };
+        TaskScheduler.UnobservedTaskException += (_, e) => { Log(e.Exception); e.SetObserved(); };
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => Log(e.ExceptionObject);
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -66,6 +69,17 @@ public partial class App : Application
         Hoofd.ToonSneltoetsStatus();
         Klok.Start();
         Updates.Start();
+    }
+
+    /// Fouten niet laten crashen maar opschrijven in fouten.log in de Kniv-map.
+    public static void Log(object fout)
+    {
+        try
+        {
+            Directory.CreateDirectory(Opslag.Map);
+            File.AppendAllText(Path.Combine(Opslag.Map, "fouten.log"), $"{DateTime.Now:s} {fout}{Environment.NewLine}{Environment.NewLine}");
+        }
+        catch (Exception) { }
     }
 
     public void Toon() => Ui.TryEnqueue(() =>
