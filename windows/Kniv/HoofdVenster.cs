@@ -69,7 +69,7 @@ static class Ui
 
     public static NumberBox Getal(string kop, double waarde, double min = double.MinValue, double max = double.MaxValue) => new()
     {
-        Header = kop, Value = waarde, Minimum = min, Maximum = max, Width = 150,
+        Header = kop, Value = waarde, Minimum = min, Maximum = max, Width = 150, HorizontalAlignment = HorizontalAlignment.Left,
         SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Compact, SmallChange = 1,
     };
 
@@ -310,6 +310,8 @@ public sealed class VastleggenPagina : UserControl
         sp.Padding = new Thickness(36, 20, 36, 36);
         var scroll = new ScrollViewer { Content = sp };
         Content = scroll;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(_invoer, "Nieuwe notitie");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(_zoek, "Zoeken");
         Invoer.Koppel(_invoer, scroll, Bewaard);
         Opslag.Gewijzigd += Ververs;
         Ververs();

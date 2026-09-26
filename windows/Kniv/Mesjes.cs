@@ -17,8 +17,8 @@ static class Klok
     public static event Action? Tik;
     public static bool PomoLoopt, PomoPauze;
     public static DateTime PomoEind;
+    public static readonly TimeSpan Focus = TimeSpan.FromMinutes(25), Pauze = TimeSpan.FromMinutes(5);  // eerst, want PomoRest leest Focus
     public static TimeSpan PomoRest = Focus;
-    public static readonly TimeSpan Focus = TimeSpan.FromMinutes(25), Pauze = TimeSpan.FromMinutes(5);
 
     public static void Start()
     {

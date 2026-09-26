@@ -18,7 +18,7 @@ public sealed class SnelVenster : Window
 
     public SnelVenster()
     {
-        Title = "Kniv";
+        Title = "Kniv snelvenster";
         ExtendsContentIntoTitleBar = true;
         SystemBackdrop = new DesktopAcrylicBackdrop();
         _hwnd = WindowNative.GetWindowHandle(this);
@@ -57,6 +57,7 @@ public sealed class SnelVenster : Window
         foreach (var e in new UIElement[] { balk, lijn, _vraag, recentBlok, _status }) wortel.Children.Add(e);
         wortel.PreviewKeyDown += (_, e) => { if (e.Key == Windows.System.VirtualKey.Escape) { e.Handled = true; AppWindow.Hide(); } };
         Content = wortel;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(_invoer, "Nieuwe notitie");
         Invoer.Koppel(_invoer, wortel, Bewaard);
     }
 

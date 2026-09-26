@@ -116,13 +116,13 @@ static class Meldingen
             AppNotificationManager.Default.NotificationInvoked += (_, _) => App.Huidig?.Toon();
             AppNotificationManager.Default.Register("Kniv", new Uri(Path.Combine(AppContext.BaseDirectory, "kniv.png")));
         }
-        catch (Exception) { /* zonder meldingen werkt de rest gewoon */ }
+        catch (Exception e) { App.Log(e); /* zonder meldingen werkt de rest gewoon */ }
     }
 
     public static void Toon(string titel, string tekst)
     {
         try { AppNotificationManager.Default.Show(new AppNotificationBuilder().AddText(titel).AddText(tekst).BuildNotification()); }
-        catch (Exception) { }
+        catch (Exception e) { App.Log(e); }
     }
 
     public static void Stop()
