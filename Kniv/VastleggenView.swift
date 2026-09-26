@@ -65,11 +65,7 @@ struct VastleggenView: View {
         }
         .onChange(of: spraak.tekst) { _, t in if spraak.bezig { invoer = voorSpraak + t } }
         .onChange(of: invoer) { oud, nieuw in lijstjeDoorzetten(oud, nieuw) }
-        .onChange(of: AppStatus.shared.startInspreken, initial: true) { _, nu in
-            guard nu else { return }
-            AppStatus.shared.startInspreken = false
-            Task { await wisselSpraak() }
-        }
+        .onAppear(perform: pakActieOp)
         .sensoryFeedback(.success, trigger: bewaardTik) { _, _ in haptiek }
         .sensoryFeedback(.selection, trigger: kiesTik) { _, _ in haptiek }
         .sensoryFeedback(.start, trigger: spraak.bezig) { _, nu in haptiek && nu }
@@ -112,6 +108,21 @@ struct VastleggenView: View {
         }
         .padding(18)
         .glas(24)
+    }
+
+    /// Siri, de Actieknop of een widget vroeg om een snelle actie.
+    private func pakActieOp() {
+        if AppStatus.shared.startInspreken {
+            AppStatus.shared.startInspreken = false
+            if !spraak.bezig { Task { await wisselSpraak() } }
+        }
+        guard let actie = AppStatus.shared.actie else { return }
+        AppStatus.shared.actie = nil
+        switch actie {
+        case "foto": toonCamera = true
+        case "lijst": beginLijstje()
+        default: invoerFocus = true
+        }
     }
 
     private func beginLijstje() {

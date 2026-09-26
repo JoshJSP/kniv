@@ -1,13 +1,9 @@
 {
-  "versie": "0.4.0",
-  "mesnaam": "Kukri",
+  "versie": "0.5.0",
+  "mesnaam": "Bowie",
   "nieuw": [
-    "Nieuw mesje: Kiezen",
-    "Rad van fortuin: veeg om te draaien, hoe harder hoe langer",
-    "Glazen 3D-dobbelstenen: schud je telefoon om te gooien",
-    "Munt opgooien, teams willekeurig verdelen",
-    "Veegstemmen: geef de telefoon door en veeg per optie ja of nee",
-    "Een lijstje in Vastleggen gaat met één tik naar het rad, teams of een stemming",
-    "Fooi berekenen met sterren voor eten, drinken en service"
+    "Widgets: snelknoppen op je beginscherm (klein en middel) en vergrendelscherm",
+    "Control Center-knoppen: Kniv inspreken, foto of typen",
+    "Live Activity: je timer met mini-lemmet op het vergrendelscherm en in het Dynamic Island"
   ]
 }

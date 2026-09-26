@@ -72,9 +72,8 @@ struct ThuisView: View {
                 .onAppear { uitklappend = nil }
             }
         }
-        .onChange(of: AppStatus.shared.startInspreken, initial: true) { _, nu in
-            if nu && pad.isEmpty { pad.append(Mes.vastleggen) }
-        }
+        .onChange(of: AppStatus.shared.startInspreken, initial: true) { _, nu in if nu { openVastleggen() } }
+        .onChange(of: AppStatus.shared.actie, initial: true) { _, nu in if nu != nil { openVastleggen() } }
         .onChange(of: AppStatus.shared.openTimers) { _, nu in
             if nu { pad = NavigationPath([Mes.timers]); AppStatus.shared.openTimers = false }
         }
@@ -94,6 +93,16 @@ struct ThuisView: View {
         if mes == .timers { return Pomodoro.shared.loopt ? (Pomodoro.shared.fase == .werk ? "Focus loopt" : "Pauze loopt") : nil }
         guard mes == .vastleggen, !teSorteren.isEmpty else { return nil }
         return teSorteren.count == 1 ? "1 te checken" : "\(teSorteren.count) te checken"
+    }
+
+    /// Opent Vastleggen vers, zodat het scherm bij verschijnen de actie (inspreken, foto…) oppakt.
+    private func openVastleggen() {
+        if pad.isEmpty { pad.append(Mes.vastleggen); return }
+        pad = NavigationPath()
+        Task {
+            try? await Task.sleep(for: .milliseconds(350))
+            pad.append(Mes.vastleggen)
+        }
     }
 
     /// Het lemmet klapt kort uit de tegel, daarna zoomt het mesje open.

@@ -159,6 +159,8 @@ enum Fotos {
 @Observable final class AppStatus {
     static let shared = AppStatus()
     var startInspreken = false
+    /// Snelle actie uit een widget of Control Center: "tekst", "foto" of "lijst".
+    var actie: String?
     var openTimers = false
     var openSplitten = false
     var bonTekst: String?

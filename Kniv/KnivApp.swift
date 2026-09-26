@@ -20,6 +20,13 @@ struct KnivApp: App {
                 }
             }
             .task { KnivOpslag.zaaiBakjes() }
+            .onOpenURL { url in
+                switch url.host() {
+                case "inspreken": AppStatus.shared.startInspreken = true
+                case let actie?: AppStatus.shared.actie = actie
+                case nil: break
+                }
+            }
         }
         .modelContainer(KnivOpslag.container)
     }

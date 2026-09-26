@@ -7,7 +7,7 @@ name: Kniv iOS (SideStore)
 on:
   push:
     branches: [main]
-    paths: ['Kniv/**', 'Tests/**', 'project.yml', 'scripts/**', '.github/workflows/ios.yml']
+    paths: ['Kniv/**', 'KnivWidgets/**', 'Tests/**', 'project.yml', 'scripts/**', '.github/workflows/ios.yml']
   workflow_dispatch:
 
 permissions:
@@ -71,6 +71,10 @@ jobs:
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$PLIST")" = "$BUILD"
           /usr/libexec/PlistBuddy -c 'Print :NSMicrophoneUsageDescription' "$PLIST" >/dev/null
           test -f "$APP/versie.json" || { echo "::error::versie.json zit niet in de app"; exit 1; }
+          WIDGET="$APP/PlugIns/KnivWidgets.appex"
+          test -d "$WIDGET" || { echo "::error::De widget-extensie zit niet in de app"; exit 1; }
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$WIDGET/Info.plist")" = "$BUILD"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleURLTypes:0:CFBundleURLSchemes:0' "$PLIST" | grep -qx kniv
           mkdir -p pakket/Payload && cp -R "$APP" pakket/Payload/
           (cd pakket && zip -qry ../Kniv.ipa Payload)
           ls -lh Kniv.ipa

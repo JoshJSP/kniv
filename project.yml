@@ -13,6 +13,8 @@ targets:
     type: application
     platform: iOS
     sources: [Kniv]
+    dependencies:
+      - target: KnivWidgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.joshjsp.kniv
@@ -30,8 +32,29 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         NSSupportsLiveActivities: true
+        CFBundleURLTypes:
+          - CFBundleURLName: com.joshjsp.kniv
+            CFBundleURLSchemes: [kniv]
         NSMicrophoneUsageDescription: Kniv luistert alleen terwijl je inspreekt.
         NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit, op je iPhone zelf.
         NSCameraUsageDescription: Kniv maakt foto's van papiertjes, whiteboards en bonnetjes.
         NSFaceIDUsageDescription: Kniv opent vergrendelde bakjes met Face ID.
         NSCalendarsFullAccessUsageDescription: Kniv kijkt in je agenda om een herinnering op een vrij moment te zetten.
+  KnivWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [KnivWidgets, Kniv/Gedeeld]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joshjsp.kniv.widgets
+        PRODUCT_NAME: KnivWidgets
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
+    info:
+      path: KnivWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Kniv
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
