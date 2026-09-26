@@ -183,3 +183,32 @@ enum Omzetter {
         return tekst
     }
 }
+
+// MARK: fooi naar sterren
+
+/// Sterren (0–5) voor eten, drinken en service; nil = niet van toepassing en telt niet mee.
+/// Service weegt het zwaarst, want daar is fooi vooral voor. Gemiddelde sterren → percentage volgens een
+/// Nederlandse maatstaf: 0★ niks, 3★ netjes (8%), 5★ geweldig (15%).
+enum Fooi {
+    static let gewicht = (eten: 1.5, drinken: 1.0, service: 2.0)
+    static let schaal: [Double] = [0, 2, 5, 8, 10, 15]    // procent bij 0...5 sterren
+
+    static func procent(eten: Int?, drinken: Int?, service: Int?) -> Double? {
+        let delen = [(eten, gewicht.eten), (drinken, gewicht.drinken), (service, gewicht.service)]
+            .compactMap { s, g in s.map { (Double(min(max($0, 0), 5)), g) } }
+        guard !delen.isEmpty else { return nil }
+        let sterren = delen.reduce(0) { $0 + $1.0 * $1.1 } / delen.reduce(0) { $0 + $1.1 }
+        let laag = Int(sterren.rounded(.down))
+        guard laag < 5 else { return schaal[5] }
+        return schaal[laag] + (schaal[laag + 1] - schaal[laag]) * (sterren - Double(laag))
+    }
+
+    /// Fooi en een totaal dat afgerond is naar een mooi bedrag (op hele euro's, boven de 50 op vijftallen).
+    static func advies(prijs: Double, procent: Double) -> (fooi: Double, totaal: Double) {
+        let ruw = prijs * (1 + procent / 100)
+        guard procent > 0 else { return (0, prijs) }
+        let stap = ruw >= 50 ? 5.0 : 1.0
+        let totaal = max((ruw / stap).rounded() * stap, prijs)
+        return (totaal - prijs, totaal)
+    }
+}

@@ -1,12 +1,9 @@
 {
-  "versie": "0.3.0",
+  "versie": "0.3.1",
   "mesnaam": "Nakiri",
   "nieuw": [
-    "Nieuw mesje: Splitten",
-    "Rekening delen met fooi, en een betaalverzoek met QR-code voor elke bankapp",
-    "Potjes voor vakanties, ook in vreemde valuta, afgerekend met zo min mogelijk betalingen",
-    "Bon scannen en per persoon aantikken wie wat had",
-    "Omzetten door gewoon te typen: \"3 cups bloem\", \"45 usd\", \"30% korting op 89\"",
-    "Fix: tikken op een notitie opent hem nu echt"
+    "Fooi berekenen: geef eten, drinken en service 0 tot 5 sterren",
+    "Zet een onderdeel op n.v.t. en het telt niet mee",
+    "Kniv rondt het totaal af naar een mooi bedrag"
   ]
 }

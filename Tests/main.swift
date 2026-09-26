@@ -55,4 +55,13 @@ check((Omzetter.reken("45 usd", koersen: ["USD": 1.1]) ?? "").contains("40,91"),
 check((Omzetter.reken("$12.99", koersen: ["USD": 1.1]) ?? "").contains("11,81"), "dollarteken")
 check(Omzetter.reken("gewoon tekst") == nil, "geen omzetting")
 
+check(Fooi.procent(eten: 5, drinken: 5, service: 5) == 15, "fooi 5 sterren")
+check(Fooi.procent(eten: nil, drinken: nil, service: nil) == nil, "alles n.v.t.")
+check(Fooi.procent(eten: 0, drinken: nil, service: 0) == 0, "0 sterren, drinken n.v.t.")
+check(Fooi.procent(eten: 3, drinken: nil, service: 3) == 8, "3 sterren = 8%")
+check(Fooi.procent(eten: 5, drinken: 5, service: 1)! < Fooi.procent(eten: 1, drinken: 1, service: 5)!, "service weegt zwaarder")
+let advies = Fooi.advies(prijs: 45, procent: 8)
+check(advies.totaal == 49 && abs(advies.fooi - 4) < 0.001, "afronden: \(advies)")
+check(Fooi.advies(prijs: 45, procent: 0).fooi == 0, "geen fooi")
+
 print("Alle Kniv-checks geslaagd")

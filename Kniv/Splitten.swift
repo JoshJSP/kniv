@@ -62,7 +62,7 @@ func bedrag(_ tekst: String) -> Double { Double(tekst.replacingOccurrences(of: "
 // MARK: scherm
 
 struct SplittenView: View {
-    enum Tab: String, CaseIterable { case delen = "Delen", pot = "Potjes", bon = "Bon", omzetten = "Omzetten" }
+    enum Tab: String, CaseIterable { case delen = "Delen", fooi = "Fooi", pot = "Potjes", bon = "Bon", omzetten = "Omzetten" }
     @State private var tab: Tab = .delen
 
     var body: some View {
@@ -75,6 +75,7 @@ struct SplittenView: View {
             .padding(.vertical, 8)
             switch tab {
             case .delen: DelenView()
+            case .fooi: FooiView()
             case .pot: PottenView()
             case .bon: BonView()
             case .omzetten: OmzettenView()
@@ -196,6 +197,110 @@ enum QR {
         guard let beeld = filter.outputImage?.transformed(by: CGAffineTransform(scaleX: 10, y: 10)),
               let cg = CIContext().createCGImage(beeld, from: beeld.extent) else { return nil }
         return UIImage(cgImage: cg)
+    }
+}
+
+// MARK: fooi
+
+struct FooiView: View {
+    @State private var prijsTekst = ""
+    @State private var eten: Int? = 4
+    @State private var drinken: Int? = 4
+    @State private var service: Int? = 4
+
+    private var procent: Double? { Fooi.procent(eten: eten, drinken: drinken, service: service) }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 18) {
+                TextField("Prijs zonder fooi", text: $prijsTekst)
+                    .keyboardType(.decimalPad)
+                    .font(.system(size: 44, weight: .thin, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .padding(20)
+                    .glas(24)
+
+                VStack(spacing: 16) {
+                    SterrenRij(titel: "Eten", sterren: $eten)
+                    Divider()
+                    SterrenRij(titel: "Drinken", sterren: $drinken)
+                    Divider()
+                    SterrenRij(titel: "Service", sterren: $service)
+                }
+                .padding(20)
+                .glas(24)
+
+                uitkomst
+            }
+            .padding()
+        }
+        .scrollDismissesKeyboard(.interactively)
+    }
+
+    @ViewBuilder private var uitkomst: some View {
+        VStack(spacing: 6) {
+            if let procent {
+                let advies = Fooi.advies(prijs: bedrag(prijsTekst), procent: procent)
+                Text("Normale fooi: \(Omzetter.mooi(procent))%").foregroundStyle(.secondary)
+                if bedrag(prijsTekst) > 0 {
+                    Text(advies.fooi, format: .currency(code: "EUR"))
+                        .font(.system(size: 46, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Color.accentColor)
+                        .contentTransition(.numericText())
+                    Text("Totaal \(Omzetter.euro(advies.totaal)), mooi afgerond").font(.subheadline).foregroundStyle(.secondary)
+                }
+            } else {
+                Text("Alles staat op n.v.t., dus er valt niks te berekenen.").foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(20)
+        .glas(24)
+        .animation(.snappy, value: procent)
+    }
+}
+
+/// Nul tot vijf sterren, of "n.v.t." zodat dit deel niet meetelt.
+struct SterrenRij: View {
+    let titel: LocalizedStringKey
+    @Binding var sterren: Int?
+    @AppStorage("haptiek") private var haptiek = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(titel).font(.headline)
+                Spacer()
+                Button(sterren == nil ? "Toch meetellen" : "N.v.t.") { sterren = sterren == nil ? 3 : nil }
+                    .font(.caption)
+                    .buttonStyle(.bordered)
+                    .tint(sterren == nil ? Color.accentColor : .secondary)
+            }
+            HStack(spacing: 10) {
+                ForEach(1...5, id: \.self) { i in
+                    Button {
+                        // Nog een tik op de enige ster zet hem op nul.
+                        sterren = (sterren == i && i == 1) ? 0 : i
+                    } label: {
+                        Image(systemName: (sterren ?? 0) >= i ? "star.fill" : "star")
+                            .font(.title2)
+                            .foregroundStyle(sterren == nil ? Color.secondary.opacity(0.35) : Color.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(sterren == nil)
+                }
+                Spacer()
+                Text(sterren.map { "\($0)/5" } ?? "n.v.t.").font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+            }
+            .accessibilityElement()
+            .accessibilityLabel(titel)
+            .accessibilityValue(sterren.map { "\($0) van 5 sterren" } ?? "niet van toepassing")
+            .accessibilityAdjustableAction { richting in
+                guard let s = sterren else { return }
+                sterren = richting == .increment ? min(s + 1, 5) : max(s - 1, 0)
+            }
+        }
+        .sensoryFeedback(.selection, trigger: sterren) { _, _ in haptiek }
     }
 }
 
