@@ -67,7 +67,7 @@ enum Bron: String {
 
 enum KnivOpslag {
     static let container: ModelContainer = {
-        do { return try ModelContainer(for: Notitie.self, LijstItem.self, Bakje.self) }
+        do { return try ModelContainer(for: Notitie.self, LijstItem.self, Bakje.self, KnivTimer.self) }
         catch { fatalError("Kniv-opslag kon niet openen: \(error)") }
     }()
 
@@ -159,6 +159,7 @@ enum Fotos {
 @Observable final class AppStatus {
     static let shared = AppStatus()
     var startInspreken = false
+    var openTimers = false
 }
 
 struct VersieInfo: Decodable {

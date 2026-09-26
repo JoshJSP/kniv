@@ -13,6 +13,7 @@ struct NotitieView: View {
     @State private var lijstAan = false
     @State private var herinnering: String?
     @State private var toonFoto = false
+    @State private var timerGestart = false
 
     var body: some View {
         List {
@@ -59,6 +60,21 @@ struct NotitieView: View {
             if !notitie.fotoTekst.isEmpty {
                 Section("Tekst uit de foto") {
                     Text(notitie.fotoTekst).textSelection(.enabled)
+                }
+            }
+
+            if let voorstel = TimerParser.vind(in: notitie.tekst) {
+                Section {
+                    Button {
+                        let t = KnivTimer(naam: voorstel.naam, duur: TimeInterval(voorstel.seconden))
+                        ctx.insert(t)
+                        t.start()
+                        timerGestart = true
+                    } label: {
+                        Label(timerGestart ? "Timer loopt" : "Timer: \(voorstel.naam), \(TimerParser.klok(TimeInterval(voorstel.seconden)))",
+                              systemImage: "timer")
+                    }
+                    .disabled(timerGestart)
                 }
             }
 

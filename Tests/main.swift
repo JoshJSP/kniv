@@ -28,4 +28,11 @@ check(kal.component(.day, from: Herinnering.vind(in: "om 9 bellen", nu: zaterdag
 check(Herinnering.vind(in: "gewoon tekst zonder moment", nu: zaterdag) == nil, "geen moment")
 check(Herinnering.vind(in: "morgenochtend", nu: zaterdag) == nil, "morgenochtend is (nog) geen match")
 
+let oven = TimerParser.vind(in: "over 20 min oven uit")
+check(oven?.naam == "Oven uit" && oven?.seconden == 1200, "timer uit notitie")
+check(TimerParser.vind(in: "pasta 9 minuten")?.seconden == 540, "pasta 9 minuten")
+check(TimerParser.vind(in: "1 uur")?.naam == "Timer", "naamloze timer")
+check(TimerParser.vind(in: "tandarts om 14:30") == nil, "kloktijd is geen timer")
+check(TimerParser.klok(125) == "02:05" && TimerParser.klok(3725) == "1:02:05", "klokweergave")
+
 print("Alle Kniv-checks geslaagd")

@@ -5,7 +5,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
     case vastleggen, timers, splitten, kiezen
 
     var id: String { rawValue }
-    var klaar: Bool { self == .vastleggen }
+    var klaar: Bool { self == .vastleggen || self == .timers }
 
     var naam: LocalizedStringKey {
         switch self {
@@ -60,13 +60,22 @@ struct ThuisView: View {
                 }
             }
             .navigationDestination(for: Mes.self) { mes in
-                VastleggenView()
-                    .navigationTransition(.zoom(sourceID: mes, in: ns))
-                    .onAppear { uitklappend = nil }
+                Group {
+                    switch mes {
+                    case .vastleggen: VastleggenView()
+                    case .timers: TimersView()
+                    case .splitten, .kiezen: EmptyView()
+                    }
+                }
+                .navigationTransition(.zoom(sourceID: mes, in: ns))
+                .onAppear { uitklappend = nil }
             }
         }
         .onChange(of: AppStatus.shared.startInspreken, initial: true) { _, nu in
             if nu && pad.last != .vastleggen { pad = [.vastleggen] }
+        }
+        .onChange(of: AppStatus.shared.openTimers) { _, nu in
+            if nu { pad = [.timers]; AppStatus.shared.openTimers = false }
         }
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .sheet(isPresented: $toonNieuw, onDismiss: { laatstGezien = VersieInfo.huidig?.versie ?? "" }) {
@@ -75,6 +84,7 @@ struct ThuisView: View {
     }
 
     private func info(voor mes: Mes) -> String? {
+        if mes == .timers { return Pomodoro.shared.loopt ? (Pomodoro.shared.fase == .werk ? "Focus loopt" : "Pauze loopt") : nil }
         guard mes == .vastleggen, !teSorteren.isEmpty else { return nil }
         return teSorteren.count == 1 ? "1 te checken" : "\(teSorteren.count) te checken"
     }

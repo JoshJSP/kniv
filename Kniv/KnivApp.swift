@@ -72,6 +72,18 @@ struct InsprekenIntent: AppIntent {
     }
 }
 
+struct StartFocusIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start focus in Kniv"
+    static var description = IntentDescription("Start een focusronde van 25 minuten.")
+    static var openAppWhenRun = true
+
+    @MainActor func perform() async throws -> some IntentResult {
+        if !Pomodoro.shared.loopt { Pomodoro.shared.start() }
+        AppStatus.shared.openTimers = true
+        return .result()
+    }
+}
+
 struct KnivSnelkoppelingen: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: InsprekenIntent(),
@@ -80,5 +92,8 @@ struct KnivSnelkoppelingen: AppShortcutsProvider {
         AppShortcut(intent: ZetInKnivIntent(),
                     phrases: ["Zet iets in \(.applicationName)", "Voeg toe aan \(.applicationName)"],
                     shortTitle: "Zet in Kniv", systemImageName: "square.and.pencil")
+        AppShortcut(intent: StartFocusIntent(),
+                    phrases: ["Start focus in \(.applicationName)", "Focus met \(.applicationName)"],
+                    shortTitle: "Start focus", systemImageName: "timer")
     }
 }

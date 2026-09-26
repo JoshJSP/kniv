@@ -1,11 +1,11 @@
 {
-  "versie": "0.1.0",
-  "mesnaam": "Opinel",
+  "versie": "0.2.0",
+  "mesnaam": "Santoku",
   "nieuw": [
-    "Vastleggen: typen, inspreken, foto's en lijstjes",
-    "Kniv sorteert alles zelf in bakjes en vraagt het als hij twijfelt",
-    "Tekst uit foto's wordt doorzoekbaar",
-    "Herinneringen op een vrij moment in je agenda",
-    "Actieknop en Siri: \"Inspreken in Kniv\""
+    "Nieuw mesje: Timers",
+    "Pomodoro met een lemmet dat langzaam inklapt, en een weekoverzicht van je focus",
+    "Losse timers met naam (pasta, thee, de was) en countdowns naar een datum",
+    "Siri: \"Start focus in Kniv\"",
+    "Staat er \"over 20 min oven uit\" in een notitie? Eén tik en de timer loopt"
   ]
 }

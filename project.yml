@@ -29,6 +29,7 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
+        NSSupportsLiveActivities: true
         NSMicrophoneUsageDescription: Kniv luistert alleen terwijl je inspreekt.
         NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit, op je iPhone zelf.
         NSCameraUsageDescription: Kniv maakt foto's van papiertjes, whiteboards en bonnetjes.
