@@ -28,7 +28,7 @@ public static class Program
             return 0;
         }
         sleutel.Activated += (_, _) => App.Huidig?.Toon();
-        Application.Start(_ =>
+        Application.Start(p =>
         {
             SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread()));
             _ = new App();
@@ -218,6 +218,15 @@ static class Zelftest
         Is(Math.Abs(Rekenen.Omzetten("Lengte", 1, "mijl", "km") - 1.609344) < 1e-9, "mijl");
         Is(Math.Abs(Rekenen.Omzetten("Temperatuur", 100, "°C", "°F") - 212) < 1e-9, "graden");
         Is(Math.Abs(Rekenen.Omzetten("Temperatuur", 0, "K", "°C") + 273.15) < 1e-9, "kelvin");
+
+        Is(Rekenen.FooiProcent(null, null, null) == null, "fooi niks");
+        Is(Rekenen.FooiProcent(5, null, 5) == 15, "fooi max");
+        Is(Math.Abs(Rekenen.FooiProcent(3, 3, 3)!.Value - 8) < 1e-9, "fooi 3 sterren");
+        Is(Math.Abs(Rekenen.FooiProcent(4, 2, 3)!.Value - (8 + 2 * (14 / 4.5 - 3))) < 1e-9, "fooi gewogen: " + Rekenen.FooiProcent(4, 2, 3));
+        Is(Rekenen.FooiAdvies(40, 8) == (3, 43), "fooi afronden euro");
+        Is(Rekenen.FooiAdvies(60, 10) == (5, 65), "fooi afronden vijf");
+        Is(Rekenen.FooiAdvies(20, 0) == (0, 20), "geen fooi");
+        Is(Rekenen.FooiAdvies(50.2, 1) == (0, 50.2), "nooit onder de prijs");
 
         var tekst = fouten.Count == 0 ? "OK" : "FOUT " + string.Join("; ", fouten);
         if (uit != null) File.WriteAllText(uit, tekst);

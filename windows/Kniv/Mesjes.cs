@@ -179,6 +179,31 @@ public static class Rekenen
         return (totaal / Math.Max(1, personen), totaal);
     }
 
+    // Fooi, precies zoals enum Fooi in Kniv/Logica/Rekenen.swift.
+    static readonly double[] FooiSchaal = { 0, 2, 5, 8, 10, 15 };   // procent bij 0...5 sterren
+
+    /// null = alles n.v.t. Gewichten: eten 1,5, drinken 1, service 2; lineair tussen de sterren.
+    public static double? FooiProcent(int? eten, int? drinken, int? service)
+    {
+        var delen = new[] { (eten, 1.5), (drinken, 1.0), (service, 2.0) }
+            .Where(d => d.Item1 != null).Select(d => (s: (double)Math.Clamp(d.Item1!.Value, 0, 5), g: d.Item2)).ToList();
+        if (delen.Count == 0) return null;
+        var sterren = delen.Sum(d => d.s * d.g) / delen.Sum(d => d.g);
+        var laag = (int)Math.Floor(sterren);
+        if (laag >= 5) return FooiSchaal[5];
+        return FooiSchaal[laag] + (FooiSchaal[laag + 1] - FooiSchaal[laag]) * (sterren - laag);
+    }
+
+    /// Totaal afgerond op hele euro's (vanaf 50 op vijftallen), nooit onder de prijs.
+    public static (double fooi, double totaal) FooiAdvies(double prijs, double procent)
+    {
+        var ruw = prijs * (1 + procent / 100);
+        if (procent <= 0) return (0, prijs);
+        var stap = ruw >= 50 ? 5.0 : 1.0;
+        var totaal = Math.Max(Math.Round(ruw / stap, MidpointRounding.AwayFromZero) * stap, prijs);
+        return (totaal - prijs, totaal);
+    }
+
     /// Factor naar de basiseenheid per soort (meter, gram, milliliter). Temperatuur rekent apart.
     public static readonly Dictionary<string, Dictionary<string, double>> Eenheden = new()
     {
@@ -200,7 +225,7 @@ public sealed class SplittenPagina : UserControl
 {
     public SplittenPagina()
     {
-        Content = Ui.Pagina("Splitten", Delen(), Procenten(), Eenheden(), Valuta());
+        Content = Ui.Pagina("Splitten", Delen(), Fooi(), Procenten(), Eenheden(), Valuta());
     }
 
     static TextBlock Uitkomst() => new() { FontSize = 26, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
@@ -224,6 +249,40 @@ public sealed class SplittenPagina : UserControl
         fooi.SelectionChanged += (_, _) => Reken();
         Reken();
         return Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Rekening delen", "SubtitleTextBlockStyle"), Ui.Rij(12, bedrag, personen, fooi), uit, sub));
+    }
+
+    static UIElement Fooi()
+    {
+        var prijs = Ui.Getal("Prijs zonder fooi (€)", 0, 0);
+        var uit = Uitkomst();
+        var sub = Ui.Tekst("", zacht: true);
+        var rijen = new StackPanel { Spacing = 4 };
+        var sterren = new List<(RatingControl r, CheckBox nvt)>();
+        void Reken()
+        {
+            int? S((RatingControl r, CheckBox nvt) x) => x.nvt.IsChecked == true ? null : (int)Math.Max(0, x.r.Value);
+            var pct = Rekenen.FooiProcent(S(sterren[0]), S(sterren[1]), S(sterren[2]));
+            if (pct == null) { uit.Text = "Geen fooi"; sub.Text = "Alles staat op n.v.t."; return; }
+            var (fooi, totaal) = Rekenen.FooiAdvies(Ui.Waarde(prijs), pct.Value);
+            uit.Text = $"Betaal {Nl.Euro(totaal)}";
+            sub.Text = $"Fooi {Nl.Euro(fooi)} · advies {Nl.Getal(pct.Value, 1)}%";
+        }
+        foreach (var naam in new[] { "Eten", "Drinken", "Service" })
+        {
+            var r = new RatingControl { Value = 4, IsClearEnabled = true, MaxRating = 5, VerticalAlignment = VerticalAlignment.Center };
+            var nvt = new CheckBox { Content = "n.v.t.", MinWidth = 0, VerticalAlignment = VerticalAlignment.Center };
+            r.ValueChanged += (_, _) => Reken();
+            nvt.Checked += (_, _) => { r.IsEnabled = false; Reken(); };
+            nvt.Unchecked += (_, _) => { r.IsEnabled = true; Reken(); };
+            sterren.Add((r, nvt));
+            var label = new TextBlock { Text = naam, Width = 90, VerticalAlignment = VerticalAlignment.Center };
+            rijen.Children.Add(Ui.Rij(16, label, r, nvt));
+        }
+        prijs.ValueChanged += (_, _) => Reken();
+        Reken();
+        return Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Fooi", "SubtitleTextBlockStyle"),
+            Ui.Tekst("Geef sterren (nul sterren = klik nog eens op de gekozen ster). Kniv rondt het totaal af op een mooi bedrag.", zacht: true),
+            prijs, rijen, uit, sub));
     }
 
     static UIElement Procenten()
