@@ -20,9 +20,11 @@ static class Klok
     public static readonly TimeSpan Focus = TimeSpan.FromMinutes(25), Pauze = TimeSpan.FromMinutes(5);  // eerst, want PomoRest leest Focus
     public static TimeSpan PomoRest = Focus;
 
+    static Microsoft.UI.Dispatching.DispatcherQueueTimer? _timer;   // vasthouden: anders ruimt de GC hem op en stopt de klok
+
     public static void Start()
     {
-        var t = App.Ui.CreateTimer();
+        var t = _timer = App.Ui.CreateTimer();
         t.Interval = TimeSpan.FromMilliseconds(500);
         t.Tick += (_, _) => Stap();
         t.Start();

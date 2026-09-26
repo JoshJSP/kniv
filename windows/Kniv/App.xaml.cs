@@ -143,10 +143,12 @@ static class Updates
     public static string Versie => Mgr.CurrentVersion?.ToString()
         ?? typeof(Updates).Assembly.GetName().Version?.ToString(3) ?? "?";
 
+    static DispatcherQueueTimer? _timer;
+
     public static void Start()
     {
         _ = Zoek();
-        var t = App.Ui.CreateTimer();   // Kniv staat vaak dagen in het systeemvak
+        var t = _timer = App.Ui.CreateTimer();   // Kniv staat vaak dagen in het systeemvak
         t.Interval = TimeSpan.FromHours(6);
         t.Tick += (_, _) => _ = Zoek();
         t.Start();
