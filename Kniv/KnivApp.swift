@@ -1,0 +1,84 @@
+import AppIntents
+import SwiftData
+import SwiftUI
+
+@main
+struct KnivApp: App {
+    @AppStorage("introGezien") private var introGezien = false
+    @AppStorage("laatstGezieneVersie") private var laatstGezien = ""
+
+    var body: some Scene {
+        WindowGroup {
+            Group {
+                if introGezien {
+                    ThuisView()
+                } else {
+                    IntroView {
+                        laatstGezien = VersieInfo.huidig?.versie ?? ""
+                        introGezien = true
+                    }
+                }
+            }
+            .task { KnivOpslag.zaaiBakjes() }
+        }
+        .modelContainer(KnivOpslag.container)
+    }
+}
+
+extension View {
+    /// Liquid Glass op iOS 26, matglas op iOS 18.
+    @ViewBuilder func glas(_ radius: CGFloat = 22) -> some View {
+        if #available(iOS 26.0, *) {
+            glassEffect(.regular, in: .rect(cornerRadius: radius))
+        } else {
+            background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+        }
+    }
+}
+
+struct KnivAchtergrond: View {
+    var body: some View {
+        LinearGradient(colors: [Color(.systemBackground), Color.accentColor.opacity(0.07)], startPoint: .top, endPoint: .bottom)
+            .ignoresSafeArea()
+    }
+}
+
+// MARK: Siri en de Actieknop
+
+struct ZetInKnivIntent: AppIntent {
+    static var title: LocalizedStringResource = "Zet in Kniv"
+    static var description = IntentDescription("Legt tekst vast in Kniv en sorteert hem in het juiste bakje.")
+    static var openAppWhenRun = false
+
+    @Parameter(title: "Wat wil je kwijt?") var tekst: String
+
+    @MainActor func perform() async throws -> some IntentResult & ProvidesDialog {
+        let ctx = KnivOpslag.container.mainContext
+        KnivOpslag.zaaiBakjes()
+        guard let n = Vastlegger.bewaar(tekst, bron: .siri, in: ctx) else { return .result(dialog: "Er stond niks in.") }
+        await Vastlegger.sorteer(n, in: ctx)
+        return .result(dialog: n.bakjeNaam.map { "Staat erin, bij \($0)!" } ?? "Staat erin!")
+    }
+}
+
+struct InsprekenIntent: AppIntent {
+    static var title: LocalizedStringResource = "Inspreken in Kniv"
+    static var description = IntentDescription("Opent Kniv en begint meteen met luisteren. Handig op de Actieknop.")
+    static var openAppWhenRun = true
+
+    @MainActor func perform() async throws -> some IntentResult {
+        AppStatus.shared.startInspreken = true
+        return .result()
+    }
+}
+
+struct KnivSnelkoppelingen: AppShortcutsProvider {
+    static var appShortcuts: [AppShortcut] {
+        AppShortcut(intent: InsprekenIntent(),
+                    phrases: ["Inspreken in \(.applicationName)", "Leg iets vast in \(.applicationName)"],
+                    shortTitle: "Inspreken", systemImageName: "mic.fill")
+        AppShortcut(intent: ZetInKnivIntent(),
+                    phrases: ["Zet iets in \(.applicationName)", "Voeg toe aan \(.applicationName)"],
+                    shortTitle: "Zet in Kniv", systemImageName: "square.and.pencil")
+    }
+}

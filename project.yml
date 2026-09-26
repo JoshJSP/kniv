@@ -1,0 +1,36 @@
+name: Kniv
+options:
+  bundleIdPrefix: com.joshjsp
+  deploymentTarget:
+    iOS: "18.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Kniv:
+    type: application
+    platform: iOS
+    sources: [Kniv]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joshjsp.kniv
+        PRODUCT_NAME: Kniv
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    info:
+      path: Kniv/Info.plist
+      properties:
+        CFBundleDisplayName: Kniv
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+        NSMicrophoneUsageDescription: Kniv luistert alleen terwijl je inspreekt.
+        NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit, op je iPhone zelf.
+        NSCameraUsageDescription: Kniv maakt foto's van papiertjes, whiteboards en bonnetjes.
+        NSFaceIDUsageDescription: Kniv opent vergrendelde bakjes met Face ID.
+        NSCalendarsFullAccessUsageDescription: Kniv kijkt in je agenda om een herinnering op een vrij moment te zetten.

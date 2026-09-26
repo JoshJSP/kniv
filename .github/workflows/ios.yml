@@ -1,0 +1,101 @@
+name: Kniv iOS (SideStore)
+
+# Bouwt een ongesigneerde Kniv.ipa (SideStore signt op het toestel) en zet hem
+# in de openbare SideStore-bron JoshJSP/kniv-releases. Het Xcode-project wordt
+# hier uit project.yml gemaakt, zodat er op Windows niets iOS-achtigs hoeft te staan.
+
+on:
+  push:
+    branches: [main]
+    paths: ['Kniv/**', 'Tests/**', 'project.yml', 'scripts/**', '.github/workflows/ios.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
+    env:
+      DERIVED: ${{ github.workspace }}/dd
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      BUILD: ${{ github.run_number }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode
+        run: xcodebuild -version
+
+      - name: Logica-checks (zonder simulator)
+        run: |
+          swiftc Kniv/Logica/*.swift Tests/main.swift -o "$RUNNER_TEMP/kniv-check"
+          "$RUNNER_TEMP/kniv-check"
+
+      - name: Versie lezen
+        id: v
+        run: |
+          echo "versie=$(python3 -c 'import json;print(json.load(open("Kniv/versie.json"))["versie"])')" >> "$GITHUB_OUTPUT"
+          echo "mesnaam=$(python3 -c 'import json;print(json.load(open("Kniv/versie.json"))["mesnaam"])')" >> "$GITHUB_OUTPUT"
+
+      - name: Xcode-project maken
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build zonder code signing
+        run: |
+          xcodebuild -quiet \
+            -project Kniv.xcodeproj -scheme Kniv -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' \
+            -derivedDataPath "$DERIVED" \
+            MARKETING_VERSION="${{ steps.v.outputs.versie }}" CURRENT_PROJECT_VERSION="$BUILD" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Verpakken en controleren
+        run: |
+          APP="$DERIVED/Build/Products/Release-iphoneos/Kniv.app"
+          test -d "$APP" || { echo "::error::Kniv.app ontbreekt"; exit 1; }
+          PLIST="$APP/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$PLIST")" = "com.joshjsp.kniv"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")" = "${{ steps.v.outputs.versie }}"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$PLIST")" = "$BUILD"
+          /usr/libexec/PlistBuddy -c 'Print :NSMicrophoneUsageDescription' "$PLIST" >/dev/null
+          test -f "$APP/versie.json" || { echo "::error::versie.json zit niet in de app"; exit 1; }
+          mkdir -p pakket/Payload && cp -R "$APP" pakket/Payload/
+          (cd pakket && zip -qry ../Kniv.ipa Payload)
+          ls -lh Kniv.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Kniv-ipa
+          path: Kniv.ipa
+          retention-days: 7
+
+      - name: Publiceren in de SideStore-bron
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+          VERSIE: ${{ steps.v.outputs.versie }}
+          MESNAAM: ${{ steps.v.outputs.mesnaam }}
+        run: |
+          TAG="v${VERSIE}-b${BUILD}"
+          gh release create "$TAG" Kniv.ipa -R JoshJSP/kniv-releases \
+            --title "Kniv ${MESNAAM} ${VERSIE} (build ${BUILD})" --notes "Automatische build van ${GITHUB_SHA::7}."
+          git clone -q "https://x-access-token:${GH_TOKEN}@github.com/JoshJSP/kniv-releases.git" rel
+          python3 scripts/bron.py rel/apps.json "$VERSIE" "$BUILD" \
+            "https://github.com/JoshJSP/kniv-releases/releases/download/${TAG}/Kniv.ipa" "$(stat -f%z Kniv.ipa)" Kniv/versie.json
+          cd rel
+          git config user.name "Kniv CI"
+          git config user.email "kniv-ci@users.noreply.github.com"
+          git commit -qam "Kniv ${VERSIE} build ${BUILD}"
+          git push -q

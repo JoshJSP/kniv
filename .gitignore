@@ -1,0 +1,5 @@
+*.xcodeproj/
+Kniv/Info.plist
+dd/
+*.ipa
+.DS_Store
