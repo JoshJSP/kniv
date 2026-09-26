@@ -166,7 +166,7 @@ struct Profiel: Codable {
         guard let ik = gebruiker else { return }
         let ctx = KnivOpslag.container.mainContext
         let vies = ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? [])
-            .filter { $0.deling != "prive" && ($0.gesynct.map { g in $0.gewijzigd > g } ?? true) }
+            .filter { n in n.deling != "prive" && (n.gesynct.map { n.gewijzigd > $0 } ?? true) }
         var rijen = vies.map { n in
             Rij(id: n.uid, eigenaar: n.eigenaarID ?? ik, groep: n.groepID, soort: "notitie",
                 data: RijData(tekst: n.tekst, fotoTekst: n.fotoTekst, bakje: n.bakjeNaam, gemaakt: n.gemaakt,
