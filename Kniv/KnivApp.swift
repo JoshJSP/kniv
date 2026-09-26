@@ -7,6 +7,11 @@ struct KnivApp: App {
     @AppStorage("introGezien") private var introGezien = false
     @AppStorage("laatstGezieneVersie") private var laatstGezien = ""
 
+    init() {
+        // Vroeg aanmaken: iOS start Kniv op de achtergrond als je een bewaakte plek binnenloopt.
+        _ = PlekWachter.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -19,7 +24,10 @@ struct KnivApp: App {
                     }
                 }
             }
-            .task { KnivOpslag.zaaiBakjes() }
+            .task {
+                KnivOpslag.zaaiBakjes()
+                PlekWachter.shared.start()
+            }
             .onOpenURL { url in
                 switch url.host() {
                 case "inspreken": AppStatus.shared.startInspreken = true

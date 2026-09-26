@@ -14,6 +14,7 @@ struct NotitieView: View {
     @State private var herinnering: String?
     @State private var toonFoto = false
     @State private var timerGestart = false
+    @State private var plekBewaard: Bool?
 
     var body: some View {
         List {
@@ -114,6 +115,16 @@ struct NotitieView: View {
             }
 
             Section {
+                Button {
+                    Task { plekBewaard = await PlekWachter.shared.bewaarHier(naam: notitie.titel, soort: "eigen", bericht: notitie.titel) }
+                } label: {
+                    Label(plekBewaard == true ? "Kniv herinnert je hier" : plekBewaard == false ? "Locatie niet gevonden" : "Herinner me op deze plek",
+                          systemImage: "mappin.and.ellipse")
+                }
+                .disabled(plekBewaard == true)
+            }
+
+            Section {
                 Picker("Bakje", selection: Binding(get: { notitie.bakjeNaam }, set: { nieuw in
                     if let nieuw { Vastlegger.kies(nieuw, voor: notitie, in: ctx, leer: true) }
                 })) {
@@ -203,6 +214,8 @@ struct InstellingenView: View {
     @Environment(\.modelContext) private var ctx
     @Query(sort: \Bakje.volgorde) private var bakjes: [Bakje]
     @AppStorage("haptiek") private var haptiek = true
+    @AppStorage("supermarktMeldingen") private var supermarkt = false
+    @Query private var plekken: [Plek]
     @State private var nieuwBakje = ""
 
     var body: some View {
@@ -218,6 +231,26 @@ struct InstellingenView: View {
                 Text("Mijn bakjes")
             } footer: {
                 Text("Met het slotje open je een bakje alleen met Face ID. Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en leert hij van jouw keuzes.")
+            }
+
+            Section {
+                Button { Task { await PlekWachter.shared.bewaarHier(naam: String(localized: "Thuis"), soort: "thuis") } } label: {
+                    LabeledContent("Huidige plek is Thuis", value: plekken.contains { $0.soort == "thuis" } ? "✓" : "")
+                }
+                Button { Task { await PlekWachter.shared.bewaarHier(naam: String(localized: "School"), soort: "school") } } label: {
+                    LabeledContent("Huidige plek is School", value: plekken.contains { $0.soort == "school" } ? "✓" : "")
+                }
+                Toggle("Melding bij de supermarkt", isOn: Binding(get: { supermarkt }, set: { supermarkt = $0; PlekWachter.shared.supermarktAan = $0 }))
+                ForEach(plekken.filter { $0.soort == "eigen" }) { Label($0.naam, systemImage: "mappin") }
+                    .onDelete { i in
+                        let eigen = plekken.filter { $0.soort == "eigen" }
+                        i.forEach { ctx.delete(eigen[$0]) }
+                        PlekWachter.shared.herlaadGebieden()
+                    }
+            } header: {
+                Text("Plekken")
+            } footer: {
+                Text("Thuis zie je je to-do's, op school je schoolnotities, bij de supermarkt je boodschappen. Alleen als er sinds de vorige keer iets nieuws is.")
             }
 
             Section {

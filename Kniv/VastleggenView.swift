@@ -33,6 +33,22 @@ struct VastleggenView: View {
                         bakjeRij(bakje, lijst)
                     }
                 }
+                if zoek.count >= 3 {
+                    let gevonden = Set(notities.filter { $0.zoekTekst.localizedStandardContains(zoek) }.map(\.persistentModelID))
+                    let open = notities.filter { n in n.bakjeNaam.map { naam in !bakjes.contains { $0.naam == naam && $0.vergrendeld && !ontgrendeld.contains(naam) } } ?? true }
+                    let extra = SlimZoeken.gelijkend(zoek, in: open).filter { !gevonden.contains($0.persistentModelID) }
+                    if !extra.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Label("Misschien bedoel je", systemImage: "sparkles").font(.headline)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 12) {
+                                    ForEach(extra) { n in NavigationLink(value: n) { NotitieKaart(notitie: n) }.buttonStyle(.plain) }
+                                }
+                            }
+                            .scrollClipDisabled()
+                        }
+                    }
+                }
                 if notities.isEmpty {
                     ContentUnavailableView("Nog niks vastgelegd", systemImage: "tray",
                                            description: Text("Typ, spreek in of maak een foto. Kniv sorteert het voor je."))

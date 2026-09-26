@@ -1,9 +1,11 @@
 {
-  "versie": "0.5.0",
-  "mesnaam": "Bowie",
+  "versie": "0.6.0",
+  "mesnaam": "Tanto",
   "nieuw": [
-    "Widgets: snelknoppen op je beginscherm (klein en middel) en vergrendelscherm",
-    "Control Center-knoppen: Kniv inspreken, foto of typen",
-    "Live Activity: je timer met mini-lemmet op het vergrendelscherm en in het Dynamic Island"
+    "Plekmeldingen: bij de supermarkt je boodschappen, op school je schoolnotities, thuis je to-do's",
+    "Alleen als er sinds de vorige keer iets nieuws is, dus nooit twee keer hetzelfde",
+    "Bij een notitie: \"Herinner me op deze plek\"",
+    "Slim zoeken: \"Misschien bedoel je\" vindt ook notities zonder dezelfde woorden",
+    "Zet Thuis en School in Instellingen → Plekken"
   ]
 }
