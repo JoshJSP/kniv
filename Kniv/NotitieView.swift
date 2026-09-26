@@ -15,6 +15,7 @@ struct NotitieView: View {
     @State private var toonFoto = false
     @State private var timerGestart = false
     @State private var plekBewaard: Bool?
+    @State private var deelToken: String?
 
     var body: some View {
         List {
@@ -45,6 +46,10 @@ struct NotitieView: View {
                                 Text(item.tekst)
                                     .strikethrough(weg)
                                     .foregroundStyle(weg ? .secondary : .primary)
+                                if notitie.groepID != nil {
+                                    Spacer()
+                                    ProfielBolletje(id: item.door)
+                                }
                             }
                         }
                         .accessibilityValue(weg ? "Afgevinkt" : "")
@@ -125,6 +130,34 @@ struct NotitieView: View {
             }
 
             Section {
+                Picker("Waar", selection: Binding(get: { notitie.deling }, set: zetDeling)) {
+                    Label("Alleen deze telefoon", systemImage: "iphone").tag("prive")
+                    Label("Ook op mijn laptop", systemImage: "laptopcomputer.and.iphone").tag("laptop")
+                    Label("Gedeeld", systemImage: "person.2").tag("gedeeld")
+                }
+                if notitie.deling == "gedeeld" {
+                    if let deelToken {
+                        ShareLink(item: Sync.uitnodiging(deelToken), subject: Text(notitie.titel),
+                                  message: Text("Doe mee met mijn lijstje in Kniv")) {
+                            Label("Nodig iemand uit", systemImage: "person.badge.plus")
+                        }
+                        ShareLink(item: Sync.bekijklink(deelToken), subject: Text(notitie.titel)) {
+                            Label("Link om alleen te kijken", systemImage: "eye")
+                        }
+                    } else {
+                        ProgressView()
+                    }
+                }
+            } header: {
+                Text("Delen")
+            } footer: {
+                if notitie.deling == "gedeeld" { Text("Wie meedoet logt in met Google. De links verlopen na 30 dagen.") }
+            }
+            .task(id: notitie.deling) {
+                if notitie.deling == "gedeeld" { deelToken = await Sync.shared.deel(notitie) }
+            }
+
+            Section {
                 Picker("Bakje", selection: Binding(get: { notitie.bakjeNaam }, set: { nieuw in
                     if let nieuw { Vastlegger.kies(nieuw, voor: notitie, in: ctx, leer: true) }
                 })) {
@@ -154,6 +187,16 @@ struct NotitieView: View {
         .fullScreenCover(isPresented: $toonFoto) { FotoView(bestand: notitie.fotoBestand) }
     }
 
+    private func zetDeling(_ nieuw: String) {
+        if nieuw == "prive" && notitie.deling != "prive" {
+            Sync.shared.markeerVerwijderd(notitie)
+            notitie.gesynct = nil
+        }
+        if nieuw != "gedeeld" { notitie.groepID = nil; deelToken = nil }
+        notitie.deling = nieuw
+        notitie.gewijzigd = Date()
+    }
+
     private func kies(_ tab: String) {
         AppStatus.shared.kiesOpties = notitie.gesorteerdeItems.map(\.tekst)
         AppStatus.shared.kiesTab = tab
@@ -169,7 +212,9 @@ struct NotitieView: View {
     private func voegToe() {
         let t = nieuwItem.trimmingCharacters(in: .whitespaces)
         guard !t.isEmpty else { return }
-        notitie.items.append(LijstItem(tekst: t, volgorde: (notitie.items.map(\.volgorde).max() ?? -1) + 1))
+        let item = LijstItem(tekst: t, volgorde: (notitie.items.map(\.volgorde).max() ?? -1) + 1)
+        item.door = Sync.shared.gebruiker
+        notitie.items.append(item)
         notitie.gewijzigd = Date()
         nieuwItem = ""
     }
@@ -217,6 +262,7 @@ struct InstellingenView: View {
     @AppStorage("supermarktMeldingen") private var supermarkt = false
     @AppStorage("ontwikkelaar") private var ontwikkelaar = false
     @State private var versieTikken = 0
+    @State private var vraagVerwijderen = false
     @Query private var plekken: [Plek]
     @State private var nieuwBakje = ""
 
@@ -233,6 +279,20 @@ struct InstellingenView: View {
                 Text("Mijn bakjes")
             } footer: {
                 Text("Met het slotje open je een bakje alleen met Face ID. Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en leert hij van jouw keuzes.")
+            }
+
+            Section("Account") {
+                if Sync.shared.gebruiker != nil {
+                    LabeledContent("Ingelogd als", value: Sync.shared.naam)
+                    if let fout = Sync.shared.fout { Text(fout).font(.footnote).foregroundStyle(.secondary) }
+                    Button("Uitloggen") { Task { await Sync.shared.uitloggen() } }
+                    Button("Account verwijderen", role: .destructive) { vraagVerwijderen = true }
+                        .confirmationDialog("Account en alles in de cloud verwijderen?", isPresented: $vraagVerwijderen, titleVisibility: .visible) {
+                            Button("Verwijder alles", role: .destructive) { Task { _ = await Sync.shared.verwijderAccount() } }
+                        } message: {
+                            Text("Gedeelde lijstjes gaan over naar wie het langst meedoet.")
+                        }
+                }
             }
 
             Section {

@@ -81,7 +81,10 @@ struct VastleggenView: View {
         }
         .onChange(of: spraak.tekst) { _, t in if spraak.bezig { invoer = voorSpraak + t } }
         .onChange(of: invoer) { oud, nieuw in lijstjeDoorzetten(oud, nieuw) }
-        .onAppear(perform: pakActieOp)
+        .onAppear {
+            pakActieOp()
+            Sync.shared.nieuwVanAnderen = 0
+        }
         .sensoryFeedback(.success, trigger: bewaardTik) { _, _ in haptiek }
         .sensoryFeedback(.selection, trigger: kiesTik) { _, _ in haptiek }
         .sensoryFeedback(.start, trigger: spraak.bezig) { _, nu in haptiek && nu }

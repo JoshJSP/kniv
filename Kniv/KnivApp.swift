@@ -15,7 +15,9 @@ struct KnivApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if introGezien {
+                if introGezien && Sync.shared.gestart && Sync.shared.gebruiker == nil {
+                    LoginView()
+                } else if introGezien {
                     ThuisView()
                 } else {
                     IntroView {
@@ -26,11 +28,15 @@ struct KnivApp: App {
             }
             .task {
                 KnivOpslag.zaaiBakjes()
+                KnivOpslag.herstelUIDs()
                 PlekWachter.shared.start()
+                await Sync.shared.start()
             }
             .modifier(MeldSchudden())
             .onOpenURL { url in
                 switch url.host() {
+                case "auth": break
+                case "join": if let token = url.pathComponents.last, token != "/" { Task { await Sync.shared.wordLid(token) } }
                 case "inspreken": AppStatus.shared.startInspreken = true
                 case let actie?: AppStatus.shared.actie = actie
                 case nil: break

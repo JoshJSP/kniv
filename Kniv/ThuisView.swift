@@ -95,6 +95,7 @@ struct ThuisView: View {
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .task(id: fase) {
             guard fase == .active else { return }
+            await Sync.shared.nu()
             let gevonden = await Updater.zoek()
             withAnimation(.snappy) { update = gevonden }
         }
@@ -104,6 +105,7 @@ struct ThuisView: View {
     }
 
     private func info(voor mes: Mes) -> String? {
+        if mes == .vastleggen, Sync.shared.nieuwVanAnderen > 0 { return "\(Sync.shared.nieuwVanAnderen) nieuw van anderen" }
         if mes == .timers { return Pomodoro.shared.loopt ? (Pomodoro.shared.fase == .werk ? "Focus loopt" : "Pauze loopt") : nil }
         guard mes == .vastleggen, !teSorteren.isEmpty else { return nil }
         return teSorteren.count == 1 ? "1 te checken" : "\(teSorteren.count) te checken"

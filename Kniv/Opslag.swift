@@ -34,6 +34,12 @@ enum Bron: String {
     var bakjeNaam: String?
     var twijfelOpties: [String] = []
     var bronRuw: String = Bron.tekst.rawValue
+    // sync (supabase/SYNC.md)
+    var uid: UUID = UUID()
+    var gesynct: Date?
+    var deling: String = "laptop"      // prive, laptop, gedeeld
+    var groepID: UUID?
+    var eigenaarID: UUID?
     @Relationship(deleteRule: .cascade, inverse: \LijstItem.notitie) var items: [LijstItem] = []
 
     init(tekst: String, bron: Bron, fotoBestand: String? = nil) {
@@ -58,6 +64,7 @@ enum Bron: String {
     var tekst: String
     var volgorde: Int
     var notitie: Notitie?
+    var door: UUID?
 
     init(tekst: String, volgorde: Int) {
         self.tekst = tekst
@@ -70,6 +77,16 @@ enum KnivOpslag {
         do { return try ModelContainer(for: Notitie.self, LijstItem.self, Bakje.self, KnivTimer.self, Pot.self, Uitgave.self, Plek.self) }
         catch { fatalError("Kniv-opslag kon niet openen: \(error)") }
     }()
+
+    /// Na de update met sync kregen bestaande notities misschien allemaal dezelfde uid; maak ze uniek.
+    @MainActor static func herstelUIDs() {
+        let ctx = container.mainContext
+        var gezien: Set<UUID> = []
+        for n in (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? [] {
+            if !gezien.insert(n.uid).inserted { n.uid = UUID(); n.gesynct = nil }
+        }
+        try? ctx.save()
+    }
 
     @MainActor static func zaaiBakjes() {
         let ctx = container.mainContext
@@ -91,8 +108,10 @@ enum KnivOpslag {
         let n = Notitie(tekst: delen.rest, bron: bron, fotoBestand: foto)
         n.fotoTekst = fotoTekst
         ctx.insert(n)
-        for (i, item) in delen.items.enumerated() {
-            n.items.append(LijstItem(tekst: item, volgorde: i))
+        for (i, tekst) in delen.items.enumerated() {
+            let item = LijstItem(tekst: tekst, volgorde: i)
+            item.door = Sync.shared.gebruiker
+            n.items.append(item)
         }
         try? ctx.save()
         return n
@@ -121,7 +140,8 @@ enum KnivOpslag {
         try? ctx.save()
     }
 
-    static func verwijder(_ n: Notitie, in ctx: ModelContext) {
+    static func verwijder(_ n: Notitie, in ctx: ModelContext, uitCloud: Bool = true) {
+        if uitCloud && n.deling != "prive" { Sync.shared.markeerVerwijderd(n) }
         if let f = n.fotoBestand { try? FileManager.default.removeItem(at: Fotos.url(f)) }
         ctx.delete(n)
         try? ctx.save()

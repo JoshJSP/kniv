@@ -1,9 +1,11 @@
 {
-  "versie": "0.8.0",
-  "mesnaam": "Kerambit",
+  "versie": "0.9.0",
+  "mesnaam": "Damascus",
   "nieuw": [
-    "Kniv ziet zelf wanneer er een update is: één tik en SideStore installeert hem",
-    "Engelse vertaling: Kniv volgt de taal van je telefoon",
-    "Schudden om een fout te melden (tik 5× op de versie in Instellingen)"
+    "Inloggen met Google",
+    "Je notities staan nu ook in de cloud, zodat je laptop ze ziet (kies per notitie: alleen telefoon, ook laptop of gedeeld)",
+    "Lijstjes delen: nodig vrienden uit met een link, zie live wie wat toevoegde",
+    "Kniv werkt offline gewoon door en synchroniseert zodra er internet is",
+    "Account verwijderen kan in Instellingen"
   ]
 }

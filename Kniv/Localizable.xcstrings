@@ -2531,6 +2531,236 @@
         }
       }
     },
+    "Welkom bij Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome to Kniv"
+          }
+        }
+      }
+    },
+    "Log in om je notities ook op je laptop te zien en lijstjes met vrienden te delen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log in to see your notes on your laptop too and share lists with friends."
+          }
+        }
+      }
+    },
+    "Inloggen met Google": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Google"
+          }
+        }
+      }
+    },
+    "Inloggen lukte niet. Probeer het nog eens.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signing in didn't work. Please try again."
+          }
+        }
+      }
+    },
+    "Deze uitnodiging is verlopen of onbekend.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This invitation has expired or is unknown."
+          }
+        }
+      }
+    },
+    "Waar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where"
+          }
+        }
+      }
+    },
+    "Alleen deze telefoon": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only this phone"
+          }
+        }
+      }
+    },
+    "Ook op mijn laptop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also on my laptop"
+          }
+        }
+      }
+    },
+    "Gedeeld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared"
+          }
+        }
+      }
+    },
+    "Nodig iemand uit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite someone"
+          }
+        }
+      }
+    },
+    "Link om alleen te kijken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View-only link"
+          }
+        }
+      }
+    },
+    "Doe mee met mijn lijstje in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join my list in Kniv"
+          }
+        }
+      }
+    },
+    "Wie meedoet logt in met Google. De links verlopen na 30 dagen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "People who join sign in with Google. Links expire after 30 days."
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "Ingelogd als": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in as"
+          }
+        }
+      }
+    },
+    "Uitloggen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out"
+          }
+        }
+      }
+    },
+    "Account verwijderen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete account"
+          }
+        }
+      }
+    },
+    "Account en alles in de cloud verwijderen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete your account and everything in the cloud?"
+          }
+        }
+      }
+    },
+    "Verwijder alles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete everything"
+          }
+        }
+      }
+    },
+    "Gedeelde lijstjes gaan over naar wie het langst meedoet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared lists pass to whoever has been in them longest."
+          }
+        }
+      }
+    },
+    "%lld nieuw van anderen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld new from others"
+          }
+        }
+      }
+    },
+    "Update beschikbaar": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update available"
+          }
+        }
+      }
+    },
+    "Versie %@. Tik om te installeren via SideStore.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@. Tap to install via SideStore."
+          }
+        }
+      }
+    },
     "Typ": {
       "localizations": {
         "en": {
@@ -2567,26 +2797,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "List"
-          }
-        }
-      }
-    },
-    "Update beschikbaar": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Update available"
-          }
-        }
-      }
-    },
-    "Versie %@. Tik om te installeren via SideStore.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Version %@. Tap to install via SideStore."
           }
         }
       }
