@@ -5,7 +5,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
     case vastleggen, timers, splitten, kiezen
 
     var id: String { rawValue }
-    var klaar: Bool { self != .kiezen }
+    var klaar: Bool { true }
 
     var naam: LocalizedStringKey {
         switch self {
@@ -65,7 +65,7 @@ struct ThuisView: View {
                     case .vastleggen: VastleggenView()
                     case .timers: TimersView()
                     case .splitten: SplittenView()
-                    case .kiezen: EmptyView()
+                    case .kiezen: KiezenView()
                     }
                 }
                 .navigationTransition(.zoom(sourceID: mes, in: ns))
@@ -80,6 +80,9 @@ struct ThuisView: View {
         }
         .onChange(of: AppStatus.shared.openSplitten) { _, nu in
             if nu { pad = NavigationPath([Mes.splitten]); AppStatus.shared.openSplitten = false }
+        }
+        .onChange(of: AppStatus.shared.openKiezen) { _, nu in
+            if nu { pad = NavigationPath([Mes.kiezen]); AppStatus.shared.openKiezen = false }
         }
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .sheet(isPresented: $toonNieuw, onDismiss: { laatstGezien = VersieInfo.huidig?.versie ?? "" }) {

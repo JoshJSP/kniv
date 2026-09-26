@@ -63,6 +63,17 @@ struct NotitieView: View {
                 }
             }
 
+            if notitie.items.count >= 2 {
+                Section("Kies uit dit lijstje") {
+                    HStack {
+                        ForEach([("Rad", "circle.dashed"), ("Teams", "person.2"), ("Stemmen", "hand.thumbsup")], id: \.0) { paar in
+                            Button { kies(paar.0) } label: { Label(LocalizedStringKey(paar.0), systemImage: paar.1) }
+                                .buttonStyle(.bordered)
+                        }
+                    }
+                }
+            }
+
             if BonParser.lijktBon(notitie.fotoTekst) {
                 Section {
                     Button {
@@ -130,6 +141,12 @@ struct NotitieView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.impact(weight: .light), trigger: doorgestreept.count) { _, _ in haptiek }
         .fullScreenCover(isPresented: $toonFoto) { FotoView(bestand: notitie.fotoBestand) }
+    }
+
+    private func kies(_ tab: String) {
+        AppStatus.shared.kiesOpties = notitie.gesorteerdeItems.map(\.tekst)
+        AppStatus.shared.kiesTab = tab
+        AppStatus.shared.openKiezen = true
     }
 
     private var deelTekst: String {

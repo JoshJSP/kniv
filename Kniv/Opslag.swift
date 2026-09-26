@@ -162,6 +162,10 @@ enum Fotos {
     var openTimers = false
     var openSplitten = false
     var bonTekst: String?
+    var openKiezen = false
+    var kiesOpties: [String]?
+    var kiesTab = "Rad"
+    var inDobbelmesje = false
 }
 
 struct VersieInfo: Decodable {
