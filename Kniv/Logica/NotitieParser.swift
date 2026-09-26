@@ -8,7 +8,9 @@ enum NotitieParser {
         var rest: [String] = []
         var items: [String] = []
         for regel in tekst.components(separatedBy: .newlines) {
-            if let item = lijstItem(regel.trimmingCharacters(in: .whitespaces)) {
+            let kaal = regel.trimmingCharacters(in: .whitespaces)
+            if voorvoegsels.contains(kaal + " ") { continue }  // leeg streepje: overslaan
+            if let item = lijstItem(kaal) {
                 items.append(item)
             } else {
                 rest.append(regel)
