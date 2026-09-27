@@ -66,7 +66,9 @@ export default async function Gedeeld({ params }: Props) {
   }
 
   const doel = deel.soort === "countdown" ? doelVan(deel) : null;
-  const notities = deel.records.filter((r) => r.soort === "notitie");
+  // Tijdcapsules blijven dicht tot hun datum.
+  const verzegeld = (r: KnivRecord) => typeof r.data?.verzegeldTot === "string" && Date.parse(r.data.verzegeldTot) > Date.now();
+  const notities = deel.records.filter((r) => r.soort === "notitie" && !verzegeld(r));
   const potten = deel.records.filter((r) => r.soort === "pot");
   const prikken = deel.records.filter((r) => r.soort === "prik");
 
