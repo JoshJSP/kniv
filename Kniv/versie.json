@@ -1,12 +1,12 @@
 {
-  "versie": "0.23.0",
-  "mesnaam": "Opinel Twee",
+  "versie": "0.24.0",
+  "mesnaam": "Laguiole",
   "nieuw": [
+    "Bij het openen klapt het lemmet uit het handvat",
     "Vraag Siri: 'Wat staat er vandaag in Kniv?' en hoor je dag in één adem",
     "Terugvinden met parkeertijd: leg je auto vast en de parkeertimer loopt meteen",
     "Zuiniger: de Vandaag-kaart rekent alleen nog als er iets verandert",
     "Vingerkiezer (bij Kiezen): iedereen een vinger op het scherm, Kniv kiest wie begint",
-    "Streeplijst (bij Splitten): turf drankjes per persoon en deel de afrekening",
-    "Fooi rondt af op hele of halve euro's"
+    "Streeplijst (bij Splitten): turf drankjes per persoon en deel de afrekening"
   ]
 }

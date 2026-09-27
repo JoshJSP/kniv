@@ -18,7 +18,7 @@ struct KnivApp: App {
                 if introGezien && Sync.shared.gestart && Sync.shared.gebruiker == nil {
                     LoginView()
                 } else if introGezien {
-                    ThuisView()
+                    ThuisView().modifier(Opening())
                 } else {
                     IntroView {
                         laatstGezien = VersieInfo.huidig?.versie ?? ""
