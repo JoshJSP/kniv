@@ -2531,6 +2531,116 @@
         }
       }
     },
+    "Vinger": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finger"
+          }
+        }
+      }
+    },
+    "Iedereen een vinger op het scherm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone put a finger on the screen"
+          }
+        }
+      }
+    },
+    "Houd stil. Na drie tellen kiest Kniv er één.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold still. After three seconds Kniv picks one."
+          }
+        }
+      }
+    },
+    "Vingerkiezer. Leg allemaal een vinger op het scherm.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finger chooser. Everyone put a finger on the screen."
+          }
+        }
+      }
+    },
+    "Strepen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tally"
+          }
+        }
+      }
+    },
+    "Prijs per streepje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price per mark"
+          }
+        }
+      }
+    },
+    "Streepje eraf bij %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove a mark for %@"
+          }
+        }
+      }
+    },
+    "Streepje erbij voor %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a mark for %@"
+          }
+        }
+      }
+    },
+    "%lld streepjes · %@ in totaal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld marks · %2$@ in total"
+          }
+        }
+      }
+    },
+    "Deel de afrekening": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share the bill"
+          }
+        }
+      }
+    },
+    "Opnieuw beginnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start over"
+          }
+        }
+      }
+    },
     "Beurten": {
       "localizations": {
         "en": {

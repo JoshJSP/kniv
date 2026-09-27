@@ -1,11 +1,12 @@
 {
-  "versie": "0.21.0",
-  "mesnaam": "Kukri Twee",
+  "versie": "0.22.0",
+  "mesnaam": "Victorinox",
   "nieuw": [
-    "Fooi rondt nu af op hele of halve euro's, zoals je fooi meestal afrondt",
+    "Vingerkiezer (bij Kiezen): iedereen een vinger op het scherm, Kniv kiest wie begint",
+    "Streeplijst (bij Splitten): turf drankjes per persoon en deel de afrekening",
+    "Fooi rondt af op hele of halve euro's",
     "Eén zin per dag: 's avonds vraagt Kniv hoe je dag was, in je eigen Dagboek-bakje",
     "Op deze dag: bovenaan zie je wat je een maand en een jaar geleden schreef",
-    "Beurten (bij Splitten): roosters voor het rondje, de afwas, de boodschappen",
-    "Lang indrukken op een tegel: meteen inspreken, een foto, focus of het rad"
+    "Beurten (bij Splitten): roosters voor het rondje, de afwas, de boodschappen"
   ]
 }

@@ -3,7 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct KiezenView: View {
-    enum Tab: String, CaseIterable { case rad = "Rad", dobbelen = "Dobbelen", munt = "Munt", teams = "Teams", stemmen = "Stemmen" }
+    enum Tab: String, CaseIterable { case rad = "Rad", vinger = "Vinger", dobbelen = "Dobbelen", munt = "Munt", teams = "Teams", stemmen = "Stemmen" }
     @State private var tab: Tab = .rad
     @AppStorage("kiesOpties") private var optiesTekst = "Pizza\nSushi\nThai\nBurgers"
 
@@ -14,15 +14,12 @@ struct KiezenView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Onderdeel", selection: $tab) {
-                ForEach(Tab.allCases, id: \.self) { Text(LocalizedStringKey($0.rawValue)) }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            TabBalk(tabs: Tab.allCases, keuze: $tab) { $0.rawValue }
+                .padding(.vertical, 8)
             if tab == .rad || tab == .stemmen { SamenBalk().padding(.bottom, 6) }
             switch tab {
             case .rad: RadView(opties: opties)
+            case .vinger: VingerkiezerView()
             case .dobbelen: DobbelView()
             case .munt: MuntTab()
             case .teams: TeamsView(namen: opties)

@@ -15,12 +15,8 @@ struct ScannerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Onderdeel", selection: $tab) {
-                ForEach(Tab.allCases, id: \.self) { Text(LocalizedStringKey($0.rawValue)) }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            TabBalk(tabs: Tab.allCases, keuze: $tab) { $0.rawValue }
+                .padding(.vertical, 8)
             switch tab {
             case .qr: LiveScanTab(soort: .barcode(), uitleg: "Richt op een QR-code of streepjescode")
             case .tekst: LiveScanTab(soort: .text(), uitleg: "Tik op tekst om hem te kopiëren")
@@ -212,12 +208,8 @@ struct MetenView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Onderdeel", selection: $tab) {
-                ForEach(Tab.allCases, id: \.self) { Text(LocalizedStringKey($0.rawValue)) }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            TabBalk(tabs: Tab.allCases, keuze: $tab) { $0.rawValue }
+                .padding(.vertical, 8)
             switch tab {
             case .waterpas: WaterpasView()
             case .liniaal: LiniaalView()
