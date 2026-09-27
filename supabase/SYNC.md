@@ -58,7 +58,7 @@ Uitgaven zijn aparte records, zodat twee mensen tegelijk iets kunnen toevoegen. 
 Windows haalt alleen `soort=notitie` op en negeert de rest.
 
 ## Ophalen
-`select * from records where gewijzigd > <laatst opgehaald> order by gewijzigd` — RLS geeft alleen eigen records en die van groepen waar je lid van bent. Realtime: postgres_changes op `public.records`.
+`select * from records where ontvangen >= <laatst opgehaald> order by ontvangen` — `ontvangen` zet de server (trigger) bij elke wijziging, dus offline gemaakte wijzigingen komen ook aan. Een trigger laat een upsert met een oudere `gewijzigd` niets overschrijven (laatste wijziging wint, ook op de server). — RLS geeft alleen eigen records en die van groepen waar je lid van bent. Realtime: postgres_changes op `public.records`.
 
 ## Delen
 - Groep maken: insert in `groepen` (`eigenaar = auth.uid()`, `soort`, `titel`), `deel_token` komt terug.

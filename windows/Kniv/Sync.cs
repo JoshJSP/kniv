@@ -34,6 +34,8 @@ public class Rij
     [JsonPropertyName("data")] public JsonElement Data { get; set; }
     [JsonPropertyName("gewijzigd")] public DateTimeOffset Gewijzigd { get; set; }
     [JsonPropertyName("gewijzigd_door")] public Guid? GewijzigdDoor { get; set; }
+    /// Door de server gezet bij elke wijziging; de ophaalcursor (niet de klok van een apparaat).
+    [JsonPropertyName("ontvangen")] public DateTimeOffset? Ontvangen { get; set; }
     [JsonPropertyName("verwijderd")] public bool Verwijderd { get; set; }
 }
 
@@ -240,17 +242,17 @@ public static class Sync
         var d = Opslag.Data;
         var veranderd = false;
 
-        // 1. Ophalen. Vijf minuten overlap, want gewijzigd komt van de klok van het apparaat.
+        // 1. Ophalen op servertijd ('ontvangen'), zodat ook offline gemaakte wijzigingen van andere apparaten binnenkomen.
         var eersteKeer = d.OpgehaaldTot == null;
-        var filter = eersteKeer ? "" : "&gewijzigd=gt." + Uri.EscapeDataString(Iso(d.OpgehaaldTot!.Value.AddMinutes(-5)));
-        var r = await Http.SendAsync(Verzoek(HttpMethod.Get, $"/rest/v1/records?select=*&soort=eq.notitie{filter}&order=gewijzigd.asc&limit=1000", token));
+        var filter = eersteKeer ? "" : "&ontvangen=gte." + Uri.EscapeDataString(Iso(d.OpgehaaldTot!.Value));
+        var r = await Http.SendAsync(Verzoek(HttpMethod.Get, $"/rest/v1/records?select=*&soort=eq.notitie{filter}&order=ontvangen.asc&limit=1000", token));
         r.EnsureSuccessStatusCode();
         var rijen = await r.Content.ReadFromJsonAsync<List<Rij>>() ?? new();
         var anderen = new List<(Guid door, string titel)>();
         foreach (var rij in rijen)
         {
             veranderd |= Verwerk(rij, eersteKeer ? null : anderen);
-            var t = rij.Gewijzigd.UtcDateTime;
+            var t = (rij.Ontvangen ?? rij.Gewijzigd).UtcDateTime;
             if (d.OpgehaaldTot == null || t > d.OpgehaaldTot) d.OpgehaaldTot = t;
         }
         if (rijen.Count == 1000) _nogmaals = true;
