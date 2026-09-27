@@ -165,4 +165,13 @@ check(Omzetter.reken("hoe laat is het in new york?")?.hasPrefix("In New York is 
 check(Omzetter.reken("15:00 in atlantis") == nil, "tijdzone: onbekende stad")
 check(Omzetter.klokTekst(Date(timeIntervalSince1970: 0), TimeZone(identifier: "Asia/Tokyo")!) == "9:00", "tijdzone: klok in tokyo")
 
+check(Kenteken.normaal("gz-738-t") == "GZ738T" && Kenteken.normaal("abc") == nil, "kenteken: opschonen")
+check(Kenteken.mooi("GZ738T") == "GZ-738-T" && Kenteken.mooi("12ABC3") == "12-ABC-3" && Kenteken.mooi("ABCD12") == "AB-CD-12", "kenteken: streepjes")
+check(Kenteken.vind(in: "Te koop\nGZ-738-T\n€ 8.500") == "GZ738T", "kenteken: in fototekst")
+check(kal.component(.year, from: Kenteken.datum("20270926")!) == 2027, "kenteken: rdw-datum")
+check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1kg")?.hasPrefix("De tweede is 20% goedkoper") == true, "goedkoper: per kilo")
+check(Omzetter.reken("1,50 voor 330ml of 2,19 voor 1,5l")?.hasPrefix("De tweede is 68% goedkoper") == true, "goedkoper: per liter")
+check(Omzetter.reken("3 voor 2 stuks of 5 voor 4 stuks")?.hasPrefix("De tweede is 17% goedkoper") == true, "goedkoper: per stuk")
+check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1l") == nil, "goedkoper: kilo tegen liter kan niet")
+
 print("Alle Kniv-checks geslaagd")

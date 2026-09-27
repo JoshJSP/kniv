@@ -128,7 +128,7 @@ enum Omzetter {
 
     static func reken(_ invoer: String, koersen: [String: Double] = [:], nu: Date = Date()) -> String? {
         let klein = invoer.lowercased().trimmingCharacters(in: .whitespaces)
-        return tijd(klein, nu: nu) ?? procent(klein) ?? valuta(klein, koersen) ?? eenheid(klein)
+        return tijd(klein, nu: nu) ?? goedkoper(klein) ?? procent(klein) ?? valuta(klein, koersen) ?? eenheid(klein)
     }
 
     // MARK: rekenen met tijd: "14:35 + 2u50", "9:15 tot 17:30", "dagen tot 25 dec"
@@ -195,6 +195,33 @@ enum Omzetter {
         kal.timeZone = tz
         let c = kal.dateComponents([.hour, .minute], from: d)
         return "\(c.hour ?? 0):" + String(format: "%02d", c.minute ?? 0)
+    }
+
+    // MARK: wat is goedkoper: "2,49 voor 500g of 3,99 voor 1kg"
+
+    static func goedkoper(_ t: String) -> String? {
+        let deel = #"€?\s*(\d+(?:[.,]\d+)?)\s*(?:voor|for|per|/)\s*(\d+(?:[.,]\d+)?)?\s*(g|gr|gram|kg|kilo|ml|cl|l|liter|stuks?|st)"#
+        guard let m = Herinnering.eersteMatch("^" + deel + #"\s*(?:of|or|vs\.?|tegen)\s*"# + deel + "$", in: t),
+              let a = perEenheid(m[1], m[2], m[3]), let b = perEenheid(m[4], m[5], m[6]), a.soort == b.soort, a.prijs > 0, b.prijs > 0 else { return nil }
+        let label = a.soort == "st" ? "per stuk" : a.soort == "kg" ? "per kilo" : "per liter"
+        if abs(a.prijs - b.prijs) < 0.005 { return "Even duur: \(euro(a.prijs)) \(label)" }
+        let (goed, duur, welke) = a.prijs < b.prijs ? (a.prijs, b.prijs, "De eerste") : (b.prijs, a.prijs, "De tweede")
+        return "\(welke) is \(Int(((1 - goed / duur) * 100).rounded()))% goedkoper: \(euro(goed)) tegen \(euro(duur)) \(label)"
+    }
+
+    /// Prijs per kilo, liter of stuk.
+    static func perEenheid(_ prijs: String, _ hoeveel: String, _ eenheid: String) -> (prijs: Double, soort: String)? {
+        guard let p = getal(prijs) else { return nil }
+        let n = hoeveel.isEmpty ? 1 : (getal(hoeveel) ?? 0)
+        guard n > 0 else { return nil }
+        switch eenheid {
+        case "g", "gr", "gram": return (p / (n / 1000), "kg")
+        case "kg", "kilo": return (p / n, "kg")
+        case "ml": return (p / (n / 1000), "l")
+        case "cl": return (p / (n / 100), "l")
+        case "l", "liter": return (p / n, "l")
+        default: return (p / n, "st")
+        }
     }
 
     static func minuten(_ u: String, _ m: String) -> Int? {

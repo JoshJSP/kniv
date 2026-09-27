@@ -6420,6 +6420,166 @@
           }
         }
       }
+    },
+    "Kenteken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence plate"
+          }
+        }
+      }
+    },
+    "Opzoeken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look up"
+          }
+        }
+      }
+    },
+    "Kenteken fotograferen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photograph licence plate"
+          }
+        }
+      }
+    },
+    "Gegevens van de RDW (open data).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data from the Dutch vehicle authority (RDW, open data)."
+          }
+        }
+      }
+    },
+    "Geen kenteken gevonden op de foto.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No licence plate found in the photo."
+          }
+        }
+      }
+    },
+    "APK tot %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MOT valid until %@"
+          }
+        }
+      }
+    },
+    "Verzekerd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insured"
+          }
+        }
+      }
+    },
+    "Niet verzekerd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not insured"
+          }
+        }
+      }
+    },
+    "Kilometerstand: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odometer: %@"
+          }
+        }
+      }
+    },
+    "Er loopt een terugroepactie. Vraag de dealer ernaar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There's an open recall. Ask the dealer about it."
+          }
+        }
+      }
+    },
+    "Verbruik %@ l/100 km (1 op %@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumption %@ l/100 km"
+          }
+        }
+      }
+    },
+    "Nieuwprijs %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price when new %@"
+          }
+        }
+      }
+    },
+    "Staat in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved in Kniv"
+          }
+        }
+      }
+    },
+    "Herinner me een maand voor de APK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me a month before the MOT"
+          }
+        }
+      }
+    },
+    "Dit kenteken kent de RDW niet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The RDW doesn't know this plate."
+          }
+        }
+      }
+    },
+    "De RDW is even niet bereikbaar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The RDW can't be reached right now."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

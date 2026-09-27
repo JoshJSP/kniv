@@ -608,7 +608,7 @@ struct OmzettenView: View {
     @State private var toonCamera = false
     @FocusState private var focus: Bool
 
-    private let voorbeelden = ["3 cups bloem", "45 usd", "30% korting op 89", "10 km in mijl", "350 f", "9:15 tot 17:30", "14:35 + 2u50", "dagen tot 25 dec"]
+    private let voorbeelden = ["3 cups bloem", "45 usd", "30% korting op 89", "10 km in mijl", "350 f", "9:15 tot 17:30", "14:35 + 2u50", "dagen tot 25 dec", "15:00 in tokyo", "2,49 voor 500g of 3,99 voor 1kg"]
 
     var body: some View {
         ScrollView {

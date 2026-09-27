@@ -2,17 +2,14 @@
 import json, pathlib, re
 
 NIEUW = {
-    "Bruin": "Brown", "Roze": "Pink", "Soort": "Type", "Stopt vanzelf na": "Stops by itself after", "%lld min": "%lld min",
-    "Nooit": "Never", "Stopt om %@": "Stops at %@", "Achtergrondgeluid": "Background sound", "Achtergrondgeluid speelt": "Background sound playing",
-    "Diep en zacht, als een waterval. Fijn om te focussen.": "Deep and soft, like a waterfall. Great for focus.",
-    "Als regen op het dak. Fijn om in slaap te vallen.": "Like rain on the roof. Great for falling asleep.",
-    "Als een ventilator. Dekt geluiden van buiten af.": "Like a fan. Masks noise from outside.",
-    "Lopen": "Walk", "Fiets": "Bike", "OV": "Transit", "Auto": "Car", "Vervoer": "Transport",
-    "Ik ben er rond %@.": "I'll be there around %@.", "Naar %@, over %lld min": "To %@, in %lld min", "Stuur dit": "Send this",
-    "Waar ga je heen?": "Where are you going?", "Zoek een adres of plek": "Search an address or place", "Ik ben er om…": "I'll be there at…",
-    "Niets gevonden. Probeer het met een plaatsnaam erbij.": "Nothing found. Try adding a town name.",
-    "Geen OV-tijden voor deze route. Probeer lopen of fiets.": "No transit times for this route. Try walking or cycling.",
-    "Kon de route niet berekenen. Staat locatie aan?": "Couldn't calculate the route. Is location on?",
+    "Kenteken": "Licence plate", "Opzoeken": "Look up", "Kenteken fotograferen": "Photograph licence plate",
+    "Gegevens van de RDW (open data).": "Data from the Dutch vehicle authority (RDW, open data).",
+    "Geen kenteken gevonden op de foto.": "No licence plate found in the photo.", "APK tot %@": "MOT valid until %@",
+    "Verzekerd": "Insured", "Niet verzekerd": "Not insured", "Kilometerstand: %@": "Odometer: %@",
+    "Er loopt een terugroepactie. Vraag de dealer ernaar.": "There's an open recall. Ask the dealer about it.",
+    "Verbruik %@ l/100 km (1 op %@)": "Consumption %@ l/100 km", "Nieuwprijs %@": "Price when new %@",
+    "Staat in Kniv": "Saved in Kniv", "Herinner me een maand voor de APK": "Remind me a month before the MOT",
+    "Dit kenteken kent de RDW niet.": "The RDW doesn't know this plate.", "De RDW is even niet bereikbaar.": "The RDW can't be reached right now.",
 }
 
 pad = pathlib.Path(__file__).with_name("vertalingen.py")

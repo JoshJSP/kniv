@@ -1,12 +1,12 @@
 {
-  "versie": "0.37.0",
-  "mesnaam": "Buck",
+  "versie": "0.38.0",
+  "mesnaam": "Victorinox",
   "nieuw": [
-    "Ik ben er om…: kies een plek, Kniv rekent je aankomst uit (ook op de fiets) en je stuurt het meteen door",
-    "Achtergrondgeluid bij Timers: bruine, roze of witte ruis om te focussen of te slapen, stopt vanzelf",
-    "Loep in de Scanner, en hoogte en snelheid bij Meten",
-    "Stopwatch met rondes, en een scoreblok voor spelletjesavonden",
-    "Omzetten kent tijdzones: '15:00 in tokyo' of 'hoe laat is het in new york'",
+    "Kenteken in de Scanner: typ of fotografeer een kenteken en zie merk, APK, verzekering, kilometerstand en terugroepacties (RDW)",
+    "Omzetten weet wat goedkoper is: '2,49 voor 500g of 3,99 voor 1kg'",
+    "Ik ben er om…: aankomsttijd uitrekenen (ook op de fiets) en meteen doorsturen",
+    "Achtergrondgeluid om te focussen of te slapen, stopt vanzelf",
+    "Loep, stopwatch, hoogte, snelheid, scoreblok en tijdzones",
     "Lamp met SOS en morse, herhaalde herinneringen, rekenen met tijd"
   ]
 }
