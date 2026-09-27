@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
@@ -10,6 +11,84 @@ using XPath = Microsoft.UI.Xaml.Shapes.Path;
 namespace Kniv;
 
 // ---------------------------------------------------------------- Timers
+
+/// Achtergrondgeluid om bij te studeren, zoals Ruis op de iPhone: 20 seconden ruis in het geheugen, naadloos herhaald.
+static class Ruis
+{
+    public static readonly string[] Soorten = { "Bruin", "Roze", "Wit" };
+    static Windows.Media.Playback.MediaPlayer? _speler;
+    public static bool Aan => _speler != null;
+
+    /// 16-bit mono WAV; het eind loopt over in het begin, zodat je de herhaling niet hoort.
+    public static byte[] Wav(string soort, int rate = 44100, int seconden = 20)
+    {
+        int lengte = rate * seconden, over = rate / 2;
+        var s = new float[lengte + over];
+        var rnd = new Random(7);
+        float bruin = 0;
+        var p = new float[7];
+        for (var i = 0; i < s.Length; i++)
+        {
+            var wit = (float)(rnd.NextDouble() * 2 - 1);
+            switch (soort)
+            {
+                case "Bruin":
+                    bruin = (bruin + 0.02f * wit) / 1.02f;
+                    s[i] = bruin * 3.5f * 0.5f;
+                    break;
+                case "Roze":
+                    p[0] = 0.99886f * p[0] + wit * 0.0555179f; p[1] = 0.99332f * p[1] + wit * 0.0750759f;
+                    p[2] = 0.96900f * p[2] + wit * 0.1538520f; p[3] = 0.86650f * p[3] + wit * 0.3104856f;
+                    p[4] = 0.55000f * p[4] + wit * 0.5329522f; p[5] = -0.7616f * p[5] - wit * 0.0168980f;
+                    s[i] = (p[0] + p[1] + p[2] + p[3] + p[4] + p[5] + p[6] + wit * 0.5362f) * 0.05f;
+                    p[6] = wit * 0.115926f;
+                    break;
+                default:
+                    s[i] = wit * 0.25f;
+                    break;
+            }
+        }
+        using var ms = new MemoryStream();
+        using var w = new BinaryWriter(ms);
+        w.Write("RIFF"u8); w.Write(36 + lengte * 2); w.Write("WAVE"u8);
+        w.Write("fmt "u8); w.Write(16); w.Write((short)1); w.Write((short)1); w.Write(rate); w.Write(rate * 2); w.Write((short)2); w.Write((short)16);
+        w.Write("data"u8); w.Write(lengte * 2);
+        for (var i = 0; i < lengte; i++)
+        {
+            var v = i < over ? s[i] * i / over + s[lengte + i] * (1 - (float)i / over) : s[i];
+            w.Write((short)Math.Clamp(v * 32767, -32767, 32767));
+        }
+        return ms.ToArray();
+    }
+
+    public static async void Start(string soort, double volume)
+    {
+        try
+        {
+            Stop();
+            var stroom = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+            await stroom.WriteAsync(System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.AsBuffer(Wav(soort)));
+            stroom.Seek(0);
+            _speler = new Windows.Media.Playback.MediaPlayer
+            {
+                Source = Windows.Media.Core.MediaSource.CreateFromStream(stroom, "audio/wav"),
+                IsLoopingEnabled = true,
+                Volume = volume,
+            };
+            _speler.Play();
+        }
+        catch (Exception e) { App.Log(e); }
+    }
+
+    public static void Volume(double v) { if (_speler != null) _speler.Volume = v; }
+
+    public static void Stop()
+    {
+        _speler?.Pause();
+        _speler?.Dispose();
+        _speler = null;
+    }
+}
 
 /// Tikt door op de achtergrond (ook als Kniv in het systeemvak zit) en stuurt de meldingen.
 static class Klok
@@ -122,8 +201,18 @@ public sealed class TimersPagina : UserControl
         }, accent: true);
         voegToe.VerticalAlignment = VerticalAlignment.Bottom;
 
+        var soort = new ComboBox { Header = "Soort", ItemsSource = Ruis.Soorten, SelectedIndex = 0, Width = 140 };
+        var volume = new Slider { Header = "Volume", Minimum = 0, Maximum = 100, Value = 50, Width = 200 };
+        var ruisKnop = new ToggleButton { Content = "Speel", VerticalAlignment = VerticalAlignment.Bottom };
+        void Speel() { if (ruisKnop.IsChecked == true) Ruis.Start((string)soort.SelectedItem, volume.Value / 100); else Ruis.Stop(); }
+        ruisKnop.Click += (_, _) => { ruisKnop.Content = ruisKnop.IsChecked == true ? "Stop" : "Speel"; Speel(); };
+        soort.SelectionChanged += (_, _) => { if (Ruis.Aan) Speel(); };
+        volume.ValueChanged += (_, _) => Ruis.Volume(volume.Value / 100);
+        var ruisUitleg = Ui.Tekst("Bruin is diep en zacht (focus), roze klinkt als regen (slapen), wit dekt lawaai af.", "CaptionTextBlockStyle", zacht: true);
+
         Content = Ui.Pagina("Timers",
             Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Pomodoro", "SubtitleTextBlockStyle"), _pomoFase, _pomoTijd, _pomoBalk, pomoKnoppen)),
+            Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Achtergrondgeluid", "SubtitleTextBlockStyle"), Ui.Rij(12, soort, volume, ruisKnop), ruisUitleg)),
             Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Losse timers", "SubtitleTextBlockStyle"), Ui.Rij(8, naam, minuten, start), _timers)),
             Ui.Kaart(Ui.Stapel(12, Ui.Tekst("Aftellen naar een datum", "SubtitleTextBlockStyle"), Ui.Rij(8, cdNaam, datum, tijd, voegToe), _countdowns)),
             Ui.Tekst("Meldingen komen alleen als Kniv draait (ook in het systeemvak is goed).", "CaptionTextBlockStyle", zacht: true));

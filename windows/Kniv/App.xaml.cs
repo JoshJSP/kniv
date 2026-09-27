@@ -281,6 +281,9 @@ static class Zelftest
         Is(R("1,50 voor 330ml of 2,19 voor 1,5l").StartsWith("De tweede is 68% goedkoper") && R("2,49 voor 500g of 3,99 voor 1l") == "nil", "goedkoper liter");
         Is(Kenteken.Normaal("gz-738-t") == "GZ738T" && Kenteken.Normaal("GZ738T") == "GZ738T" && Kenteken.Normaal("pasta1") == null && Kenteken.Normaal("melk") == null, "kenteken herkennen");
         Is(Kenteken.Mooi("GZ738T") == "GZ-738-T" && Kenteken.Mooi("12ABC3") == "12-ABC-3" && Kenteken.Mooi("ABCD12") == "AB-CD-12", "kenteken streepjes");
+        var wav = Ruis.Wav("Bruin", 8000, 2);
+        Is(wav.Length == 44 + 8000 * 2 * 2 && wav[0] == (byte)'R' && wav[8] == (byte)'W', "ruis wav-kop");
+        Is(Ruis.Soorten.All(s => Ruis.Wav(s, 8000, 1).Skip(44).Any(b => b != 0)), "ruis niet stil");
         Is(SnelCommando.Kern("10 km = 6,21 mijl") == "6,21 mijl" && SnelCommando.Kern("3 cups = 720 ml ≈ 375 g bloem") == "720 ml", "kern");
 
         Is(TimerParser.Vind("over 20 min oven uit") == ("Oven uit", 1200), "timer uit notitie: " + TimerParser.Vind("over 20 min oven uit"));
