@@ -124,6 +124,9 @@ struct KnivSnelkoppelingen: AppShortcutsProvider {
         AppShortcut(intent: StartFocusIntent(),
                     phrases: ["Start focus in \(.applicationName)", "Focus met \(.applicationName)"],
                     shortTitle: "Start focus", systemImageName: "timer")
+        AppShortcut(intent: WatStaatErVandaagIntent(),
+                    phrases: ["Wat staat er vandaag in \(.applicationName)", "Mijn dag in \(.applicationName)"],
+                    shortTitle: "Wat staat er vandaag?", systemImageName: "sun.max")
         AppShortcut(intent: BewaarInKnivIntent(),
                     phrases: ["Bewaar in \(.applicationName)"],
                     shortTitle: "Bewaar in Kniv", systemImageName: "tray.and.arrow.down")

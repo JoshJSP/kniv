@@ -2531,6 +2531,66 @@
         }
       }
     },
+    "Wat staat er vandaag?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's on today?"
+          }
+        }
+      }
+    },
+    "Vandaag: %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today: %@."
+          }
+        }
+      }
+    },
+    "%lld boodschappen open, zoals %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld groceries left, like %2$@."
+          }
+        }
+      }
+    },
+    "Je focus loopt nog %lld minuten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your focus has %lld minutes left."
+          }
+        }
+      }
+    },
+    "%@: nog %lld minuten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld minutes left."
+          }
+        }
+      }
+    },
+    "Niks bijzonders vandaag. Geniet ervan!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing special today. Enjoy!"
+          }
+        }
+      }
+    },
     "Geen parkeertijd": {
       "localizations": {
         "en": {

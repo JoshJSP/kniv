@@ -96,6 +96,12 @@ EN = {
     "Potjes": "Pots", "Bon": "Receipt", "Omzetten": "Convert", "Rad": "Wheel", "Dobbelen": "Dice",
     "Teams": "Teams", "Stemmen": "Vote", "QR-code": "QR code", "Document": "Document", "Tekst": "Text", "Liniaal": "Ruler",
     "Geluid": "Sound",
+    "Wat staat er vandaag?": "What's on today?",
+    "Vandaag: %@.": "Today: %@.",
+    "%lld boodschappen open, zoals %@.": "%1$lld groceries left, like %2$@.",
+    "Je focus loopt nog %lld minuten.": "Your focus has %lld minutes left.",
+    "%@: nog %lld minuten.": "%1$@: %2$lld minutes left.",
+    "Niks bijzonders vandaag. Geniet ervan!": "Nothing special today. Enjoy!",
     "Geen parkeertijd": "No parking time",
     "Parkeren: %lld min": "Parking: %lld min",
     "Parkeren %@": "Parking %@",
@@ -284,7 +290,8 @@ EN = {
 
 SIRI = {"Inspreken in ${applicationName}": "Dictate in ${applicationName}",
         "Start focus in ${applicationName}": "Start focus in ${applicationName}",
-        "Zet iets in ${applicationName}": "Add something to ${applicationName}"}
+        "Zet iets in ${applicationName}": "Add something to ${applicationName}",
+        "Wat staat er vandaag in ${applicationName}": "What's on today in ${applicationName}"}
 
 PLIST = {"CFBundleDisplayName": "Kniv", "CFBundleName": "Kniv",
          "NSCalendarsFullAccessUsageDescription": "Kniv checks your calendar to set a reminder at a free moment.",

@@ -30,6 +30,16 @@
           }
         }
       }
+    },
+    "Wat staat er vandaag in ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's on today in ${applicationName}"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
