@@ -55,7 +55,8 @@ public static class Sync
 
     static DispatcherQueueTimer? _elke15, _straks;
     static bool _bezig, _nogmaals;
-    static CancellationTokenSource? _realtime;
+    static CancellationTokenSource? _realtime, _inlog;
+    static TcpListener? _luister;
     static readonly Dictionary<Guid, string> Namen = new();
 
     public static void Start()
@@ -88,9 +89,12 @@ public static class Sync
 
     public static async Task Inloggen()
     {
+        _inlog?.Cancel();   // nieuwe klik: de vorige poging afbreken, zodat de poort vrijkomt
+        _luister?.Stop();
+        using var stop = _inlog = new CancellationTokenSource(TimeSpan.FromMinutes(5));
         TcpListener luister;
-        try { luister = new TcpListener(IPAddress.Loopback, Poort); luister.Start(); }
-        catch (SocketException) { Zet($"Poort {Poort} is bezet. Sluit het andere inlogvenster en probeer opnieuw."); return; }
+        try { luister = _luister = new TcpListener(IPAddress.Loopback, Poort); luister.Start(); }
+        catch (SocketException) { _inlog = null; Zet($"Poort {Poort} is bezet. Sluit het andere inlogvenster en probeer opnieuw."); return; }
         try
         {
             var verifier = Base64Url(RandomNumberGenerator.GetBytes(48));
@@ -99,23 +103,29 @@ public static class Sync
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             Zet("Log in via je browser…");
 
-            using var stop = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             string? code = null, fout = null;
             while (code == null && fout == null)
             {
                 using var client = await luister.AcceptTcpClientAsync(stop.Token);
-                var stroom = client.GetStream();
-                var lezer = new StreamReader(stroom, Encoding.ASCII);
-                var regel = await lezer.ReadLineAsync(stop.Token) ?? "";            // GET /auth?code=… HTTP/1.1
-                while (!string.IsNullOrEmpty(await lezer.ReadLineAsync(stop.Token))) { }
-                var pad = regel.Split(' ').ElementAtOrDefault(1) ?? "";
-                if (!pad.StartsWith("/auth")) { await Antwoord(stroom, "404 Not Found", ""); continue; }   // favicon e.d.
-                var q = System.Web.HttpUtility.ParseQueryString(new Uri("http://localhost" + pad).Query);
-                code = q["code"];
-                fout = code == null ? q["error_description"] ?? q["error"] ?? "Er kwam geen inlogcode terug." : null;
-                await Antwoord(stroom, "200 OK", fout == null
-                    ? "<h2>Je bent ingelogd bij Kniv.</h2><p>Je kunt dit tabblad sluiten.</p>"
-                    : $"<h2>Inloggen lukte niet</h2><p>{WebUtility.HtmlEncode(fout)}</p>");
+                // Een lege of blijven hangende verbinding (browser-preconnect) mag de login niet afbreken.
+                using var kort = CancellationTokenSource.CreateLinkedTokenSource(stop.Token);
+                kort.CancelAfter(TimeSpan.FromSeconds(10));
+                try
+                {
+                    var stroom = client.GetStream();
+                    var lezer = new StreamReader(stroom, Encoding.ASCII);
+                    var regel = await lezer.ReadLineAsync(kort.Token) ?? "";            // GET /auth?code=… HTTP/1.1
+                    while (!string.IsNullOrEmpty(await lezer.ReadLineAsync(kort.Token))) { }
+                    var pad = regel.Split(' ').ElementAtOrDefault(1) ?? "";
+                    if (!pad.StartsWith("/auth")) { await Antwoord(stroom, "404 Not Found", ""); continue; }   // favicon e.d.
+                    var q = System.Web.HttpUtility.ParseQueryString(new Uri("http://localhost" + pad).Query);
+                    code = q["code"];
+                    fout = code == null ? q["error_description"] ?? q["error"] ?? "Er kwam geen inlogcode terug." : null;
+                    await Antwoord(stroom, "200 OK", fout == null
+                        ? "<h2>Je bent ingelogd bij Kniv.</h2><p>Je kunt dit tabblad sluiten.</p>"
+                        : $"<h2>Inloggen lukte niet</h2><p>{WebUtility.HtmlEncode(fout)}</p>");
+                }
+                catch (Exception e) when (!stop.IsCancellationRequested) { App.Log("Inlogverbinding: " + e.Message); }
             }
             if (fout != null) { Zet("Inloggen lukte niet: " + fout); return; }
 
@@ -126,9 +136,14 @@ public static class Sync
             StartRealtime();
             await Nu();
         }
+        catch (Exception) when (_inlog != stop) { }   // afgebroken door een nieuwe klik
         catch (OperationCanceledException) { Zet("Inloggen duurde te lang. Probeer het nog eens."); }
         catch (Exception e) { App.Log(e); Zet("Inloggen lukte niet. Geen internet?"); }
-        finally { luister.Stop(); }
+        finally
+        {
+            luister.Stop();
+            if (_inlog == stop) { _inlog = null; _luister = null; }
+        }
     }
 
     static async Task Antwoord(NetworkStream s, string status, string body)
@@ -158,28 +173,51 @@ public static class Sync
             Naam = Tekst(meta, "full_name") ?? Tekst(meta, "name") ?? "",
         };
         Directory.CreateDirectory(Opslag.Map);
-        File.WriteAllBytes(SessieBestand, ProtectedData.Protect(JsonSerializer.SerializeToUtf8Bytes(Wie), null, DataProtectionScope.CurrentUser));
+        var tmp = SessieBestand + ".tmp";
+        File.WriteAllBytes(tmp, ProtectedData.Protect(JsonSerializer.SerializeToUtf8Bytes(Wie), null, DataProtectionScope.CurrentUser));
+        File.Move(tmp, SessieBestand, true);
+        // Na een verlopen sessie bleef alles staan: een ander account begint schoon, dezelfde gebruiker verstuurt de rest alsnog.
+        var d = Opslag.Data;
+        if (d.SyncVan != Wie.Id)
+        {
+            if (d.SyncVan != null) Opruimen();
+            d.SyncVan = Wie.Id;
+            Opslag.Bewaar();
+        }
         Veranderd?.Invoke();
     }
 
     public static async Task Uitloggen()
     {
+        while (_bezig) await Task.Delay(100);
+        await Nu();   // eerst nog versturen wat er ligt
         var token = Wie?.AccessToken;
+        Afmelden();
+        Opruimen();
+        Opslag.Bewaar();
+        Zet("Uitgelogd.");
+        if (token != null)
+            try { await Http.SendAsync(Verzoek(HttpMethod.Post, "/auth/v1/logout", token)); } catch (Exception) { }
+    }
+
+    static void Afmelden()
+    {
         Wie = null;
         _realtime?.Cancel();
         try { File.Delete(SessieBestand); } catch (IOException) { }
-        // Gedeelde lijsten zijn van de groep, niet van deze pc; eigen notities blijven gewoon lokaal staan.
+        Laatst = null;
+    }
+
+    /// Gedeelde lijsten zijn van de groep, niet van deze pc; eigen notities blijven gewoon lokaal staan.
+    static void Opruimen()
+    {
         var d = Opslag.Data;
         d.Notities.RemoveAll(n => n.Groep != null);
         foreach (var n in d.Notities) n.Eigenaar = null;
         d.Gesynct.Clear();
         d.Weg.Clear();
         d.OpgehaaldTot = null;
-        Opslag.Bewaar();
-        Laatst = null;
-        Zet("Uitgelogd.");
-        if (token != null)
-            try { await Http.SendAsync(Verzoek(HttpMethod.Post, "/auth/v1/logout", token)); } catch (Exception) { }
+        d.SyncVan = null;
     }
 
     /// Geldig toegangstoken; ververst hem een minuut voor hij verloopt.
@@ -191,7 +229,7 @@ public static class Sync
         if (r.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.Unauthorized)
         {
             App.Log("Verversen geweigerd: " + await r.Content.ReadAsStringAsync());
-            await Uitloggen();
+            Afmelden();   // Weg en onverstuurde wijzigingen blijven staan tot dezelfde gebruiker weer inlogt
             Zet("Je sessie is verlopen. Log opnieuw in.");
             return null;
         }
@@ -244,7 +282,8 @@ public static class Sync
 
         // 1. Ophalen op servertijd ('ontvangen'), zodat ook offline gemaakte wijzigingen van andere apparaten binnenkomen.
         var eersteKeer = d.OpgehaaldTot == null;
-        var filter = eersteKeer ? "" : "&ontvangen=gte." + Uri.EscapeDataString(Iso(d.OpgehaaldTot!.Value));
+        // Een minuut marge: een transactie die eerder begon kan later zichtbaar worden. Verwerk is idempotent.
+        var filter = eersteKeer ? "" : "&ontvangen=gte." + Uri.EscapeDataString(Iso(d.OpgehaaldTot!.Value.AddMinutes(-1)));
         var r = await Http.SendAsync(Verzoek(HttpMethod.Get, $"/rest/v1/records?select=*&soort=eq.notitie{filter}&order=ontvangen.asc&limit=1000", token));
         r.EnsureSuccessStatusCode();
         var rijen = await r.Content.ReadFromJsonAsync<List<Rij>>() ?? new();
@@ -261,18 +300,24 @@ public static class Sync
         var vuil = d.Notities.Where(n => !d.Gesynct.TryGetValue(n.Id, out var t) || n.Gewijzigd > t).ToList();
         if (vuil.Count > 0)
         {
-            foreach (var n in vuil) n.Gewijzigd = Ms(n.Gewijzigd);
+            // Vóór het versturen vastleggen wat er weggaat: wie tijdens de upload verder typt, blijft vuil.
+            var pakket = vuil.Select(n =>
+            {
+                n.Gewijzigd = Ms(n.Gewijzigd);
+                n.Eigenaar ??= Wie!.Id;   // aangeboden: verwijderen maakt vanaf nu een Weg-regel
+                return (n.Id, tijd: n.Gewijzigd, rij: NaarRij(n));
+            }).ToList();
             const string upsert = "resolution=merge-duplicates,return=minimal";
-            var p = await Http.SendAsync(Verzoek(HttpMethod.Post, "/rest/v1/records", token, vuil.Select(NaarRij).ToList(), upsert));
-            if (p.IsSuccessStatusCode) foreach (var n in vuil) d.Gesynct[n.Id] = n.Gewijzigd;
+            var p = await Http.SendAsync(Verzoek(HttpMethod.Post, "/rest/v1/records", token, pakket.Select(x => x.rij).ToList(), upsert));
+            if (p.IsSuccessStatusCode) foreach (var x in pakket) d.Gesynct[x.Id] = x.tijd;
             else
             {   // één kapotte rij mag de rest niet tegenhouden
                 App.Log("Upsert: " + await p.Content.ReadAsStringAsync());
-                foreach (var n in vuil)
+                foreach (var x in pakket)
                 {
-                    var een = await Http.SendAsync(Verzoek(HttpMethod.Post, "/rest/v1/records", token, new[] { NaarRij(n) }, upsert));
-                    if (een.IsSuccessStatusCode) d.Gesynct[n.Id] = n.Gewijzigd;
-                    else App.Log($"Upsert {n.Id}: {await een.Content.ReadAsStringAsync()}");
+                    var een = await Http.SendAsync(Verzoek(HttpMethod.Post, "/rest/v1/records", token, new[] { x.rij }, upsert));
+                    if (een.IsSuccessStatusCode) d.Gesynct[x.Id] = x.tijd;
+                    else App.Log($"Upsert {x.Id}: {await een.Content.ReadAsStringAsync()}");
                 }
             }
             veranderd = true;
@@ -282,10 +327,13 @@ public static class Sync
         foreach (var (id, tijd) in d.Weg.ToList())
         {
             var w = await Http.SendAsync(Verzoek(new HttpMethod("PATCH"), $"/rest/v1/records?id=eq.{id}", token,
-                new { verwijderd = true, gewijzigd = Iso(tijd), gewijzigd_door = Wie!.Id }, "return=minimal"));
+                new { verwijderd = true, gewijzigd = Iso(tijd), gewijzigd_door = Wie!.Id }, "return=representation"));
             if (!w.IsSuccessStatusCode) { App.Log($"Verwijderen {id}: {await w.Content.ReadAsStringAsync()}"); continue; }
             d.Weg.Remove(id);
             d.Gesynct.Remove(id);
+            // De trigger negeert een verwijdering die ouder is dan de laatste wijziging (en geeft toch 2xx): die wijziging wint.
+            foreach (var rij in await w.Content.ReadFromJsonAsync<List<Rij>>() ?? new())
+                if (!rij.Verwijderd) Verwerk(rij, null);
             veranderd = true;
         }
 
@@ -319,8 +367,13 @@ public static class Sync
     public static bool Verwerk(Rij r, List<(Guid, string)>? anderen)
     {
         var d = Opslag.Data;
-        if (r.Soort != "notitie" || d.Weg.ContainsKey(r.Id)) return false;
+        if (r.Soort != "notitie") return false;
         var tijd = r.Gewijzigd.UtcDateTime;
+        if (d.Weg.TryGetValue(r.Id, out var weg))
+        {
+            if (tijd <= weg) return false;   // hier verwijderd, en dat is nieuwer
+            d.Weg.Remove(r.Id);              // elders daarna nog gewijzigd: die wijziging wint
+        }
         var n = d.Notities.FirstOrDefault(x => x.Id == r.Id);
         if (n != null && tijd <= n.Gewijzigd) return false;       // hier is hij nieuwer (of gelijk)
         var vanAnder = anderen != null && r.Groep != null && r.GewijzigdDoor is { } door && door != Wie?.Id;
@@ -344,14 +397,14 @@ public static class Sync
         n.Gewijzigd = tijd;
         n.Eigenaar = r.Eigenaar;
         n.Groep = r.Groep;
-        var oud = n.Items;
+        var pak = LijstItem.Koppel(n.Items);
         n.Items = j.ValueKind == JsonValueKind.Object && j.TryGetProperty("items", out var items) && items.ValueKind == JsonValueKind.Array
             ? items.EnumerateArray()
                 .Select(i => (tekst: i.TryGetProperty("tekst", out var t) ? t.GetString() ?? "" : "",
                               volgorde: i.TryGetProperty("volgorde", out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : 0,
                               door: i.TryGetProperty("door", out var dd) && dd.ValueKind == JsonValueKind.String && Guid.TryParse(dd.GetString(), out var gd) ? gd : (Guid?)null))
                 .OrderBy(i => i.volgorde)
-                .Select(i => new LijstItem { Id = oud.FirstOrDefault(o => o.Tekst == i.tekst)?.Id ?? Guid.NewGuid(), Tekst = i.tekst, Door = i.door })
+                .Select(i => new LijstItem { Id = pak(i.tekst)?.Id ?? Guid.NewGuid(), Tekst = i.tekst, Door = i.door })
                 .ToList()
             : new();
         if (n.Bakje == null)
@@ -406,30 +459,40 @@ public static class Sync
                     topic = "realtime:kniv-records", @event = "phx_join", @ref = "1", join_ref = "1",
                     payload = new { config = new { postgres_changes = new[] { new { @event = "*", schema = "public", table = "records" } } }, access_token = wie.AccessToken },
                 });
+                using var hart = CancellationTokenSource.CreateLinkedTokenSource(stop);   // stopt de hartslag als deze verbinding eindigt
+                var ht = hart.Token;
                 _ = Task.Run(async () =>
                 {
-                    for (var i = 2; ws.State == WebSocketState.Open && !stop.IsCancellationRequested; i++)
+                    try
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(25), stop);
-                        await Stuur(new { topic = "phoenix", @event = "heartbeat", payload = new { }, @ref = i.ToString() });
+                        for (var i = 2; ws.State == WebSocketState.Open && !ht.IsCancellationRequested; i++)
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(25), ht);
+                            await Stuur(new { topic = "phoenix", @event = "heartbeat", payload = new { }, @ref = i.ToString() });
+                        }
                     }
-                }, stop);
+                    catch (Exception) { }   // gestopt of verbinding weg: de ontvangstlus merkt het zelf
+                });
 
                 var buf = new byte[16 * 1024];
-                while (ws.State == WebSocketState.Open)
+                try
                 {
-                    using var bericht = new MemoryStream();
-                    WebSocketReceiveResult ontvangen;
-                    do
+                    while (ws.State == WebSocketState.Open)
                     {
-                        ontvangen = await ws.ReceiveAsync(buf, stop);
-                        bericht.Write(buf, 0, ontvangen.Count);
-                    } while (!ontvangen.EndOfMessage && ontvangen.MessageType != WebSocketMessageType.Close);
-                    if (ontvangen.MessageType == WebSocketMessageType.Close) break;
-                    var tekst = Encoding.UTF8.GetString(bericht.ToArray());
-                    if (tekst.Contains("\"postgres_changes\"")) App.Ui.TryEnqueue(() => _ = Nu());
-                    else if (tekst.Contains("\"phx_error\"") || tekst.Contains("\"status\":\"error\"")) { App.Log("Realtime: " + tekst); break; }
+                        using var bericht = new MemoryStream();
+                        WebSocketReceiveResult ontvangen;
+                        do
+                        {
+                            ontvangen = await ws.ReceiveAsync(buf, stop);
+                            bericht.Write(buf, 0, ontvangen.Count);
+                        } while (!ontvangen.EndOfMessage && ontvangen.MessageType != WebSocketMessageType.Close);
+                        if (ontvangen.MessageType == WebSocketMessageType.Close) break;
+                        var tekst = Encoding.UTF8.GetString(bericht.ToArray());
+                        if (tekst.Contains("\"postgres_changes\"")) App.Ui.TryEnqueue(() => _ = Nu());
+                        else if (tekst.Contains("\"phx_error\"") || tekst.Contains("\"status\":\"error\"")) { App.Log("Realtime: " + tekst); break; }
+                    }
                 }
+                finally { hart.Cancel(); }
             }
             catch (OperationCanceledException) { return; }
             catch (Exception e) { App.Log("Realtime: " + e.Message); }

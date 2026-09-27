@@ -45,6 +45,7 @@ public partial class App : Application
     public static bool SneltoetsWerkt;
     public HoofdVenster Hoofd = null!;
     SnelVenster? _snel;
+    DispatcherQueueTimer? _sneltoetsTimer;
 
     public App()
     {
@@ -68,7 +69,15 @@ public partial class App : Application
         Win32.Snelvenster = ToonSnel;
         Win32.Openen = Toon;
         Win32.Afsluiten = Afsluiten;
-        SneltoetsWerkt = Win32.Start(WindowNative.GetWindowHandle(Hoofd));
+        Win32.Start(WindowNative.GetWindowHandle(Hoofd));
+        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KNIV_MAP"))) SneltoetsWerkt = true;   // testexemplaar: de sneltoets blijft van de echte Kniv
+        else if (!(SneltoetsWerkt = Win32.RegistreerSneltoets()))
+        {
+            var t = _sneltoetsTimer = Ui.CreateTimer();   // elke minuut opnieuw: misschien komt hij vrij
+            t.Interval = TimeSpan.FromMinutes(1);
+            t.Tick += (_, _) => { if (!Win32.RegistreerSneltoets()) return; t.Stop(); SneltoetsWerkt = true; Hoofd.ToonSneltoetsStatus(); };
+            t.Start();
+        }
         Hoofd.ToonSneltoetsStatus();
         Klok.Start();
         Updates.Start();
@@ -177,7 +186,12 @@ static class Updates
 
     static void Zet(string s) { Status = s; Veranderd?.Invoke(); }
 
-    public static void Herstart() { if (Klaar != null) Mgr.ApplyUpdatesAndRestart(Klaar); }
+    public static void Herstart()
+    {
+        if (Klaar == null) return;
+        Win32.Stop();   // anders blijft er een dood icoon in het systeemvak staan
+        Mgr.ApplyUpdatesAndRestart(Klaar);
+    }
 
     public static void BijAfsluiten()
     {
@@ -281,6 +295,10 @@ static class Zelftest
         Is(Herinnering.Vind("maandag om 14:30", zaterdag)?.dag == new DateTime(2026, 9, 28, 14, 30, 0), "maandag 14:30");
         Is(Herinnering.Vind("feestje 3 mei", zaterdag)?.dag.Year == 2027, "voorbije datum = volgend jaar");
         Is(Herinnering.Vind("om 9 bellen", zaterdag)?.dag.Day == 27, "tijd al voorbij = morgen");
+        Is(Herinnering.Vind("om 3 bellen", zaterdag)?.dag == new DateTime(2026, 9, 26, 15, 0, 0), "om 3 = middag");
+        Is(Herinnering.Vind("morgen om 7 vroeg", zaterdag)?.dag == new DateTime(2026, 9, 27, 7, 0, 0), "om 7 vroeg = ochtend");
+        Is(Herinnering.Vind("om 14.30 tandarts", zaterdag)?.dag == new DateTime(2026, 9, 26, 14, 30, 0), "om 14.30");
+        Is(Herinnering.Vind("brood 2.50", zaterdag) == null, "prijs is geen tijd");
         Is(Herinnering.Vind("gewoon tekst", zaterdag) == null && Herinnering.Vind("morgenochtend", zaterdag) == null, "geen moment");
 
         // Sync: een rij van de server wordt een notitie, een oudere rij wint niet, verwijderd haalt hem weg.

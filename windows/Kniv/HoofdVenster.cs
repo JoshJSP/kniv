@@ -102,7 +102,7 @@ public sealed class HoofdVenster : Window
     readonly NavigationView _nav;
     readonly InfoBar _updateBalk = new() { Severity = InfoBarSeverity.Success, Title = "Nieuwe versie", IsClosable = true, Margin = new Thickness(16, 0, 16, 8) };
     readonly InfoBar _sneltoetsBalk = new() { Severity = InfoBarSeverity.Warning, Title = "Win+Shift+K werkt niet", IsClosable = true, Margin = new Thickness(16, 0, 16, 8),
-        Message = "Een ander programma gebruikt deze sneltoets al. Open Kniv via het systeemvak." };
+        Message = "Een ander programma gebruikt deze sneltoets al (misschien draait Kniv al). Kniv probeert het elke minuut opnieuw; open Kniv tot die tijd via het systeemvak." };
     readonly Dictionary<string, Func<UIElement>> _maak;
     readonly Dictionary<string, UIElement> _paginas = new();
 
@@ -472,8 +472,16 @@ public sealed class VastleggenPagina : UserControl
         };
         if (await dlg.ShowAsync() != ContentDialogResult.Primary) return;
         var (rest, items) = NotitieParser.Ontleed(tekst.Text);
+        // Tijdens het bewerken kan de sync hem vervangen of weggehaald hebben: opnieuw opzoeken.
+        if (Opslag.Data.Notities.FirstOrDefault(x => x.Id == n.Id) is { } huidig) n = huidig;
+        else
+        {   // elders verwijderd: je bewerking niet weggooien maar als nieuwe notitie bewaren
+            n = new Notitie { Bakje = n.Bakje, Foto = n.Foto != null && File.Exists(Opslag.FotoPad(n.Foto)) ? n.Foto : null };
+            Opslag.Data.Notities.Insert(0, n);
+        }
         n.Tekst = rest;
-        n.Items = items.Select(t => n.Items.FirstOrDefault(i => i.Tekst == t) ?? new LijstItem { Tekst = t }).ToList();
+        var pak = LijstItem.Koppel(n.Items);
+        n.Items = items.Select(t => pak(t) ?? new LijstItem { Tekst = t }).ToList();
         n.Gewijzigd = DateTime.UtcNow;
         if (bakje.SelectedItem is string b && b != n.Bakje) Opslag.Kies(n, b, leer: true);
         else Opslag.Bewaar();
@@ -493,7 +501,9 @@ public sealed class VastleggenPagina : UserControl
         if (!Doorgestreept.Add(item.Id)) return;
         await Task.Delay(2000);
         if (!Doorgestreept.Remove(item.Id)) return;
-        n.Items.Remove(item);
+        var plek = n.Items.FindIndex(i => i.Id == item.Id);   // de lijst kan intussen door de sync vervangen zijn
+        if (plek < 0) return;
+        n.Items.RemoveAt(plek);
         n.Gewijzigd = DateTime.UtcNow;
         if (n.Items.Count == 0 && n.Tekst == "" && n.Foto == null) Opslag.Verwijder(n);
         else Opslag.Bewaar();

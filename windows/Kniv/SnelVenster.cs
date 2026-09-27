@@ -34,7 +34,11 @@ public sealed class SnelVenster : Window
         AppWindow.IsShownInSwitchers = false;
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "kniv.ico"));
         AppWindow.Closing += (s, e) => { e.Cancel = true; s.Hide(); };
-        Activated += (_, e) => { if (e.WindowActivationState == WindowActivationState.Deactivated) AppWindow.Hide(); };
+        Activated += (_, e) =>
+        {
+            if (e.WindowActivationState == WindowActivationState.Deactivated) AppWindow.Hide();
+            else _invoer.Focus(FocusState.Programmatic);   // pas nu: vóór activeren pakt de focus niet
+        };
 
         var logo = new FontIcon { Glyph = "", FontSize = 20, Foreground = Ui.Kwast("AccentTextFillColorPrimaryBrush"), VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 8, 0, 0) };
         var balk = new Grid { ColumnSpacing = 8 };
@@ -121,7 +125,6 @@ public sealed class SnelVenster : Window
         AppWindow.Show();
         Activate();
         Win32.NaarVoren(_hwnd);
-        _invoer.Focus(FocusState.Programmatic);
     }
 
     void Bewaard(Notitie? n)

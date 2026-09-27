@@ -27,7 +27,8 @@ jobs:
       run:
         shell: pwsh
     env:
-      VERSIE: 0.1.${{ github.run_number }}
+      # 0.2.x: 0.1.50 is lokaal gebouwd toen de Actions-minuten op waren
+      VERSIE: 0.2.${{ github.run_number }}
       REPO: JoshJSP/kniv-releases
 
     steps:

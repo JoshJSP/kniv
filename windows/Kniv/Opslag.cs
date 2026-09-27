@@ -33,6 +33,20 @@ public class LijstItem
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Tekst { get; set; } = "";
     public Guid? Door { get; set; }            // wie het item toevoegde (profielbolletje op de telefoon)
+
+    /// Zoekt bij een tekst een oud item met die tekst, elk oud item maar één keer (anders vinkt één klik twee items af).
+    public static Func<string, LijstItem?> Koppel(IEnumerable<LijstItem> oud)
+    {
+        var over = oud.ToList();
+        return tekst =>
+        {
+            var i = over.FindIndex(o => o.Tekst == tekst);
+            if (i < 0) return null;
+            var o = over[i];
+            over.RemoveAt(i);
+            return o;
+        };
+    }
 }
 
 public class Bakje
@@ -64,6 +78,7 @@ public class KnivData
     public Dictionary<Guid, DateTime> Gesynct { get; set; } = new();
     public Dictionary<Guid, DateTime> Weg { get; set; } = new();
     public DateTime? OpgehaaldTot { get; set; }
+    public Guid? SyncVan { get; set; }         // van welke gebruiker de sync-gegevens hierboven zijn (blijft staan na een verlopen sessie)
 }
 
 public static class Opslag
@@ -77,30 +92,55 @@ public static class Opslag
 
     public static KnivData Data { get; private set; } = new();
     public static event Action? Gewijzigd;
+    static bool _geladen;   // false: kniv.json kon niet gelezen worden, dus niet overschrijven
 
     public static void Laad()
     {
         Directory.CreateDirectory(FotoMap);
-        try
+        try { Data = Lees(Bestand) ?? Reserve(); _geladen = true; }
+        catch (JsonException)
         {
-            if (File.Exists(Bestand)) Data = JsonSerializer.Deserialize<KnivData>(File.ReadAllText(Bestand), Json) ?? new();
+            // Kapot bestand niet overschrijven: bewaar het ernaast en val terug op de vorige versie.
+            try { File.Copy(Bestand, Bestand + $".kapot-{DateTime.Now:yyyyMMdd-HHmmss}", true); _geladen = true; }
+            catch (Exception e) { App.Log(e); }
+            Data = Reserve();
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            // Kapot bestand niet overschrijven: bewaar het ernaast en begin schoon.
-            File.Copy(Bestand, Bestand + $".kapot-{DateTime.Now:yyyyMMdd-HHmmss}", true);
-            Data = new();
+            // Op slot (virusscanner, OneDrive) of onleesbaar: niets overschrijven zolang dat zo is.
+            App.Log(e);
+            Data = Reserve();
         }
         if (Data.Bakjes.Count == 0)
             Data.Bakjes = Sorteerder.StandaardBakjes.Select(n => new Bakje { Naam = n, Vast = true }).ToList();
     }
 
-    /// Schrijft via een tijdelijk bestand, zodat een crash halverwege nooit de data kost.
+    /// null = bestaat niet. JsonException = kapot; een IO-fout wordt een paar keer opnieuw geprobeerd.
+    static KnivData? Lees(string pad)
+    {
+        for (var poging = 1; ; poging++)
+            try { return File.Exists(pad) ? JsonSerializer.Deserialize<KnivData>(File.ReadAllText(pad), Json) ?? new() : null; }
+            catch (Exception e) when (e is not JsonException && poging < 5) { Thread.Sleep(200); }
+    }
+
+    static KnivData Reserve()
+    {
+        try { return Lees(Bestand + ".bak") ?? new(); }
+        catch (Exception e) { App.Log(e); return new(); }
+    }
+
+    /// Schrijft via een tijdelijk bestand (echt op schijf) en houdt de vorige versie als .bak, zodat een crash nooit de data kost.
     public static void Bewaar()
     {
+        if (!_geladen) { App.Log("Niet bewaard: kniv.json kon bij het starten niet gelezen worden."); return; }
         var tmp = Bestand + ".tmp";
-        File.WriteAllText(tmp, JsonSerializer.Serialize(Data, Json));
-        File.Move(tmp, Bestand, true);
+        using (var f = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            JsonSerializer.Serialize(f, Data, Json);
+            f.Flush(true);
+        }
+        if (File.Exists(Bestand)) File.Replace(tmp, Bestand, Bestand + ".bak");
+        else File.Move(tmp, Bestand);
         Gewijzigd?.Invoke();
     }
 
@@ -147,7 +187,8 @@ public static class Opslag
     {
         if (n.Foto != null) try { File.Delete(FotoPad(n.Foto)); } catch (IOException) { }
         Data.Notities.Remove(n);
-        if (Data.Gesynct.ContainsKey(n.Id)) Data.Weg[n.Id] = DateTime.UtcNow;   // andere apparaten moeten hem ook weghalen
+        // Ooit verstuurd (of onderweg): andere apparaten moeten hem ook weghalen.
+        if (Data.Gesynct.ContainsKey(n.Id) || n.Eigenaar != null) Data.Weg[n.Id] = DateTime.UtcNow;
         Bewaar();
     }
 

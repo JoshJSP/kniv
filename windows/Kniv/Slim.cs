@@ -74,8 +74,11 @@ public static class Herinnering
         }
 
         (int uur, int minuut)? tijd = null;
-        if (Rx.Eerste(@"\b(\d{1,2})[:.](\d{2})\b", klein) is { } t1 && int.Parse(t1[1]) < 24 && int.Parse(t1[2]) < 60) tijd = (int.Parse(t1[1]), int.Parse(t1[2]));
-        else if (Rx.Eerste(@"\bom (\d{1,2})\b", klein) is { } t2 && int.Parse(t2[1]) < 24) tijd = (int.Parse(t2[1]), 0);
+        // "14:30", of "om 14.30"; een los "2.50" is een prijs, geen tijd. "om 3" is 's middags, tenzij het ochtend is.
+        var ochtend = woorden.Overlaps(new[] { "ochtend", "morgens", "vroeg", "am" });
+        int Middag(int u) => u is >= 1 and <= 7 && !ochtend ? u + 12 : u;
+        if ((Rx.Eerste(@"\b(\d{1,2}):(\d{2})\b", klein) ?? Rx.Eerste(@"\bom (\d{1,2})\.(\d{2})\b", klein)) is { } t1 && int.Parse(t1[1]) < 24 && int.Parse(t1[2]) < 60) tijd = (int.Parse(t1[1]), int.Parse(t1[2]));
+        else if (Rx.Eerste(@"\bom (\d{1,2})\b", klein) is { } t2 && int.Parse(t2[1]) < 24) tijd = (Middag(int.Parse(t2[1])), 0);
         else if (woorden.Overlaps(new[] { "vanavond", "tonight" })) tijd = (19, 0);
 
         // Alleen een tijd ("om 14:00 bellen") betekent vandaag, of morgen als dat al voorbij is.

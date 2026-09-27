@@ -18,8 +18,7 @@ static class Win32
 
     public static Action? Sneltoets, Openen, Snelvenster, Afsluiten;
 
-    /// Geeft false als Win+Shift+K al door iets anders bezet is.
-    public static bool Start(IntPtr hwnd)
+    public static void Start(IntPtr hwnd)
     {
         _hwnd = hwnd;
         _proc = Proc;
@@ -28,8 +27,10 @@ static class Win32
         _icoon = LoadImage(IntPtr.Zero, Path.Combine(AppContext.BaseDirectory, "kniv.ico"), 1 /*IMAGE_ICON*/,
             GetSystemMetrics(49), GetSystemMetrics(50), 0x10 /*LR_LOADFROMFILE*/);
         VoegIcoonToe();
-        return RegisterHotKey(hwnd, 1, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, VK_K);
     }
+
+    /// Geeft false als Win+Shift+K al door iets anders bezet is.
+    public static bool RegistreerSneltoets() => RegisterHotKey(_hwnd, 1, MOD_WIN | MOD_SHIFT | MOD_NOREPEAT, VK_K);
 
     public static void Stop()
     {
@@ -49,16 +50,22 @@ static class Win32
 
     static IntPtr Proc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr id, UIntPtr data)
     {
-        if (msg == WM_HOTKEY && wParam == 1) { Sneltoets?.Invoke(); return IntPtr.Zero; }
+        if (msg == WM_HOTKEY && wParam == 1) { Veilig(Sneltoets); return IntPtr.Zero; }
         if (msg == _taskbarCreated) VoegIcoonToe();  // Verkenner herstart: icoon terugzetten
         if (msg == WM_APP_TRAY)
         {
             var muis = (int)lParam & 0xFFFF;
-            if (muis == WM_LBUTTONUP) Openen?.Invoke();
-            else if (muis is WM_RBUTTONUP or WM_CONTEXTMENU) Menu();
+            if (muis == WM_LBUTTONUP) Veilig(Openen);
+            else if (muis is WM_RBUTTONUP or WM_CONTEXTMENU) Veilig(Menu);
             return IntPtr.Zero;
         }
         return DefSubclassProc(hWnd, msg, wParam, lParam);
+    }
+
+    /// Een exception die uit de WndProc ontsnapt, beëindigt het hele proces.
+    static void Veilig(Action? a)
+    {
+        try { a?.Invoke(); } catch (Exception e) { App.Log(e); }
     }
 
     static void Menu()
