@@ -25,7 +25,7 @@ import SwiftUI
     }
 
     /// Wie jij bent in dit potje. Bij je eigen potje "Ik"; in een gedeeld potje van een ander kies je dat één keer.
-    var mijnNaam: String? {
+    @MainActor var mijnNaam: String? {
         get {
             if let n = UserDefaults.standard.string(forKey: "pot.ik.\(uid)"), leden.contains(n) { return n }
             let vanMij = eigenaarID == nil || eigenaarID == Sync.shared.gebruiker
