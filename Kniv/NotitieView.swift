@@ -73,6 +73,8 @@ struct NotitieView: View {
 
             VerjaardagKnop(notitie: notitie)
 
+            UitleenKnop(notitie: notitie)
+
             TijdcapsuleSectie(notitie: notitie)
 
             if BonParser.lijktBon(notitie.fotoTekst) || notitie.garantieTot != nil {

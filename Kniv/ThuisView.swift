@@ -61,6 +61,7 @@ struct ThuisView: View {
                         }
                         .buttonStyle(.plain)
                         .disabled(!mes.klaar)
+                        .contextMenu { snelleActies(mes) }
                         .matchedTransitionSource(id: mes, in: ns)
                     }
                 }
@@ -117,6 +118,31 @@ struct ThuisView: View {
         if mes == .timers { return Pomodoro.shared.loopt ? (Pomodoro.shared.fase == .werk ? "Focus loopt" : "Pauze loopt") : nil }
         guard mes == .vastleggen, !teSorteren.isEmpty else { return nil }
         return teSorteren.count == 1 ? "1 te checken" : "\(teSorteren.count) te checken"
+    }
+
+    /// Lang indrukken op een tegel: meteen naar wat je wilt doen.
+    @ViewBuilder private func snelleActies(_ mes: Mes) -> some View {
+        switch mes {
+        case .vastleggen:
+            Button { AppStatus.shared.startInspreken = true } label: { Label("Inspreken", systemImage: "mic") }
+            Button { AppStatus.shared.actie = "foto" } label: { Label("Foto maken", systemImage: "camera") }
+            Button { AppStatus.shared.actie = "lijst" } label: { Label("Afvinklijstje", systemImage: "checklist") }
+        case .timers:
+            Button {
+                if !Pomodoro.shared.loopt { Pomodoro.shared.start() }
+                pad = NavigationPath([Mes.timers])
+            } label: { Label("Start focus", systemImage: "timer") }
+        case .kiezen:
+            Button {
+                AppStatus.shared.kiesTab = "Rad"
+                pad = NavigationPath([Mes.kiezen])
+            } label: { Label("Rad van fortuin", systemImage: "circle.dashed") }
+            Button { Task { await SamenKiezen.shared.doeMee(SamenKiezen.nieuweCode()) }; pad = NavigationPath([Mes.kiezen]) } label: {
+                Label("Kies samen met vrienden", systemImage: "person.2")
+            }
+        default:
+            Button { open(mes) } label: { Label(mes.naam, systemImage: mes.symbool) }
+        }
     }
 
     /// Opent Vastleggen vers, zodat het scherm bij verschijnen de actie (inspreken, foto…) oppakt.

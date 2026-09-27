@@ -2531,6 +2531,36 @@
         }
       }
     },
+    "Heeft %@ je %@ al teruggegeven?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Has %1$@ given back your %2$@ yet?"
+          }
+        }
+      }
+    },
+    "Over twee weken vraagt Kniv het je": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv will ask you in two weeks"
+          }
+        }
+      }
+    },
+    "Herinner me eraan om %@ terug te vragen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me to ask for my %@ back"
+          }
+        }
+      }
+    },
     "Even denken…": {
       "localizations": {
         "en": {

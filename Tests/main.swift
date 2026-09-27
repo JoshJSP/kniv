@@ -113,4 +113,9 @@ check(Verjaardag.vind(in: "tandarts 12 mei") == nil, "geen verjaardag zonder dat
 check(Studieplan.werk(uit: "120 pagina's").map { $0.aantal == 120 && $0.eenheid == "pagina's" } == true, "studieplan: werk lezen")
 check(Studieplan.perDag(werk: 120, dagen: 11) == 11 && Studieplan.perDag(werk: 5, dagen: 0) == 5, "studieplan: per dag afronden")
 
+check(Uitlenen.vind(in: "Sam heeft mijn oplader").map { $0.wie == "Sam" && $0.wat == "oplader" } == true, "uitlenen: X heeft mijn Y")
+check(Uitlenen.vind(in: "boek geleend aan Lisa").map { $0.wie == "Lisa" && $0.wat == "boek" } == true, "uitlenen: Y geleend aan X")
+check(Uitlenen.vind(in: "mijn fiets uitgeleend aan Tom").map { $0.wie == "Tom" && $0.wat == "fiets" } == true, "uitlenen: mijn Y uitgeleend aan X")
+check(Uitlenen.vind(in: "morgen oma bellen") == nil, "uitlenen: gewone notitie")
+
 print("Alle Kniv-checks geslaagd")
