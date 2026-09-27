@@ -129,4 +129,8 @@ check(Gehoor.veiligeMinuten(bij: 85) == 480 && Gehoor.veiligeMinuten(bij: 100) =
 check(Gehoor.veiligeMinuten(bij: 60) == .infinity, "gehoor: rustig is onbeperkt")
 check(abs(Gehoor.portie([(db: 100, seconden: 450)]) - 0.5) < 0.001, "gehoor: 7,5 min bij 100 dB = halve portie")
 
+check(BonParser.totaal("Melk 1,29\nBrood 2,49\nSubtotaal 3,78\nTOTAAL 3,78\nPIN 3,78") == 3.78, "bon: totaalregel")
+check(BonParser.totaal("Melk 1,29\nBrood 2,49").map { abs($0 - 3.78) < 0.001 } == true, "bon: som als er geen totaal staat")
+check(BonParser.totaal("gewoon tekst") == nil, "bon: geen bedragen")
+
 print("Alle Kniv-checks geslaagd")

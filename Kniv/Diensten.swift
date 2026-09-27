@@ -17,7 +17,7 @@ import VisionKit
     private var taak: SFSpeechRecognitionTask?
     private var opname: AVAudioFile?
     private var zekerheid: Float = 0
-    private let opnamePad = FileManager.default.temporaryDirectory.appending(path: "kniv-spraak.m4a")
+    let opnamePad = FileManager.default.temporaryDirectory.appending(path: "kniv-spraak.m4a")
 
     enum Fout: Error { case geenToestemming, geenHerkenner }
 

@@ -171,7 +171,7 @@ struct VastleggenView: View {
         if spraak.bezig {
             let _ = await spraak.stop()
             if let beter = await spraak.verbeter() { invoer = voorSpraak + beter }
-            bewaar(invoer, bron: .spraak)
+            bewaar(invoer, bron: .spraak, audio: Opnames.bewaar(van: spraak.opnamePad))
         } else {
             voorSpraak = invoer.isEmpty ? "" : invoer + " "
             do { try await spraak.start() } catch {
@@ -180,8 +180,9 @@ struct VastleggenView: View {
         }
     }
 
-    private func bewaar(_ tekst: String, bron: Bron) {
+    private func bewaar(_ tekst: String, bron: Bron, audio: String? = nil) {
         guard let n = Vastlegger.bewaar(tekst, bron: bron, in: ctx) else { return }
+        n.audioBestand = audio
         invoer = ""
         bewaardTik += 1
         if let moment = Herinnering.vind(in: n.zoekTekst) {

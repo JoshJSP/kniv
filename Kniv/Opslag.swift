@@ -42,6 +42,7 @@ enum Bron: String {
     var eigenaarID: UUID?
     var garantieTot: Date?
     var verzegeldTot: Date?
+    var audioBestand: String?
     @Relationship(deleteRule: .cascade, inverse: \LijstItem.notitie) var items: [LijstItem] = []
 
     init(tekst: String, bron: Bron, fotoBestand: String? = nil) {
@@ -155,6 +156,7 @@ enum KnivOpslag {
     static func verwijder(_ n: Notitie, in ctx: ModelContext, uitCloud: Bool = true) {
         if uitCloud && n.deling != "prive" { Sync.shared.markeerVerwijderd(n) }
         if let f = n.fotoBestand { try? FileManager.default.removeItem(at: Fotos.url(f)) }
+        if let a = n.audioBestand { try? FileManager.default.removeItem(at: Opnames.url(a)) }
         ctx.delete(n)
         try? ctx.save()
     }

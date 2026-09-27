@@ -2531,6 +2531,56 @@
         }
       }
     },
+    "Luister je opname terug": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen to your recording"
+          }
+        }
+      }
+    },
+    "Gescande bonnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanned receipts"
+          }
+        }
+      }
+    },
+    "Deze maand %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This month %@"
+          }
+        }
+      }
+    },
+    "Maand": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Month"
+          }
+        }
+      }
+    },
+    "Bedrag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount"
+          }
+        }
+      }
+    },
     "Geëxporteerd op %@": {
       "localizations": {
         "en": {

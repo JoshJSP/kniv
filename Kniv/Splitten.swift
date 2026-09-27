@@ -516,6 +516,7 @@ struct BonView: View {
 
     var body: some View {
         List {
+            UitgavenKaart()
             Section {
                 Button { toonCamera = true } label: { Label(regels.isEmpty ? "Scan een bon" : "Andere bon scannen", systemImage: "doc.viewfinder") }
                 TextField("Wie waren er? (komma's)", text: $mensen)

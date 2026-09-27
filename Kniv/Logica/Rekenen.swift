@@ -65,6 +65,18 @@ enum BonParser {
     }
 
     static func bedrag(_ s: String) -> Double? { Double(s.replacingOccurrences(of: ",", with: ".")) }
+
+    /// Het totaalbedrag van een bon: de regel met "totaal"/"te betalen", anders de som van de regels.
+    static func totaal(_ tekst: String) -> Double? {
+        for regel in tekst.components(separatedBy: .newlines) {
+            let klein = regel.lowercased()
+            guard ["totaal", "total", "te betalen"].contains(where: klein.contains), !klein.contains("subtotaal"),
+                  let m = Herinnering.eersteMatch(#"(-?\d{1,5}[.,]\d{2})\s*$"#, in: regel.trimmingCharacters(in: .whitespaces)) else { continue }
+            return bedrag(m[1])
+        }
+        let som = regels(tekst).reduce(0) { $0 + $1.prijs }
+        return som > 0 ? som : nil
+    }
 }
 
 // MARK: omzetten: "3 cups bloem", "45 usd", "30% korting op 89", "10 km in mijl"

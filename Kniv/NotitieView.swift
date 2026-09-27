@@ -70,6 +70,8 @@ struct NotitieView: View {
                 }
             }
 
+            if let audio = notitie.audioBestand { OpnameSectie(naam: audio) }
+
             SlimmeKnoppen(notitie: notitie)
 
             DenktMeeSectie(notitie: notitie)

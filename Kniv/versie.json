@@ -1,12 +1,12 @@
 {
-  "versie": "0.30.0",
-  "mesnaam": "Bushcraft",
+  "versie": "0.31.0",
+  "mesnaam": "Spyderco",
   "nieuw": [
+    "Ingesproken notities bewaren de opname: luister terug als de tekst niet klopt",
+    "Splitten → Bon: zie per maand wat je aan gescande bonnen uitgaf",
     "Exporteer alles (Instellingen): al je gegevens in één leesbaar bestand",
     "Knoppen in meldingen: timer klaar → +5 min, herinnering → over een uur of morgen",
     "Prikken (bij Kiezen): wanneer kan iedereen? Kies data, deel de link, zie de beste dag",
-    "Gehoorportie (bij Meten → Geluid): Kniv waarschuwt voordat harde muziek je oren beschadigt",
-    "Kniv ziet wat je bedoelt: agenda, bellen, route en links vanuit een notitie",
-    "Kies de taal van Kniv in Instellingen: Nederlands, English of zoals je iPhone"
+    "Gehoorportie (bij Meten → Geluid): Kniv waarschuwt voordat harde muziek je oren beschadigt"
   ]
 }
