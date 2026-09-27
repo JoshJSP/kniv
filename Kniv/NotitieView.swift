@@ -371,6 +371,12 @@ struct InstellingenView: View {
             Section { NavigationLink { AlleTipsView() } label: { Label("Wat Kniv allemaal kan", systemImage: "lightbulb") } }
 
             Section {
+                ExportKnop()
+            } footer: {
+                Text("Al je notities, lijstjes, countdowns en potjes in één leesbaar bestand.")
+            }
+
+            Section {
                 LabeledContent("Versie", value: VersieInfo.huidig.map { "\($0.mesnaam) · \($0.versie)" } ?? "?")
                     .contentShape(Rectangle())
                     .onTapGesture {

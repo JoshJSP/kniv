@@ -2531,6 +2531,56 @@
         }
       }
     },
+    "Geëxporteerd op %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exported on %@"
+          }
+        }
+      }
+    },
+    "Potje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pot"
+          }
+        }
+      }
+    },
+    "Deel of bewaar je export": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share or save your export"
+          }
+        }
+      }
+    },
+    "Exporteer alles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export everything"
+          }
+        }
+      }
+    },
+    "Al je notities, lijstjes, countdowns en potjes in één leesbaar bestand.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All your notes, lists, countdowns and pots in one readable file."
+          }
+        }
+      }
+    },
     "+5 min": {
       "localizations": {
         "en": {
