@@ -1,13 +1,12 @@
 {
-  "versie": "0.25.0",
-  "mesnaam": "Santoku Twee",
+  "versie": "0.26.0",
+  "mesnaam": "Stiletto",
   "nieuw": [
+    "Wist je dat…: elke dag één tip over wat Kniv kan",
+    "Instellingen → Wat Kniv allemaal kan",
     "Vertaal wat je scant: menukaarten en borden in het buitenland, offline",
     "Slaapadvies (bij Timers): hoe laat naar bed om fris wakker te worden, met een seintje",
     "Win+Shift+K op je laptop rekent nu ook sommen uit",
-    "Bij het openen klapt het lemmet uit het handvat",
-    "Vraag Siri: 'Wat staat er vandaag in Kniv?' en hoor je dag in één adem",
-    "Terugvinden met parkeertijd: leg je auto vast en de parkeertimer loopt meteen",
-    "Zuiniger: de Vandaag-kaart rekent alleen nog als er iets verandert"
+    "Bij het openen klapt het lemmet uit het handvat"
   ]
 }
