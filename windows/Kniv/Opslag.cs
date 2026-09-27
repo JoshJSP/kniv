@@ -16,6 +16,9 @@ public class Notitie
     public string? Bakje { get; set; }         // null = nog niet gesorteerd
     public List<string> Twijfel { get; set; } = new();
     public List<LijstItem> Items { get; set; } = new();
+    public string? FotoTekst { get; set; }     // tekst uit een telefoonfoto (de foto zelf synct niet)
+    public Guid? Eigenaar { get; set; }        // Supabase: wie hem maakte (null = nog nooit gesynct)
+    public Guid? Groep { get; set; }           // Supabase: gedeelde groep, null = alleen eigen apparaten
 
     [JsonIgnore] public string ZoekTekst => string.Join("\n", new[] { Tekst, Foto ?? "" }.Concat(Items.Select(i => i.Tekst)));
     [JsonIgnore] public string Titel =>
@@ -29,6 +32,7 @@ public class LijstItem
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Tekst { get; set; } = "";
+    public Guid? Door { get; set; }            // wie het item toevoegde (profielbolletje op de telefoon)
 }
 
 public class Bakje
@@ -56,11 +60,17 @@ public class KnivData
     public List<LosseTimer> Timers { get; set; } = new();
     public Dictionary<string, double> Koersen { get; set; } = new();
     public string KoersDatum { get; set; } = "";
+    // Sync (zie Sync.cs): laatst verstuurde/ontvangen gewijzigd-tijd per notitie, nog te verwijderen ids, en tot waar opgehaald.
+    public Dictionary<Guid, DateTime> Gesynct { get; set; } = new();
+    public Dictionary<Guid, DateTime> Weg { get; set; } = new();
+    public DateTime? OpgehaaldTot { get; set; }
 }
 
 public static class Opslag
 {
-    public static readonly string Map = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Kniv");
+    // KNIV_MAP: andere map, om te testen zonder de echte gegevens te raken.
+    public static readonly string Map = Environment.GetEnvironmentVariable("KNIV_MAP") is { Length: > 0 } m ? m
+        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Kniv");
     public static readonly string FotoMap = Path.Combine(Map, "fotos");
     static readonly string Bestand = Path.Combine(Map, "kniv.json");
     static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
@@ -137,6 +147,7 @@ public static class Opslag
     {
         if (n.Foto != null) try { File.Delete(FotoPad(n.Foto)); } catch (IOException) { }
         Data.Notities.Remove(n);
+        if (Data.Gesynct.ContainsKey(n.Id)) Data.Weg[n.Id] = DateTime.UtcNow;   // andere apparaten moeten hem ook weghalen
         Bewaar();
     }
 

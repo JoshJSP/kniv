@@ -125,7 +125,9 @@ public sealed class HoofdVenster : Window
 
         _maak = new()
         {
+            ["Vandaag"] = () => new VandaagPagina(),
             ["Vastleggen"] = () => new VastleggenPagina(),
+            ["Beheer"] = () => new BeheerPagina(),
             ["Timers"] = () => new TimersPagina(),
             ["Splitten"] = () => new SplittenPagina(),
             ["Kiezen"] = () => new KiezenPagina(),
@@ -140,6 +142,9 @@ public sealed class HoofdVenster : Window
         };
         foreach (var (naam, glyph) in new[] { ("Vastleggen", ""), ("Timers", ""), ("Splitten", ""), ("Kiezen", "") })
             _nav.MenuItems.Add(new NavigationViewItem { Content = naam, Tag = naam, Icon = new FontIcon { Glyph = glyph } });
+        _nav.MenuItems.Insert(0, new NavigationViewItem { Content = "Vandaag", Tag = "Vandaag", Icon = new FontIcon { Glyph = "" } });
+        if (Beheer.Beschikbaar)
+            _nav.FooterMenuItems.Add(new NavigationViewItem { Content = "Beheer", Tag = "Beheer", Icon = new FontIcon { Glyph = "" } });
         _nav.SelectionChanged += (_, e) => Ga(e.IsSettingsSelected ? "Instellingen" : (string)((NavigationViewItem)e.SelectedItem).Tag);
         _nav.Loaded += (_, _) =>
         {
@@ -185,17 +190,19 @@ public sealed class HoofdVenster : Window
 /// Enter bewaart, Shift+Enter is een nieuwe regel, plakken van een afbeelding/bestand en slepen maken een foto-notitie.
 static class Invoer
 {
-    public static void Koppel(TextBox tb, UIElement sleepVlak, Action<Notitie?> bewaard)
+    /// commando: krijgt de tekst bij Enter; true = afgehandeld (timer, rekensom). Ctrl+Enter bewaart altijd als notitie.
+    public static void Koppel(TextBox tb, UIElement sleepVlak, Action<Notitie?> bewaard, Func<string, bool>? commando = null)
     {
         tb.AcceptsReturn = true;
         tb.TextWrapping = TextWrapping.Wrap;
         tb.PreviewKeyDown += (_, e) =>
         {
             if (e.Key != Windows.System.VirtualKey.Enter) return;
-            var shift = Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Shift)
+            bool Ingedrukt(Windows.System.VirtualKey k) => Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(k)
                 .HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
-            if (shift) return;
+            if (Ingedrukt(Windows.System.VirtualKey.Shift)) return;
             e.Handled = true;
+            if (!Ingedrukt(Windows.System.VirtualKey.Control) && commando?.Invoke(tb.Text) == true) return;
             var n = Opslag.Nieuw(tb.Text);
             if (n != null) tb.Text = "";
             bewaard(n);
@@ -505,6 +512,22 @@ public sealed class InstellingenPagina : UserControl
     readonly StackPanel _bakjes = new() { Spacing = 4 };
     readonly TextBlock _updateStatus = Ui.Tekst("", zacht: true);
     readonly Button _herstart = Ui.Knop("Herstart en installeer", Updates.Herstart, accent: true);
+    readonly TextBlock _wie = Ui.Tekst(""), _syncStatus = Ui.Tekst("", "CaptionTextBlockStyle", zacht: true);
+    readonly Button _inloggen = Ui.Knop("Inloggen met Google", () => _ = Sync.Inloggen(), accent: true);
+    readonly Button _uitloggen = Ui.Knop("Uitloggen", () => _ = Sync.Uitloggen());
+
+    void ToonAccount()
+    {
+        var w = Sync.Wie;
+        _wie.Text = w == null
+            ? "Log in om je notities te synchroniseren met je iPhone en gedeelde lijsten te zien."
+            : w.Naam != "" ? $"{w.Naam} · {w.Email}" : w.Email;
+        _syncStatus.Text = Sync.Status != "" ? Sync.Status
+            : w == null ? "Privé blijft altijd op je telefoon; alleen tekst gaat mee, geen foto's."
+            : Sync.Laatst is { } t ? $"Gesynchroniseerd om {t:HH:mm:ss}" : "Synchroniseren…";
+        _inloggen.Visibility = w == null ? Visibility.Visible : Visibility.Collapsed;
+        _uitloggen.Visibility = w == null ? Visibility.Collapsed : Visibility.Visible;
+    }
 
     public InstellingenPagina()
     {
@@ -523,7 +546,14 @@ public sealed class InstellingenPagina : UserControl
         Updates.Veranderd += () => App.Ui.TryEnqueue(ToonUpdate);
         ToonUpdate();
 
+        Sync.Veranderd += () => App.Ui.TryEnqueue(ToonAccount);
+        ToonAccount();
+
         Content = Ui.Pagina("Instellingen",
+            Ui.Kaart(Ui.Stapel(8,
+                Ui.Tekst("Account", "SubtitleTextBlockStyle"),
+                _wie, _syncStatus,
+                Ui.Rij(8, _inloggen, _uitloggen))),
             Ui.Kaart(Ui.Stapel(10,
                 Ui.Tekst("Mijn bakjes", "SubtitleTextBlockStyle"),
                 Ui.Tekst("Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en hij leert van jouw keuzes.", zacht: true),
@@ -534,7 +564,7 @@ public sealed class InstellingenPagina : UserControl
                 Ui.Tekst("Win+Shift+K opent overal een klein Kniv-venster. Sluiten met het kruisje zet Kniv in het systeemvak; afsluiten doe je via het icoon daar.", zacht: true))),
             Ui.Kaart(Ui.Stapel(8,
                 Ui.Tekst("Gegevens", "SubtitleTextBlockStyle"),
-                Ui.Tekst("Alles staat op deze pc in " + Opslag.Map, zacht: true),
+                Ui.Tekst("Alles staat op deze pc in " + Opslag.Map + ". Ingelogd gaan notities (zonder foto's) ook naar je Kniv-account.", zacht: true),
                 Ui.Knop("Map openen", () => Process.Start(new ProcessStartInfo(Opslag.Map) { UseShellExecute = true })))),
             Ui.Kaart(Ui.Stapel(8,
                 Ui.Tekst("Over Kniv", "SubtitleTextBlockStyle"),
