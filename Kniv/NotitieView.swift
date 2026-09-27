@@ -18,6 +18,15 @@ struct NotitieView: View {
     @State private var deelToken: String?
 
     var body: some View {
+        if notitie.isDeleted || notitie.modelContext == nil {
+            ContentUnavailableView("Deze notitie is weg", systemImage: "tray", description: Text("Iemand heeft hem verwijderd."))
+                .onAppear { dismiss() }
+        } else {
+            inhoud
+        }
+    }
+
+    private var inhoud: some View {
         List {
             if let f = notitie.fotoBestand, let beeld = Fotos.miniatuur(f) {
                 Section {
@@ -30,9 +39,9 @@ struct NotitieView: View {
             }
 
             Section {
-                TextField("Notitie", text: $notitie.tekst, axis: .vertical)
+                TextField("Notitie", text: Binding(get: { notitie.tekst }, set: { notitie.tekst = $0; notitie.gewijzigd = Date() }),
+                          axis: .vertical)
                     .lineLimit(1...20)
-                    .onChange(of: notitie.tekst) { notitie.gewijzigd = Date() }
             }
 
             if notitie.isLijst || lijstAan {
@@ -222,6 +231,16 @@ struct NotitieView: View {
     }
 
     private func zetDeling(_ nieuw: String) {
+        if notitie.deling == "gedeeld", nieuw != "gedeeld", let eigenaar = notitie.eigenaarID, eigenaar != Sync.shared.gebruiker {
+            notitie.uid = UUID()
+            notitie.groepID = nil
+            notitie.eigenaarID = nil
+            notitie.gesynct = nil
+            notitie.deling = nieuw
+            notitie.gewijzigd = Date()
+            deelToken = nil
+            return
+        }
         if nieuw == "prive" && notitie.deling != "prive" {
             Sync.shared.markeerVerwijderd(notitie)
             notitie.gesynct = nil

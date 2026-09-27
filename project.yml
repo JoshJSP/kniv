@@ -51,6 +51,7 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: Kniv laat je bij de supermarkt, op school of thuis je lijstje zien, ook als de app dicht is.
         NSContactsUsageDescription: Kniv zoekt wie je wilt bellen als je 'oma bellen' noteert.
         NSCalendarsWriteOnlyAccessUsageDescription: Kniv zet een afspraak uit je notitie in je agenda.
+        NSPhotoLibraryAddUsageDescription: Kniv bewaart een kaartje van je week in je foto's als je daarvoor kiest.
         NSFaceIDUsageDescription: Kniv opent vergrendelde bakjes met Face ID.
         NSCalendarsFullAccessUsageDescription: Kniv kijkt in je agenda om een herinnering op een vrij moment te zetten.
   KnivWidgets:

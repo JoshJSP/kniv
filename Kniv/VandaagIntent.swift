@@ -9,7 +9,7 @@ struct WatStaatErVandaagIntent: AppIntent {
 
     @MainActor func perform() async throws -> some IntentResult & ProvidesDialog {
         let ctx = KnivOpslag.container.mainContext
-        let notities = (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []
+        let notities = ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []).filter { $0.weggegooid == nil && !$0.isVerzegeld }
         let kal = Calendar.current
         var zinnen: [String] = []
 

@@ -49,7 +49,7 @@ struct KluisRij: View {
                         HStack {
                             Text(bon.titel).lineLimit(1)
                             Spacer()
-                            Text(resterend(bon.garantieTot!)).font(.subheadline).foregroundStyle(kleur(bon.garantieTot!))
+                            if let tot = bon.garantieTot { Text(resterend(tot)).font(.subheadline).foregroundStyle(kleur(tot)) }
                         }
                         .contentShape(Rectangle())
                     }

@@ -61,8 +61,9 @@ check(Fooi.procent(eten: 0, drinken: nil, service: 0) == 0, "0 sterren, drinken 
 check(Fooi.procent(eten: 3, drinken: nil, service: 3) == 8, "3 sterren = 8%")
 check(Fooi.procent(eten: 5, drinken: nil, service: 1)! < Fooi.procent(eten: 1, drinken: nil, service: 5)!, "service weegt zwaarder")
 let advies = Fooi.advies(prijs: 45, procent: 8)
-check(advies.totaal == 48.5 && abs(advies.fooi - 3.5) < 0.001, "afronden op halve euro: \(advies)")
-check(Fooi.advies(prijs: 40, procent: 8).totaal == 43 && Fooi.advies(prijs: 10, procent: 2).totaal == 10, "afronden: hele euro, nooit onder de prijs")
+check(advies.totaal == 49 && abs(advies.fooi - 4) < 0.001, "afronden naar boven op halve euro: \(advies)")
+check(Fooi.advies(prijs: 3, procent: 8).fooi == 0.5, "kleine fooi wordt geen €0")
+check(Fooi.advies(prijs: 40, procent: 8).totaal == 43.5 && Fooi.advies(prijs: 10, procent: 0).totaal == 10, "afronden: halve euro omhoog, geen fooi = prijs")
 check(Fooi.advies(prijs: 45, procent: 0).fooi == 0, "geen fooi")
 
 check(Rad.vak(hoek: 0, aantal: 4) == 0 && Rad.vak(hoek: 1, aantal: 4) == 3, "rad: kleine draai toont vorig vak")
@@ -132,5 +133,9 @@ check(abs(Gehoor.portie([(db: 100, seconden: 450)]) - 0.5) < 0.001, "gehoor: 7,5
 check(BonParser.totaal("Melk 1,29\nBrood 2,49\nSubtotaal 3,78\nTOTAAL 3,78\nPIN 3,78") == 3.78, "bon: totaalregel")
 check(BonParser.totaal("Melk 1,29\nBrood 2,49").map { abs($0 - 3.78) < 0.001 } == true, "bon: som als er geen totaal staat")
 check(BonParser.totaal("gewoon tekst") == nil, "bon: geen bedragen")
+
+check(kal.component(.hour, from: Herinnering.vind(in: "morgen om 3 bellen", nu: zaterdag)!.dag) == 15, "om 3 = 15:00")
+check(kal.component(.hour, from: Herinnering.vind(in: "morgen om 3 uur 's ochtends vroeg", nu: zaterdag)!.dag) == 3, "om 3 's ochtends vroeg = 3:00")
+check(Herinnering.vind(in: "morgen melk 2.50", nu: zaterdag)?.heeftTijd == false, "prijs is geen tijd")
 
 print("Alle Kniv-checks geslaagd")

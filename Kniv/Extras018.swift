@@ -90,6 +90,7 @@ struct VerjaardagKnop: View {
         if let v = Verjaardag.vind(in: notitie.zoekTekst) {
             Section {
                 Button {
+                    let id = "jarig.\(notitie.uid)"
                     let inhoud = UNMutableNotificationContent()
                     inhoud.title = String(localized: "Verjaardag")
                     inhoud.body = notitie.titel
@@ -97,7 +98,7 @@ struct VerjaardagKnop: View {
                     let trigger = UNCalendarNotificationTrigger(dateMatching: DateComponents(month: v.maand, day: v.dag, hour: 9), repeats: true)
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { ok, _ in
                         guard ok else { return }
-                        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "jarig.\(notitie.uid)", content: inhoud, trigger: trigger))
+                        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: id, content: inhoud, trigger: trigger))
                     }
                     gedaan = true
                 } label: {

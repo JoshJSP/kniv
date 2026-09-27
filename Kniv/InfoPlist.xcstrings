@@ -81,6 +81,16 @@
         }
       }
     },
+    "NSPhotoLibraryAddUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv saves a card of your week to your photos when you choose to."
+          }
+        }
+      }
+    },
     "NSContactsUsageDescription": {
       "localizations": {
         "en": {

@@ -2531,6 +2531,36 @@
         }
       }
     },
+    "%lld dingen konden niet synchroniseren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld items couldn't sync."
+          }
+        }
+      }
+    },
+    "Deze notitie is weg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This note is gone"
+          }
+        }
+      }
+    },
+    "Iemand heeft hem verwijderd.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone deleted it."
+          }
+        }
+      }
+    },
     "Tel samen af": {
       "localizations": {
         "en": {

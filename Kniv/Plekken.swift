@@ -66,7 +66,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
         return true
     }
 
-    private func huidigePlek() async -> CLLocation? {
+    @MainActor private func huidigePlek() async -> CLLocation? {
         await withCheckedContinuation { c in
             wacht?.resume(returning: nil)
             wacht = c
@@ -139,7 +139,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     /// De deur uit: wat moest er mee? Eén keer per dag, of opnieuw als het lijstje veranderde.
     @MainActor private func meldVertrek() {
         guard !Rustmodus.nu() else { return }
-        let notities = (try? KnivOpslag.container.mainContext.fetch(FetchDescriptor<Notitie>())) ?? []
+        let notities = ((try? KnivOpslag.container.mainContext.fetch(FetchDescriptor<Notitie>())) ?? []).filter { $0.weggegooid == nil && !$0.isVerzegeld }
         var mee = Meenemen.lijst(notities)
         if let weer = WeerDienst.advies { mee.insert(weer, at: 0) }
         guard !mee.isEmpty else { return }
@@ -164,7 +164,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     @MainActor private func meld(_ id: String) {
         guard !Rustmodus.nu() else { return }
         let ctx = KnivOpslag.container.mainContext
-        let notities = (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []
+        let notities = ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []).filter { $0.weggegooid == nil && !$0.isVerzegeld }
         func open(_ bakje: String) -> [String] {
             notities.filter { $0.bakjeNaam == bakje }.flatMap { $0.isLijst ? $0.gesorteerdeItems.map(\.tekst) : [$0.titel] }
         }

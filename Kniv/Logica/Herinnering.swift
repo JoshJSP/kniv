@@ -38,10 +38,14 @@ enum Herinnering {
         }
 
         var tijd: (uur: Int, minuut: Int)?
-        if let m = eersteMatch(#"\b(\d{1,2})[:.](\d{2})\b"#, in: klein), let u = Int(m[1]), let mi = Int(m[2]), u < 24, mi < 60 {
+        // "14:30", of "om 14.30"; een los "2.50" is een prijs, geen tijd.
+        let ochtend = !woorden.isDisjoint(with: ["ochtend", "morgens", "vroeg", "am"])
+        func middag(_ u: Int) -> Int { (1...7).contains(u) && !ochtend ? u + 12 : u }
+        if let m = eersteMatch(#"\b(\d{1,2}):(\d{2})\b"#, in: klein) ?? eersteMatch(#"\bom (\d{1,2})\.(\d{2})\b"#, in: klein),
+           let u = Int(m[1]), let mi = Int(m[2]), u < 24, mi < 60 {
             tijd = (u, mi)
         } else if let m = eersteMatch(#"\bom (\d{1,2})\b"#, in: klein), let u = Int(m[1]), u < 24 {
-            tijd = (u, 0)
+            tijd = (middag(u), 0)
         } else if !woorden.isDisjoint(with: ["vanavond", "tonight"]) {
             tijd = (19, 0)
         }

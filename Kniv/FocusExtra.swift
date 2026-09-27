@@ -19,7 +19,11 @@ import SwiftUI
                 if self.omlaagSinds == nil { self.omlaagSinds = Date() }
                 if !self.omlaag, Date().timeIntervalSince(self.omlaagSinds!) > 1.5 {
                     self.omlaag = true
-                    if !Pomodoro.shared.loopt { Pomodoro.shared.start() }
+                    if !Pomodoro.shared.loopt {
+                        // Neerleggen betekent focussen, ook als de vorige ronde op pauze eindigde.
+                        if Pomodoro.shared.fase == .pauze && !Pomodoro.shared.actief { Pomodoro.shared.fase = .werk }
+                        Pomodoro.shared.start()
+                    }
                 }
             } else if z < 0.3 {
                 self.omlaagSinds = nil

@@ -219,7 +219,7 @@ enum Fooi {
     static func advies(prijs: Double, procent: Double) -> (fooi: Double, totaal: Double) {
         guard procent > 0 else { return (0, prijs) }
         let ruw = prijs * (1 + procent / 100)
-        let totaal = max((ruw * 2).rounded() / 2, prijs)
+        let totaal = max((ruw * 2 - 1e-9).rounded(.up) / 2, prijs)      // naar boven, anders wordt een kleine fooi €0
         return (totaal - prijs, totaal)
     }
 }

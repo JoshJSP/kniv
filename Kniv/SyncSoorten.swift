@@ -14,10 +14,13 @@ import SwiftData
     func rijData() -> RijData
     func pasToe(_ d: RijData, in ctx: ModelContext)
     func verwijderLokaal(in ctx: ModelContext)
+    /// Ligt het hier in de prullenbak of is het privé gemaakt? Dan niet opnieuw wissen als de cloud-verwijdering terugkomt.
+    var negeerCloudVerwijdering: Bool { get }
 }
 
 extension Synchroon {
     func verwijderLokaal(in ctx: ModelContext) { ctx.delete(self) }
+    var negeerCloudVerwijdering: Bool { deling == "prive" }
     var isVies: Bool { deling != "prive" && (gesynct.map { gewijzigd > $0 } ?? true) }
 }
 
@@ -28,7 +31,8 @@ extension Notitie: Synchroon {
 
     func rijData() -> RijData {
         RijData(tekst: tekst, fotoTekst: fotoTekst, bakje: bakjeNaam, gemaakt: gemaakt,
-                items: gesorteerdeItems.map { RijItem(tekst: $0.tekst, volgorde: $0.volgorde, door: $0.door) })
+                items: gesorteerdeItems.map { RijItem(tekst: $0.tekst, volgorde: $0.volgorde, door: $0.door) },
+                verzegeldTot: verzegeldTot, garantieTot: garantieTot)
     }
 
     func pasToe(_ d: RijData, in ctx: ModelContext) {
@@ -39,15 +43,36 @@ extension Notitie: Synchroon {
         let bakjes = ((try? ctx.fetch(FetchDescriptor<Bakje>())) ?? []).map(\.naam)
         twijfelOpties = bakjeNaam == nil ? Sorteerder.opTrefwoorden(zoekTekst, namen: bakjes) : []
         if let b = bakjeNaam, !bakjes.contains(b) { ctx.insert(Bakje(naam: b, symbool: "tray", volgorde: 100 + bakjes.count)) }
-        items.forEach(ctx.delete)
-        items = (d.items ?? []).map { i in
-            let item = LijstItem(tekst: i.tekst, volgorde: i.volgorde)
-            item.door = i.door
-            return item
+        verzegeldTot = d.verzegeldTot
+        garantieTot = d.garantieTot
+        // Items bijwerken in plaats van alles te wissen: rijen die net animeren of afgevinkt worden blijven bestaan.
+        let nieuw = (d.items ?? []).sorted { $0.volgorde < $1.volgorde }
+        let oud = gesorteerdeItems
+        if oud.map(\.tekst) == nieuw.map(\.tekst) {
+            for (o, n) in zip(oud, nieuw) { o.door = n.door; o.volgorde = n.volgorde }
+        } else {
+            var over = Dictionary(grouping: oud, by: \.tekst)
+            var houden: [LijstItem] = []
+            for n in nieuw {
+                if var lijst = over[n.tekst], !lijst.isEmpty {
+                    let item = lijst.removeFirst()
+                    over[n.tekst] = lijst
+                    item.volgorde = n.volgorde
+                    item.door = n.door
+                    houden.append(item)
+                } else {
+                    let item = LijstItem(tekst: n.tekst, volgorde: n.volgorde)
+                    item.door = n.door
+                    items.append(item)
+                    houden.append(item)
+                }
+            }
+            for rest in over.values.flatMap({ $0 }) { ctx.delete(rest) }
         }
     }
 
     func verwijderLokaal(in ctx: ModelContext) { Vastlegger.verwijder(self, in: ctx, uitCloud: false) }
+    var negeerCloudVerwijdering: Bool { deling == "prive" || weggegooid != nil }
 }
 
 extension KnivTimer: Synchroon {

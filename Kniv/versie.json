@@ -1,12 +1,11 @@
 {
-  "versie": "0.33.0",
-  "mesnaam": "Mercator",
+  "versie": "0.34.0",
+  "mesnaam": "Fallkniven",
   "nieuw": [
-    "Tel samen af: houd een countdown ingedrukt en deel hem met vrienden",
-    "Siri kiest voor je: 'Gooi een dobbelsteen met Kniv', 'Kop of munt met Kniv', 'Kies iets met Kniv'",
-    "Vastpinnen: houd een notitie ingedrukt en hij staat altijd bovenaan",
-    "Prullenbak: weggegooide notities blijven 30 dagen, zodat je ze kunt terugzetten (Instellingen)",
-    "Ingesproken notities bewaren de opname: luister terug als de tekst niet klopt",
-    "Splitten → Bon: zie per maand wat je aan gescande bonnen uitgaf"
+    "Delen werkt nu echt (de database weigerde het maken van een gedeelde groep)",
+    "Prullenbak en 'alleen deze telefoon' wissen niets meer per ongeluk",
+    "Offline wijzigingen komen altijd aan, en een oude versie overschrijft nooit een nieuwere",
+    "Geen crash meer als iemand een notitie verwijdert die jij open hebt",
+    "Tientallen kleinere verbeteringen na een grondige code-review"
   ]
 }

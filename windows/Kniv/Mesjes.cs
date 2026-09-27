@@ -202,7 +202,7 @@ public static class Rekenen
         var ruw = prijs * (1 + procent / 100);
         if (procent <= 0) return (0, prijs);
         // Afronden op hele of halve euro's, zoals je fooi meestal afrondt; nooit onder de prijs.
-        var totaal = Math.Max(Math.Round(ruw * 2, MidpointRounding.AwayFromZero) / 2, prijs);
+        var totaal = Math.Max(Math.Ceiling(ruw * 2 - 1e-9) / 2, prijs);
         return (totaal - prijs, totaal);
     }
 

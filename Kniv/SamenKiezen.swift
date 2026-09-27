@@ -21,9 +21,12 @@ import SwiftUI
     struct Stem: Codable {
         var naam: String
         var ja: [String]
+        var id: String?
     }
 
-    private struct Aanwezig: Codable { let naam: String }
+    private struct Aanwezig: Codable { let naam: String; let id: String? }
+    /// Eigen id per sessie, zodat twee mensen met dezelfde naam elkaars stem niet overschrijven.
+    private let mijnID = UUID().uuidString.prefix(6).description
     private struct Omslag<T: Decodable>: Decodable { let payload: T }
 
     var code: String?
@@ -61,17 +64,19 @@ import SwiftUI
                     if let s: StemStart = Self.lees(m) { stemming = s; stemmen = [:] }
                 }
             },
-            Task { for await m in stemStroom { if let s: Stem = Self.lees(m) { stemmen[s.naam] = Set(s.ja) } } },
+            Task { for await m in stemStroom { if let s: Stem = Self.lees(m) { stemmen[Self.sleutel(s.naam, s.id)] = Set(s.ja) } } },
             Task {
                 for await p in aanwezigheid {
-                    let erbij = (try? p.decodeJoins(as: Aanwezig.self))?.map(\.naam) ?? []
-                    let weg = Set((try? p.decodeLeaves(as: Aanwezig.self))?.map(\.naam) ?? [])
+                    let erbij = (try? p.decodeJoins(as: Aanwezig.self))?.map { Self.sleutel($0.naam, $0.id) } ?? []
+                    let weg = Set((try? p.decodeLeaves(as: Aanwezig.self))?.map { Self.sleutel($0.naam, $0.id) } ?? [])
                     deelnemers = Array(Set(deelnemers + erbij).subtracting(weg)).sorted()
+                    // Laatkomer? Stuur de lopende stemming nog eens rond.
+                    if !erbij.isEmpty, let s = stemming { try? await kanaal?.broadcast(event: "stemming", message: s) }
                 }
             },
         ]
         await k.subscribe()
-        try? await k.track(Aanwezig(naam: mijnNaam))
+        try? await k.track(Aanwezig(naam: mijnNaam, id: mijnID))
     }
 
     func stop() async {
@@ -99,13 +104,17 @@ import SwiftUI
     }
 
     func stem(_ ja: Set<String>) {
-        stemmen[mijnNaam] = ja
-        Task { try? await kanaal?.broadcast(event: "stem", message: Stem(naam: mijnNaam, ja: Array(ja))) }
+        stemmen[mijnSleutel] = ja
+        Task { try? await kanaal?.broadcast(event: "stem", message: Stem(naam: mijnNaam, ja: Array(ja), id: mijnID)) }
     }
+
+    var mijnSleutel: String { Self.sleutel(mijnNaam, mijnID) }
+    static func sleutel(_ naam: String, _ id: String?) -> String { id.map { "\(naam)#\($0)" } ?? naam }
+    static func toonNaam(_ sleutel: String) -> String { String(sleutel.split(separator: "#").first ?? "") }
 
     /// Klaar als iedereen die in het kanaal zit gestemd heeft.
     var iedereenGestemd: Bool {
-        let wie = Set(deelnemers).union([mijnNaam])
+        let wie = Set(deelnemers).union([mijnSleutel])
         return !stemmen.isEmpty && wie.isSubset(of: Set(stemmen.keys))
     }
 
@@ -128,7 +137,7 @@ struct SamenBalk: View {
             if let code = samen.code {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Samen · \(code)").font(.subheadline.weight(.semibold))
-                    Text(samen.deelnemers.isEmpty ? String(localized: "Wachten op anderen…") : samen.deelnemers.joined(separator: ", "))
+                    Text(samen.deelnemers.isEmpty ? String(localized: "Wachten op anderen…") : samen.deelnemers.map(SamenKiezen.toonNaam).joined(separator: ", "))
                         .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer()
@@ -168,9 +177,9 @@ struct SamenStemView: View {
                 if let stemming = samen.stemming {
                     if samen.iedereenGestemd {
                         uitslag(stemming.opties)
-                    } else if samen.stemmen[samen.mijnNaam] != nil || index >= stemming.opties.count {
+                    } else if samen.stemmen[samen.mijnSleutel] != nil || index >= stemming.opties.count {
                         ProgressView()
-                        Text("Wachten tot iedereen gestemd heeft (\(samen.stemmen.count)/\(Set(samen.deelnemers).union([samen.mijnNaam]).count))")
+                        Text("Wachten tot iedereen gestemd heeft (\(samen.stemmen.count)/\(Set(samen.deelnemers).union([samen.mijnSleutel]).count))")
                             .foregroundStyle(.secondary)
                     } else {
                         kaart(stemming.opties[index], opties: stemming.opties)

@@ -21,7 +21,12 @@ import VisionKit
 
     enum Fout: Error { case geenToestemming, geenHerkenner }
 
+    private var startend = false
+
     func start() async throws {
+        guard !startend, !bezig else { return }
+        startend = true
+        defer { startend = false }
         let spraakOK = await withCheckedContinuation { c in
             SFSpeechRecognizer.requestAuthorization { c.resume(returning: $0 == .authorized) }
         }
@@ -50,12 +55,17 @@ import VisionKit
                                       commonFormat: formaat.commonFormat, interleaved: formaat.isInterleaved)
         self.opname = opname
         zekerheid = 0
+        invoer.removeTap(onBus: 0)       // nooit twee taps (dat crasht)
         invoer.installTap(onBus: 0, bufferSize: 1024, format: formaat) { @Sendable [verzoek, opname] buffer, _ in
             verzoek.append(buffer)
             try? opname?.write(from: buffer)
         }
         motor.prepare()
-        try motor.start()
+        do { try motor.start() } catch {
+            invoer.removeTap(onBus: 0)
+            self.opname = nil
+            throw error
+        }
         tekst = ""
         bezig = true
         taak = herkenner.recognitionTask(with: verzoek) { @Sendable [weak self] resultaat, _ in
@@ -196,6 +206,7 @@ enum Herinneraar {
         let centrum = UNUserNotificationCenter.current()
         guard (try? await centrum.requestAuthorization(options: [.alert, .sound, .badge])) == true else { return nil }
         let moment = voorstel.heeftTijd ? voorstel.dag : await vrijMoment(op: voorstel.dag)
+        guard moment > Date() else { return nil }       // voorbij: niet doen alsof het gelukt is
 
         let inhoud = UNMutableNotificationContent()
         inhoud.title = "Kniv"

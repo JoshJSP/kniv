@@ -21,9 +21,10 @@ struct Rij: Codable {
     var gewijzigd: Date
     var gewijzigdDoor: UUID?
     var verwijderd: Bool
+    var ontvangen: Date?          // door de server gezet; alleen gelezen
 
     enum CodingKeys: String, CodingKey {
-        case id, eigenaar, groep, soort, data, gewijzigd, verwijderd
+        case id, eigenaar, groep, soort, data, gewijzigd, verwijderd, ontvangen
         case gewijzigdDoor = "gewijzigd_door"
     }
 }
@@ -59,6 +60,9 @@ struct RijData: Codable {
     var prik: UUID?
     var ja: [Date]?
     var wie: UUID?
+    // notitie (extra)
+    var verzegeldTot: Date?
+    var garantieTot: Date?
 }
 
 struct RijItem: Codable {
@@ -107,6 +111,7 @@ struct Profiel: Codable {
 
     /// Sessie uit de sleutelhanger, zonder netwerk: zo blijft Kniv offline gewoon werken.
     func start() async {
+        guard !gestart else { return }
         if let user = client.auth.currentUser {
             gebruiker = user.id
             naam = user.userMetadata["full_name"]?.stringValue ?? user.email ?? ""
@@ -124,6 +129,7 @@ struct Profiel: Codable {
         fout = nil
         do {
             let sessie = try await client.auth.signInWithOAuth(provider: .google, redirectTo: URL(string: "kniv://auth"))
+            wisselAccount(naar: sessie.user.id)
             gebruiker = sessie.user.id
             naam = sessie.user.userMetadata["full_name"]?.stringValue ?? sessie.user.email ?? ""
             await nu()
@@ -131,6 +137,30 @@ struct Profiel: Codable {
         } catch {
             fout = String(localized: "Inloggen lukte niet. Probeer het nog eens.")
         }
+    }
+
+    /// Met een ander Google-account dan de vorige keer? Dan worden je lokale dingen nieuwe kopieën van dit account,
+    /// anders weigert de database ze (ze horen bij het oude account) en blokkeert de hele sync.
+    private func wisselAccount(naar nieuw: UUID) {
+        let vorige = opslag.string(forKey: "sync.laatsteAccount").flatMap(UUID.init(uuidString:))
+        opslag.set(nieuw.uuidString, forKey: "sync.laatsteAccount")
+        guard let vorige, vorige != nieuw else { return }
+        let ctx = KnivOpslag.container.mainContext
+        func kopie<T: Synchroon>(_: T.Type) {
+            for x in (try? ctx.fetch(FetchDescriptor<T>())) ?? [] {
+                x.syncID = UUID()
+                x.groepID = nil
+                x.eigenaarID = nil
+                if x.deling == "gedeeld" { x.deling = "laptop" }
+                x.gesynct = nil
+            }
+        }
+        kopie(Notitie.self); kopie(KnivTimer.self); kopie(Pot.self); kopie(Uitgave.self); kopie(Prik.self); kopie(PrikStem.self)
+        for u in (try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? [] { u.potUID = u.pot?.uid }
+        for s in (try? ctx.fetch(FetchDescriptor<PrikStem>())) ?? [] { s.wie = nil }
+        teVerwijderen = [:]
+        laatstOpgehaald = .distantPast
+        try? ctx.save()
     }
 
     func uitloggen() async {
@@ -144,7 +174,7 @@ struct Profiel: Codable {
         await client.removeAllChannels()
         // Bij opnieuw inloggen (misschien met een ander account) gaat alles weer mee.
         let ctx = KnivOpslag.container.mainContext
-        ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []).filter { $0.weggegooid == nil }.forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<KnivTimer>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<Pot>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.gesynct = nil }
@@ -166,6 +196,12 @@ struct Profiel: Codable {
         try? ctx.delete(model: Notitie.self)
         try? ctx.delete(model: KnivTimer.self)
         try? ctx.delete(model: Pot.self)
+        try? ctx.delete(model: Uitgave.self)
+        try? ctx.delete(model: Prik.self)
+        try? ctx.delete(model: PrikStem.self)
+        try? ctx.delete(model: Plek.self)
+        try? FileManager.default.removeItem(at: Fotos.map)
+        try? FileManager.default.removeItem(at: Opnames.map)
         try? ctx.save()
         teVerwijderen = [:]
         return true
@@ -237,7 +273,17 @@ struct Profiel: Codable {
         }
         guard !rijen.isEmpty else { return }
         do {
-            try await client.from("records").upsert(rijen).execute()
+            do {
+                try await client.from("records").upsert(rijen).execute()
+            } catch {
+                // Eén rij die de database weigert, mag de rest niet tegenhouden.
+                var geweigerd = 0
+                for r in rijen {
+                    do { try await client.from("records").upsert([r]).execute() } catch { geweigerd += 1 }
+                }
+                if geweigerd == rijen.count { throw error }
+                fout = String(localized: "\(geweigerd) dingen konden niet synchroniseren.")
+            }
             notities.forEach { $0.gesynct = $0.gewijzigd }
             timers.forEach { $0.gesynct = $0.gewijzigd }
             potten.forEach { $0.gesynct = $0.gewijzigd }
@@ -247,7 +293,6 @@ struct Profiel: Codable {
             teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
             eigenOpslag = Date()
             try? ctx.save()
-            fout = nil
         } catch {
             fout = error.localizedDescription
         }
@@ -260,8 +305,8 @@ struct Profiel: Codable {
         let rijen: [Rij]
         do {
             rijen = try await client.from("records").select()
-                .gte("gewijzigd", value: iso.string(from: laatstOpgehaald))
-                .order("gewijzigd").limit(1000)
+                .gte("ontvangen", value: iso.string(from: laatstOpgehaald))
+                .order("ontvangen").limit(1000)
                 .execute().value
         } catch {
             fout = error.localizedDescription
@@ -277,7 +322,8 @@ struct Profiel: Codable {
         pasToe(rijen, Prik.self, ctx, ik: ik)
         pasToe(rijen, PrikStem.self, ctx, ik: ik)
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
-        laatstOpgehaald = laatste.gewijzigd
+        laatstOpgehaald = laatste.ontvangen ?? laatste.gewijzigd
+        if rijen.count == 1000 { nogEens = true }     // er is meer: meteen nog een ronde
         if ctx.hasChanges {
             eigenOpslag = Date()
             try? ctx.save()
@@ -295,6 +341,7 @@ struct Profiel: Codable {
         for r in deze {
             let bestaand = lokaal[r.id]
             if r.verwijderd {
+                if let bestaand, bestaand.negeerCloudVerwijdering { continue }
                 bestaand?.verwijderLokaal(in: ctx)
                 lokaal[r.id] = nil
                 continue

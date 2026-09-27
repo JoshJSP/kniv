@@ -53,6 +53,24 @@ create table if not exists ai_gebruik (
     primary key (gebruiker, dag)
 );
 
+-- Ophalen gebeurt op 'ontvangen' (klok van de server), niet op 'gewijzigd' (klok van het toestel):
+-- zo komt een wijziging die offline gemaakt en later verstuurd is toch bij de andere apparaten aan.
+alter table records add column if not exists ontvangen timestamptz not null default now();
+create index if not exists records_ontvangen on records (ontvangen);
+
+-- Laatste wijziging wint, ook op de server: een oudere versie overschrijft nooit een nieuwere.
+create or replace function records_laatste_wint() returns trigger
+language plpgsql as $$
+begin
+    if tg_op = 'UPDATE' and new.gewijzigd < old.gewijzigd then
+        return old;
+    end if;
+    new.ontvangen := now();
+    return new;
+end $$;
+drop trigger if exists records_laatste_wint on records;
+create trigger records_laatste_wint before insert or update on records for each row execute function records_laatste_wint();
+
 -- Lid van een groep? (security definer, zodat de policies niet in een lus raken)
 create or replace function is_lid(g uuid) returns boolean
 language sql stable security definer set search_path = public as $$
@@ -73,7 +91,8 @@ drop policy if exists "eigen profiel" on profielen;
 create policy "eigen profiel" on profielen for all to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
 drop policy if exists "groepen zien" on groepen;
-create policy "groepen zien" on groepen for select to authenticated using (is_lid(id));
+-- eigenaar = auth.uid() direct op de rij: nodig voor insert ... returning (is_lid ziet de nieuwe rij nog niet)
+create policy "groepen zien" on groepen for select to authenticated using (eigenaar = auth.uid() or is_lid(id));
 drop policy if exists "groep maken" on groepen;
 create policy "groep maken" on groepen for insert to authenticated with check (eigenaar = auth.uid());
 drop policy if exists "groep beheren" on groepen;
