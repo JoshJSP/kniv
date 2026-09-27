@@ -204,7 +204,7 @@ public static class SnelCommando
 {
     static bool EenRegel(string t) => t.Trim() != "" && !t.Trim().Contains('\n') && !t.Trim().Contains('\r');
 
-    public static string? Reken(string t) => EenRegel(t) ? Omzetter.Reken(t, Opslag.Data.Koersen) : null;
+    public static string? Reken(string t) => EenRegel(t) ? Omzetter.Reken(t, Opslag.Data.Koersen) ?? Rekenmachine.Tekst(t) : null;
 
     public static (string naam, int seconden)? Timer(string t) =>
         EenRegel(t) && Herinnering.Vind(t) == null ? TimerParser.Vind(t.Trim()) : null;
@@ -221,4 +221,76 @@ public static class SnelCommando
 
     public static string Klok(int seconden) =>
         seconden >= 3600 ? $"{seconden / 3600}:{seconden / 60 % 60:00}:{seconden % 60:00}" : $"{seconden / 60:00}:{seconden % 60:00}";
+}
+
+/// Sommen in het snelvenster: "12*3+4", "(19,99 + 5) / 3", "2^10". Zelfde regels als de iPhone (Kniv/Logica/Rekenmachine.swift).
+public static class Rekenmachine
+{
+    public static double? Uitkomst(string invoer)
+    {
+        var som = invoer.Replace(",", ".").Replace("x", "*").Replace("×", "*").Replace("÷", "/").Replace(" ", "");
+        if (som == "" || som.Any(c => !"0123456789.+-*/^()".Contains(c)) || !som.Any(char.IsDigit)) return null;
+        // Een min telt alleen met spaties eromheen, anders wordt 06-12345678 een som.
+        if (!som.Any(c => "+*/^".Contains(c)) && !invoer.Contains(" - ")) return null;
+        var p = new Parser(som);
+        var v = p.Optelling();
+        return v is { } w && p.I == som.Length && double.IsFinite(w) ? w : null;
+    }
+
+    public static string? Tekst(string invoer) =>
+        Uitkomst(invoer) is { } v ? $"{invoer.Trim()} = {v.ToString("0.##", CultureInfo.GetCultureInfo("nl-NL"))}" : null;
+
+    sealed class Parser(string t)
+    {
+        public int I;
+
+        public double? Optelling()
+        {
+            var l = Vermenigvuldiging();
+            while (l != null && I < t.Length && (t[I] == '+' || t[I] == '-'))
+            {
+                var op = t[I++];
+                var r = Vermenigvuldiging();
+                if (r == null) return null;
+                l = op == '+' ? l + r : l - r;
+            }
+            return l;
+        }
+
+        double? Vermenigvuldiging()
+        {
+            var l = Macht();
+            while (l != null && I < t.Length && (t[I] == '*' || t[I] == '/'))
+            {
+                var op = t[I++];
+                var r = Macht();
+                if (r == null || (op == '/' && r == 0)) return null;
+                l = op == '*' ? l * r : l / r;
+            }
+            return l;
+        }
+
+        double? Macht()
+        {
+            var g = Teken();
+            if (g != null && I < t.Length && t[I] == '^') { I++; var e = Macht(); return e == null ? null : Math.Pow(g.Value, e.Value); }
+            return g;
+        }
+
+        double? Teken()
+        {
+            if (I < t.Length && t[I] == '-') { I++; return -Teken(); }
+            if (I < t.Length && t[I] == '(')
+            {
+                I++;
+                var v = Optelling();
+                if (v == null || I >= t.Length || t[I] != ')') return null;
+                I++;
+                return v;
+            }
+            var start = I;
+            while (I < t.Length && (char.IsDigit(t[I]) || t[I] == '.')) I++;
+            return I > start && double.TryParse(t[start..I], NumberStyles.Float, CultureInfo.InvariantCulture, out var n) ? n : null;
+        }
+    }
 }
