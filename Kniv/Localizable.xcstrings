@@ -2531,6 +2531,126 @@
         }
       }
     },
+    "Gooi een dobbelsteen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll a die"
+          }
+        }
+      }
+    },
+    "Aantal stenen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Number of dice"
+          }
+        }
+      }
+    },
+    "Je gooide %lld.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You rolled %lld."
+          }
+        }
+      }
+    },
+    "Je gooide %@. Samen %lld.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You rolled %1$@. Total %2$lld."
+          }
+        }
+      }
+    },
+    "Kop of munt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heads or tails"
+          }
+        }
+      }
+    },
+    "Kop!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heads!"
+          }
+        }
+      }
+    },
+    "Munt!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tails!"
+          }
+        }
+      }
+    },
+    "Kies iets": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick something"
+          }
+        }
+      }
+    },
+    "Draait het rad met de opties die je in Kniv hebt staan.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spins the wheel with the options you have in Kniv."
+          }
+        }
+      }
+    },
+    "Zet eerst een paar opties in het rad van Kniv.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a few options to Kniv's wheel first."
+          }
+        }
+      }
+    },
+    "Het wordt: %@!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It's going to be: %@!"
+          }
+        }
+      }
+    },
+    "Dobbelsteen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die"
+          }
+        }
+      }
+    },
     "Vastgepind": {
       "localizations": {
         "en": {

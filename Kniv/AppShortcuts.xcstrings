@@ -40,6 +40,36 @@
           }
         }
       }
+    },
+    "Gooi een dobbelsteen met ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll a die with ${applicationName}"
+          }
+        }
+      }
+    },
+    "Kop of munt met ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heads or tails with ${applicationName}"
+          }
+        }
+      }
+    },
+    "Kies iets met ${applicationName}": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick something with ${applicationName}"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

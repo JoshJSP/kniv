@@ -129,6 +129,12 @@ struct KnivSnelkoppelingen: AppShortcutsProvider {
         AppShortcut(intent: WatStaatErVandaagIntent(),
                     phrases: ["Wat staat er vandaag in \(.applicationName)", "Mijn dag in \(.applicationName)"],
                     shortTitle: "Wat staat er vandaag?", systemImageName: "sun.max")
+        AppShortcut(intent: DobbelIntent(), phrases: ["Gooi een dobbelsteen met \(.applicationName)"],
+                    shortTitle: "Dobbelsteen", systemImageName: "dice")
+        AppShortcut(intent: MuntIntent(), phrases: ["Kop of munt met \(.applicationName)"],
+                    shortTitle: "Kop of munt", systemImageName: "circle.lefthalf.filled")
+        AppShortcut(intent: KiesVoorMijIntent(), phrases: ["Kies iets met \(.applicationName)", "Draai het rad van \(.applicationName)"],
+                    shortTitle: "Kies iets", systemImageName: "circle.dashed")
         AppShortcut(intent: BewaarInKnivIntent(),
                     phrases: ["Bewaar in \(.applicationName)"],
                     shortTitle: "Bewaar in Kniv", systemImageName: "tray.and.arrow.down")
