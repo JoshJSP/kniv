@@ -2,6 +2,7 @@
   "versie": "0.34.0",
   "mesnaam": "Fallkniven",
   "nieuw": [
+    "Gedeelde potjes: Kniv vraagt één keer wie jij bent, zodat 'je krijgt nog' klopt",
     "Delen werkt nu echt (de database weigerde het maken van een gedeelde groep)",
     "Prullenbak en 'alleen deze telefoon' wissen niets meer per ongeluk",
     "Offline wijzigingen komen altijd aan, en een oude versie overschrijft nooit een nieuwere",

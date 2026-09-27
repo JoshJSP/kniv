@@ -24,6 +24,16 @@ import SwiftUI
         self.leden = leden
     }
 
+    /// Wie jij bent in dit potje. Bij je eigen potje "Ik"; in een gedeeld potje van een ander kies je dat één keer.
+    var mijnNaam: String? {
+        get {
+            if let n = UserDefaults.standard.string(forKey: "pot.ik.\(uid)"), leden.contains(n) { return n }
+            let vanMij = eigenaarID == nil || eigenaarID == Sync.shared.gebruiker
+            return vanMij && leden.contains("Ik") ? "Ik" : nil
+        }
+        set { UserDefaults.standard.set(newValue, forKey: "pot.ik.\(uid)") }
+    }
+
     var saldi: [String: Double] { Afrekenen.saldi(uitgaven.map { (betaaldDoor: $0.betaaldDoor, bedrag: $0.bedrag, voor: $0.voor) }) }
     var totaal: Double { uitgaven.reduce(0) { $0 + $1.bedrag } }
 }
@@ -386,6 +396,16 @@ struct PotView: View {
 
     var body: some View {
         List {
+            if pot.mijnNaam == nil {
+                Section {
+                    Picker("Wie ben jij in dit potje?", selection: Binding(get: { pot.mijnNaam ?? "" }, set: { pot.mijnNaam = $0 })) {
+                        Text("Kies…").tag("")
+                        ForEach(pot.leden, id: \.self) { Text($0).tag($0) }
+                    }
+                } footer: {
+                    Text("Dan weet Kniv wat jij nog krijgt of moet betalen.")
+                }
+            }
             Section("Afrekenen") {
                 let betalingen = Afrekenen.minsteBetalingen(pot.saldi)
                 if betalingen.isEmpty { Text("Iedereen staat quitte.").foregroundStyle(.secondary) }
@@ -471,7 +491,7 @@ struct NieuweUitgaveView: View {
             .navigationTitle("Uitgave")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                betaaldDoor = pot.leden.first ?? ""
+                betaaldDoor = pot.mijnNaam ?? pot.leden.first ?? ""
                 voor = Set(pot.leden)
             }
             .toolbar {

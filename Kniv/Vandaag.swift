@@ -54,7 +54,7 @@ struct VandaagKaart: View {
         if boodschappen > 0 {
             r.append(Regel(id: "b", icoon: "cart", tekst: String(localized: "\(boodschappen) boodschappen open"), mes: .vastleggen))
         }
-        let saldo = potten.reduce(0.0) { $0 + ($1.saldi["Ik"] ?? 0) }
+        let saldo = potten.reduce(0.0) { som, p in som + (p.mijnNaam.flatMap { p.saldi[$0] } ?? 0) }
         if abs(saldo) >= 0.01 {
             r.append(Regel(id: "p", icoon: "eurosign.circle",
                            tekst: saldo > 0 ? String(localized: "Je krijgt nog \(Omzetter.euro(saldo))") : String(localized: "Je moet nog \(Omzetter.euro(-saldo)) betalen"),

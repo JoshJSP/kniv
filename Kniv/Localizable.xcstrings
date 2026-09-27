@@ -2531,6 +2531,36 @@
         }
       }
     },
+    "Wie ben jij in dit potje?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who are you in this pot?"
+          }
+        }
+      }
+    },
+    "Kies…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose…"
+          }
+        }
+      }
+    },
+    "Dan weet Kniv wat jij nog krijgt of moet betalen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Then Kniv knows what you're owed or still owe."
+          }
+        }
+      }
+    },
     "%lld dingen konden niet synchroniseren.": {
       "localizations": {
         "en": {
