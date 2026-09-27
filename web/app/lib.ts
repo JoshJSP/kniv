@@ -61,6 +61,11 @@ export function samenvatting(d: Deel): string {
     return n === 0 ? "vandaag!" : n === 1 ? "nog 1 dag" : `nog ${n} dagen`;
   }
   const potUitgaven = d.records.filter((r) => r.soort === "uitgave");
+  if (d.soort === "prik") {
+    const opties = ((d.records.find((r) => r.soort === "prik")?.data?.opties as string[] | undefined) ?? []).length;
+    const stemmen = d.records.filter((r) => r.soort === "prikstem").length;
+    return `${opties} data · ${stemmen} ${stemmen === 1 ? "stem" : "stemmen"}`;
+  }
   if (d.soort === "pot") {
     const totaal = potUitgaven.reduce((s, r) => s + (Number(r.data?.bedrag) || 0), 0);
     return `${potUitgaven.length} uitgaven · ${new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(totaal)}`;

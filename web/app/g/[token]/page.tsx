@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { dagenTot, doelVan, haalDeel, samenvatting, type Deel, type KnivRecord } from "../../lib";
 import Ververs from "./Ververs";
 import Potje from "./Potje";
+import Prikje from "./Prikje";
 
 type Props = { params: Promise<{ token: string }> };
 
@@ -67,6 +68,7 @@ export default async function Gedeeld({ params }: Props) {
   const doel = deel.soort === "countdown" ? doelVan(deel) : null;
   const notities = deel.records.filter((r) => r.soort === "notitie");
   const potten = deel.records.filter((r) => r.soort === "pot");
+  const prikken = deel.records.filter((r) => r.soort === "prik");
 
   return (
     <main className="wrap smal stapel">
@@ -99,7 +101,11 @@ export default async function Gedeeld({ params }: Props) {
         <Potje key={p.id} pot={p} alle={deel.records} />
       ))}
 
-      {!doel && notities.length === 0 && potten.length === 0 && (
+      {prikken.map((p) => (
+        <Prikje key={p.id} prik={p} alle={deel.records} />
+      ))}
+
+      {!doel && notities.length === 0 && potten.length === 0 && prikken.length === 0 && (
         <section className="glas midden">
           <p className="zacht" style={{ margin: 0 }}>
             Hier staat nog niets.
