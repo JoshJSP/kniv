@@ -81,6 +81,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
             var gebieden = plekken.prefix(20).map {
                 CLCircularRegion(center: CLLocationCoordinate2D(latitude: $0.breedte, longitude: $0.lengte), radius: 120, identifier: "plek.\($0.id)")
             }
+            let thuis = Set(plekken.filter { $0.soort == "thuis" }.map { "plek.\($0.id)" })
             if supermarktAan {
                 let winkels = opslag.array(forKey: "supermarkten") as? [[Double]] ?? []
                 gebieden += winkels.prefix(20 - gebieden.count).enumerated().map { i, w in
@@ -89,7 +90,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
             }
             for g in gebieden {
                 g.notifyOnEntry = true
-                g.notifyOnExit = false
+                g.notifyOnExit = thuis.contains(g.identifier)
                 lm.startMonitoring(for: g)
             }
         }
@@ -129,6 +130,28 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     func locationManager(_ m: CLLocationManager, didFailWithError error: Error) {
         wacht?.resume(returning: nil)
         wacht = nil
+    }
+
+    func locationManager(_ m: CLLocationManager, didExitRegion gebied: CLRegion) {
+        Task { @MainActor in self.meldVertrek() }
+    }
+
+    /// De deur uit: wat moest er mee? Eén keer per dag, of opnieuw als het lijstje veranderde.
+    @MainActor private func meldVertrek() {
+        guard !Rustmodus.nu() else { return }
+        let notities = (try? KnivOpslag.container.mainContext.fetch(FetchDescriptor<Notitie>())) ?? []
+        let mee = Meenemen.lijst(notities)
+        guard !mee.isEmpty else { return }
+        let inhoud = mee.prefix(5).joined(separator: ", ") + (mee.count > 5 ? " (+\(mee.count - 5))" : "")
+        let sleutel = Focuslog.dagSleutel(Date()) + inhoud
+        guard opslag.string(forKey: "plekMelding.vertrek") != sleutel else { return }
+        opslag.set(sleutel, forKey: "plekMelding.vertrek")
+        let bericht = UNMutableNotificationContent()
+        bericht.title = String(localized: "Niet vergeten")
+        bericht.body = inhoud
+        bericht.sound = .default
+        bericht.interruptionLevel = .timeSensitive
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: bericht, trigger: nil))
     }
 
     func locationManager(_ m: CLLocationManager, didEnterRegion gebied: CLRegion) {

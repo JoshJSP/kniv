@@ -48,6 +48,7 @@ struct ThuisView: View {
             ScrollView {
                 if let update { UpdateBalk(update: update).padding([.horizontal, .top]) }
                 VStack(spacing: 12) {
+                    MorgenBriefKaart()
                     TerugblikKaart()
                     VandaagKaart { mes in pad = NavigationPath([mes]) }
                 }

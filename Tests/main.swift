@@ -86,4 +86,10 @@ check(Ritme.voorkeur(uit: ["2-19": 2], weekdag: 2) == nil, "ritme: te weinig geg
 check(Ritme.voorkeur(uit: ["2-23": 9], weekdag: 2) == nil, "ritme: alleen tussen 8 en 22")
 check(Ritme.voorkeur(uit: ["4-9": 5, "4-14": 5], weekdag: 4) == 9, "ritme: gelijkspel = vroegste uur")
 
+check(Rekenmachine.uitkomst("12*3+4") == 40, "rekenen: voorrang")
+check(Rekenmachine.uitkomst("(19,99 + 5) / 3").map { abs($0 - 8.33) < 0.01 } == true, "rekenen: haakjes en komma")
+check(Rekenmachine.uitkomst("2^10") == 1024 && Rekenmachine.uitkomst("-3*-2") == 6, "rekenen: macht en min")
+check(Rekenmachine.uitkomst("1/0") == nil && Rekenmachine.uitkomst("melk") == nil && Rekenmachine.uitkomst("06-12345678") == nil && Rekenmachine.uitkomst("10 - 3") == 7, "rekenen: grensgevallen")
+check(Rekenmachine.uitkomst("42") == nil && Rekenmachine.uitkomst("3 x 4") == 12, "rekenen: los getal is geen som, x = keer")
+
 print("Alle Kniv-checks geslaagd")

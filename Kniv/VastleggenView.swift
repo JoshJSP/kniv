@@ -99,6 +99,8 @@ struct VastleggenView: View {
                 .lineLimit(1...8)
                 .font(.title3)
                 .focused($invoerFocus)
+            RekenChip(invoer: $invoer)
+                .animation(.snappy, value: invoer)
             HStack(spacing: 18) {
                 Button { Task { await wisselSpraak() } } label: {
                     Image(systemName: spraak.bezig ? "stop.circle.fill" : "mic")

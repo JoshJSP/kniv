@@ -1,9 +1,11 @@
 {
-  "versie": "0.15.0",
-  "mesnaam": "Mora",
+  "versie": "0.16.0",
+  "mesnaam": "Balisong",
   "nieuw": [
-    "Kniv leert je ritme: herinneringen zonder tijd komen op het uur waarop je meestal dingen afvinkt of focust (als je agenda dan vrij is)",
-    "Verstaat je iPhone je niet goed (of praat je Nederlands en Engels door elkaar)? Dan schrijft Whisper het uit, zonder dat je iets merkt",
-    "Gedeelde potjes zie je nu ook op de deelpagina: totaal, afrekenen en alle uitgaven"
+    "Omdraaien om te focussen: telefoon met het scherm op tafel = focus, oppakken = pauze",
+    "Even ademen: box breathing met een lemmet dat meeademt",
+    "Typ een som in de invoerbalk (12*3+4) en zie meteen het antwoord",
+    "'s Avonds in rustmodus: schrijf een briefje aan morgen-jij, 's ochtends staat het bovenaan",
+    "Loop je de deur uit? Dan laat Kniv zien wat je mee moest nemen"
   ]
 }

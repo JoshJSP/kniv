@@ -199,6 +199,9 @@ struct TimersView: View {
     @Query(sort: \KnivTimer.gemaakt) private var timers: [KnivTimer]
     @State private var pomo = Pomodoro.shared
     @State private var nieuw: NieuwSoort?
+    @State private var toonAdem = false
+    @AppStorage("omdraaien") private var omdraaien = false
+    @State private var omdraaier = Omdraaier.shared
     @AppStorage("haptiek") private var haptiek = true
 
     enum NieuwSoort: Identifiable { case timer, countdown; var id: Self { self } }
@@ -208,6 +211,7 @@ struct TimersView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     pomodoroKaart(klok.date)
+                    extraKaart
                     lijst(titel: "Timers", timers.filter { !$0.isCountdown }, leeg: "Nog geen timers. Tik op + voor pasta, thee of de was.") {
                         TimerRij(timer: $0, nu: klok.date)
                     }
@@ -235,6 +239,29 @@ struct TimersView: View {
             NieuweTimerView(countdown: soort == .countdown).presentationDetents([.medium])
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: pomo.fase) { _, _ in haptiek }
+        .fullScreenCover(isPresented: $toonAdem) { AdemView() }
+        .onAppear { if omdraaien { omdraaier.start() } }
+        .onDisappear { omdraaier.stop() }
+        .onChange(of: omdraaien) { _, aan in aan ? omdraaier.start() : omdraaier.stop() }
+    }
+
+    private var extraKaart: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Toggle(isOn: $omdraaien) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Omdraaien om te focussen")
+                    Text(omdraaier.omlaag ? "Focus loopt. Pak je telefoon op om te pauzeren." : "Leg je telefoon met het scherm op tafel en de focus start.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            Divider()
+            Button { toonAdem = true } label: {
+                Label("Even ademen", systemImage: "wind").frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(18)
+        .glas(22)
     }
 
     private func pomodoroKaart(_ nu: Date) -> some View {

@@ -2531,6 +2531,216 @@
         }
       }
     },
+    "Omdraaien om te focussen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flip to focus"
+          }
+        }
+      }
+    },
+    "Focus loopt. Pak je telefoon op om te pauzeren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus is on. Pick up your phone to pause."
+          }
+        }
+      }
+    },
+    "Leg je telefoon met het scherm op tafel en de focus start.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Put your phone face down and focus starts."
+          }
+        }
+      }
+    },
+    "Even ademen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a breath"
+          }
+        }
+      }
+    },
+    "In": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In"
+          }
+        }
+      }
+    },
+    "Vast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold"
+          }
+        }
+      }
+    },
+    "Uit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Out"
+          }
+        }
+      }
+    },
+    "Goed gedaan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well done"
+          }
+        }
+      }
+    },
+    "Adem rustig mee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathe along"
+          }
+        }
+      }
+    },
+    "Begin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Begin"
+          }
+        }
+      }
+    },
+    "Duur": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duration"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "= %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "= %@"
+          }
+        }
+      }
+    },
+    "Zet het antwoord in je notitie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puts the answer in your note"
+          }
+        }
+      }
+    },
+    "Van gisteren-jij": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From yesterday-you"
+          }
+        }
+      }
+    },
+    "Gelezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read"
+          }
+        }
+      }
+    },
+    "Wat moet morgen-jij weten?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What should tomorrow-you know?"
+          }
+        }
+      }
+    },
+    "Niet nu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        }
+      }
+    },
+    "Bijvoorbeeld: laptoplader mee, om 9 uur presentatie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For example: bring laptop charger, presentation at 9"
+          }
+        }
+      }
+    },
+    "Leg klaar voor morgen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save for tomorrow"
+          }
+        }
+      }
+    },
+    "Niet vergeten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't forget"
+          }
+        }
+      }
+    },
     "Bewaar in Kniv": {
       "localizations": {
         "en": {
