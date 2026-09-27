@@ -241,6 +241,7 @@ struct NotitieView: View {
         Task {
             try? await Task.sleep(for: .seconds(2))
             guard doorgestreept.contains(id) else { return }
+            Ritme.noteer()
             withAnimation(.snappy) {
                 doorgestreept.remove(id)
                 ctx.delete(item)

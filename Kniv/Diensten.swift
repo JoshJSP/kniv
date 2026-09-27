@@ -211,7 +211,8 @@ enum Herinneraar {
     static func vrijMoment(op dag: Date) async -> Date {
         let kal = Calendar.current
         let nu = Date()
-        var kandidaat = kal.date(bySettingHour: 9, minute: 0, second: 0, of: dag) ?? dag
+        // Jouw gewoonte-uur op deze weekdag (geleerd van afvinken en focus), anders 9:00.
+        var kandidaat = kal.date(bySettingHour: Ritme.voorkeur(voor: dag) ?? 9, minute: 0, second: 0, of: dag) ?? dag
         if kandidaat < nu {
             kandidaat = kal.nextDate(after: nu, matching: DateComponents(minute: 0), matchingPolicy: .nextTime) ?? nu.addingTimeInterval(3600)
         }

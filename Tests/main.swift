@@ -81,4 +81,9 @@ check(Gangpad.van("iets raars") == .overig, "onbekend = overig")
 let route = Gangpad.route(["cola", "melk", "appels", "brood"]) { $0 }
 check(route.map(\.0) == [.groente, .brood, .zuivel, .drinken], "looproute-volgorde")
 
+check(Ritme.voorkeur(uit: ["2-19": 4, "2-9": 3, "3-10": 9], weekdag: 2) == 19, "ritme: vaakste uur op maandag")
+check(Ritme.voorkeur(uit: ["2-19": 2], weekdag: 2) == nil, "ritme: te weinig gegevens")
+check(Ritme.voorkeur(uit: ["2-23": 9], weekdag: 2) == nil, "ritme: alleen tussen 8 en 22")
+check(Ritme.voorkeur(uit: ["4-9": 5, "4-14": 5], weekdag: 4) == 9, "ritme: gelijkspel = vroegste uur")
+
 print("Alle Kniv-checks geslaagd")

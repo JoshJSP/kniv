@@ -134,7 +134,10 @@ enum Meldingen {
     /// Roep aan bij elke tik: rondt een afgelopen fase af en schrijft focusminuten bij.
     func controleer(_ nu: Date = Date()) {
         guard let eind, nu >= eind else { return }
-        if fase == .werk { Focuslog.voegToe(minuten: Int(Self.werkDuur / 60), op: eind) }
+        if fase == .werk {
+            Focuslog.voegToe(minuten: Int(Self.werkDuur / 60), op: eind)
+            Ritme.noteer(eind.addingTimeInterval(-Self.werkDuur))
+        }
         self.eind = nil
         rest = nil
         fase = fase == .werk ? .pauze : .werk
