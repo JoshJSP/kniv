@@ -243,9 +243,9 @@ static class Zelftest
         Is(Math.Abs(Rekenen.FooiProcent(3, 3, 3)!.Value - 8) < 1e-9, "fooi 3 sterren");
         Is(Math.Abs(Rekenen.FooiProcent(4, 2, 3)!.Value - (8 + 2 * (14 / 4.5 - 3))) < 1e-9, "fooi gewogen: " + Rekenen.FooiProcent(4, 2, 3));
         Is(Rekenen.FooiAdvies(40, 8) == (3, 43), "fooi afronden euro");
-        Is(Rekenen.FooiAdvies(60, 10) == (5, 65), "fooi afronden vijf");
+        Is(Rekenen.FooiAdvies(45, 8) == (3.5, 48.5), "fooi afronden halve euro");
         Is(Rekenen.FooiAdvies(20, 0) == (0, 20), "geen fooi");
-        Is(Rekenen.FooiAdvies(50.2, 1) == (0, 50.2), "nooit onder de prijs");
+        Is(Rekenen.FooiAdvies(10, 2) == (0, 10), "nooit onder de prijs");
 
         // Snelvenster-commando's, dezelfde gevallen als Tests/main.swift
         string R(string t, Dictionary<string, double>? k = null) => Omzetter.Reken(t, k) ?? "nil";

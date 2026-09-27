@@ -203,12 +203,11 @@ enum Fooi {
         return schaal[laag] + (schaal[laag + 1] - schaal[laag]) * (sterren - Double(laag))
     }
 
-    /// Fooi en een totaal dat afgerond is naar een mooi bedrag (op hele euro's, boven de 50 op vijftallen).
+    /// Fooi en een totaal afgerond op hele of halve euro's (zo rond je fooi meestal af), nooit onder de prijs.
     static func advies(prijs: Double, procent: Double) -> (fooi: Double, totaal: Double) {
-        let ruw = prijs * (1 + procent / 100)
         guard procent > 0 else { return (0, prijs) }
-        let stap = ruw >= 50 ? 5.0 : 1.0
-        let totaal = max((ruw / stap).rounded() * stap, prijs)
+        let ruw = prijs * (1 + procent / 100)
+        let totaal = max((ruw * 2).rounded() / 2, prijs)
         return (totaal - prijs, totaal)
     }
 }

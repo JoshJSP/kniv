@@ -61,7 +61,8 @@ check(Fooi.procent(eten: 0, drinken: nil, service: 0) == 0, "0 sterren, drinken 
 check(Fooi.procent(eten: 3, drinken: nil, service: 3) == 8, "3 sterren = 8%")
 check(Fooi.procent(eten: 5, drinken: nil, service: 1)! < Fooi.procent(eten: 1, drinken: nil, service: 5)!, "service weegt zwaarder")
 let advies = Fooi.advies(prijs: 45, procent: 8)
-check(advies.totaal == 49 && abs(advies.fooi - 4) < 0.001, "afronden: \(advies)")
+check(advies.totaal == 48.5 && abs(advies.fooi - 3.5) < 0.001, "afronden op halve euro: \(advies)")
+check(Fooi.advies(prijs: 40, procent: 8).totaal == 43 && Fooi.advies(prijs: 10, procent: 2).totaal == 10, "afronden: hele euro, nooit onder de prijs")
 check(Fooi.advies(prijs: 45, procent: 0).fooi == 0, "geen fooi")
 
 check(Rad.vak(hoek: 0, aantal: 4) == 0 && Rad.vak(hoek: 1, aantal: 4) == 3, "rad: kleine draai toont vorig vak")
