@@ -2531,6 +2531,46 @@
         }
       }
     },
+    "Deel %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share %@"
+          }
+        }
+      }
+    },
+    "Wie meedoet logt in met Google en kan zelf uitgaven toevoegen. De link verloopt na 30 dagen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "People who join sign in with Google and can add expenses themselves. The link expires after 30 days."
+          }
+        }
+      }
+    },
+    "Doe mee met ons potje in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join our pot in Kniv"
+          }
+        }
+      }
+    },
+    "Deel potje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share pot"
+          }
+        }
+      }
+    },
     "Samen · %@": {
       "localizations": {
         "en": {

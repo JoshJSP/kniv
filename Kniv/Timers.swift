@@ -15,6 +15,11 @@ import UserNotifications
     var rest: TimeInterval?             // gepauzeerd met zoveel over
     var doel: Date?                     // countdown naar datum
     var gemaakt: Date = Date()
+    var gewijzigd: Date = Date()
+    var gesynct: Date?
+    var deling: String = "laptop"
+    var groepID: UUID?
+    var eigenaarID: UUID?
 
     init(naam: String, duur: TimeInterval) {
         self.naam = naam
@@ -33,18 +38,21 @@ import UserNotifications
     func start() {
         eind = Date().addingTimeInterval(rest ?? duur)
         rest = nil
+        gewijzigd = Date()
         Meldingen.plan(id.uuidString, "\(naam) is klaar", na: resterend(Date()))
     }
 
     func pauze() {
         rest = resterend(Date())
         eind = nil
+        gewijzigd = Date()
         Meldingen.annuleer(id.uuidString)
     }
 
     func herstel() {
         eind = nil
         rest = nil
+        gewijzigd = Date()
         Meldingen.annuleer(id.uuidString)
     }
 }
@@ -272,7 +280,7 @@ struct TimersView: View {
                     .padding(14)
                     .glas(18)
                     .contextMenu {
-                        Button(role: .destructive) { Meldingen.annuleer(t.id.uuidString); ctx.delete(t) } label: {
+                        Button(role: .destructive) { Meldingen.annuleer(t.id.uuidString); Sync.shared.markeerVerwijderd(t); ctx.delete(t) } label: {
                             Label("Verwijder", systemImage: "trash")
                         }
                     }

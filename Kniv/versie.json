@@ -1,9 +1,10 @@
 {
-  "versie": "0.11.0",
-  "mesnaam": "Bolo",
+  "versie": "0.12.0",
+  "mesnaam": "Hori Hori",
   "nieuw": [
-    "Samen kiezen: start in Kiezen een code en nodig vrienden uit",
-    "Het rad draait op ieders telefoon tegelijk, met dezelfde uitkomst",
-    "Stemmen: iedereen veegt op zijn eigen telefoon, de uitslag komt als iedereen klaar is"
+    "Timers en countdowns synchroniseren tussen je apparaten (loopt hij op het ene apparaat, dan krijg je ook hier een melding)",
+    "Potjes synchroniseren, en je kunt een potje delen: vrienden voegen zelf hun uitgaven toe",
+    "Wijzigingen tijdens het synchroniseren gaan niet meer verloren",
+    "Uitloggen en opnieuw inloggen werkt nu netjes"
   ]
 }

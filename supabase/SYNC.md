@@ -39,6 +39,19 @@ Alleen Google, via Supabase Auth.
 ```
 Foto's gaan (nog) niet mee; alleen `fotoTekst`.
 
+### data voor `soort = timer` (losse timer of countdown; alleen iPhone)
+```json
+{ "naam": "Pasta", "isCountdown": false, "duur": 540, "eind": "2026-09-27T10:09:00Z", "rest": null, "doel": null }
+```
+
+### data voor `soort = pot` en `soort = uitgave` (potjes; alleen iPhone)
+```json
+{ "naam": "Barcelona", "valuta": "EUR", "leden": ["Ik", "Sam"], "gemaakt": "…" }
+{ "pot": "<uuid van het potje>", "omschrijving": "Pizza", "bedrag": 24.5, "betaaldDoor": "Ik", "voor": ["Ik", "Sam"], "datum": "…" }
+```
+Uitgaven zijn aparte records, zodat twee mensen tegelijk iets kunnen toevoegen. Een gedeeld potje: potje én uitgaven krijgen dezelfde `groep`.
+Windows haalt alleen `soort=notitie` op en negeert de rest.
+
 ## Ophalen
 `select * from records where gewijzigd > <laatst opgehaald> order by gewijzigd` — RLS geeft alleen eigen records en die van groepen waar je lid van bent. Realtime: postgres_changes op `public.records`.
 

@@ -10,6 +10,12 @@ import SwiftUI
     var valuta: String = "EUR"
     var leden: [String] = []
     var gemaakt: Date = Date()
+    var uid: UUID = UUID()
+    var gewijzigd: Date = Date()
+    var gesynct: Date?
+    var deling: String = "laptop"
+    var groepID: UUID?
+    var eigenaarID: UUID?
     @Relationship(deleteRule: .cascade, inverse: \Uitgave.pot) var uitgaven: [Uitgave] = []
 
     init(naam: String, valuta: String, leden: [String]) {
@@ -29,6 +35,13 @@ import SwiftUI
     var voor: [String]
     var datum: Date = Date()
     var pot: Pot?
+    var potUID: UUID?
+    var uid: UUID = UUID()
+    var gewijzigd: Date = Date()
+    var gesynct: Date?
+    var deling: String = "laptop"
+    var groepID: UUID?
+    var eigenaarID: UUID?
 
     init(omschrijving: String, bedrag: Double, betaaldDoor: String, voor: [String]) {
         self.omschrijving = omschrijving
@@ -326,7 +339,7 @@ struct PottenView: View {
                     }
                 }
             }
-            .onDelete { for i in $0 { ctx.delete(potten[i]) } }
+            .onDelete { for i in $0 { potten[i].uitgaven.forEach { Sync.shared.markeerVerwijderd($0) }; Sync.shared.markeerVerwijderd(potten[i]); ctx.delete(potten[i]) } }
         }
         .scrollContentBackground(.hidden)
         .toolbar { Button { nieuw = true } label: { Image(systemName: "plus").accessibilityLabel("Nieuw potje") } }
@@ -371,6 +384,7 @@ struct PotView: View {
     @Environment(\.modelContext) private var ctx
     @State private var nieuw = false
     @State private var koersen: [String: Double] = [:]
+    @State private var deelToken: String?
 
     var body: some View {
         List {
@@ -402,15 +416,36 @@ struct PotView: View {
                         Spacer()
                         Text(Omzetter.euro(u.bedrag, pot.valuta))
                     }
-                    .swipeActions { Button("Verwijder", role: .destructive) { ctx.delete(u) } }
+                    .swipeActions { Button("Verwijder", role: .destructive) { Sync.shared.markeerVerwijderd(u); ctx.delete(u) } }
                 }
             }
         }
         .scrollContentBackground(.hidden)
         .background(KnivAchtergrond())
         .navigationTitle(pot.naam)
-        .toolbar { Button { nieuw = true } label: { Image(systemName: "plus").accessibilityLabel("Uitgave") } }
+        .toolbar {
+            Button {
+                Task { deelToken = await Sync.shared.deel(pot, titel: pot.naam, soort: "pot") }
+            } label: { Image(systemName: pot.groepID == nil ? "person.badge.plus" : "person.2.fill").accessibilityLabel("Deel potje") }
+            .disabled(Sync.shared.gebruiker == nil)
+            Button { nieuw = true } label: { Image(systemName: "plus").accessibilityLabel("Uitgave") }
+        }
         .sheet(isPresented: $nieuw) { NieuweUitgaveView(pot: pot) }
+        .sheet(item: Binding(get: { deelToken.map(DeelToken.init) }, set: { deelToken = $0?.token })) { t in
+            VStack(spacing: 18) {
+                Image(systemName: "person.2.fill").font(.system(size: 44)).foregroundStyle(Color.accentColor)
+                Text("Deel \(pot.naam)").font(.title2.bold())
+                Text("Wie meedoet logt in met Google en kan zelf uitgaven toevoegen. De link verloopt na 30 dagen.")
+                    .multilineTextAlignment(.center).foregroundStyle(.secondary)
+                ShareLink(item: Sync.uitnodiging(t.token), message: Text("Doe mee met ons potje in Kniv")) {
+                    Label("Nodig iemand uit", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            }
+            .padding(28)
+            .presentationDetents([.medium])
+        }
         .task { koersen = await Koersen.huidig() }
     }
 }
@@ -445,8 +480,11 @@ struct NieuweUitgaveView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Annuleer") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Bewaar") {
-                        pot.uitgaven.append(Uitgave(omschrijving: omschrijving, bedrag: bedrag(bedragTekst), betaaldDoor: betaaldDoor,
-                                                    voor: pot.leden.filter(voor.contains)))
+                        let u = Uitgave(omschrijving: omschrijving, bedrag: bedrag(bedragTekst), betaaldDoor: betaaldDoor,
+                                        voor: pot.leden.filter(voor.contains))
+                        u.groepID = pot.groepID
+                        u.deling = pot.deling
+                        pot.uitgaven.append(u)
                         dismiss()
                     }
                     .disabled(bedrag(bedragTekst) <= 0 || voor.isEmpty)
@@ -626,4 +664,9 @@ struct FlowRij<Item: Hashable, Inhoud: View>: View {
             }
         }
     }
+}
+
+struct DeelToken: Identifiable {
+    let token: String
+    var id: String { token }
 }

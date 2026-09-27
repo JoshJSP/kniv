@@ -85,6 +85,15 @@ enum KnivOpslag {
         for n in (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? [] {
             if !gezien.insert(n.uid).inserted { n.uid = UUID(); n.gesynct = nil }
         }
+        for p in (try? ctx.fetch(FetchDescriptor<Pot>())) ?? [] {
+            if !gezien.insert(p.uid).inserted { p.uid = UUID(); p.gesynct = nil }
+        }
+        for u in (try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? [] {
+            if !gezien.insert(u.uid).inserted { u.uid = UUID(); u.gesynct = nil }
+        }
+        for t in (try? ctx.fetch(FetchDescriptor<KnivTimer>())) ?? [] {
+            if !gezien.insert(t.id).inserted { t.id = UUID(); t.gesynct = nil }
+        }
         try? ctx.save()
     }
 

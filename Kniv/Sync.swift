@@ -28,11 +28,29 @@ struct Rij: Codable {
 }
 
 struct RijData: Codable {
+    // notitie
     var tekst: String?
     var fotoTekst: String?
     var bakje: String?
     var gemaakt: Date?
     var items: [RijItem]?
+    // timer
+    var naam: String?
+    var isCountdown: Bool?
+    var duur: Double?
+    var eind: Date?
+    var rest: Double?
+    var doel: Date?
+    // pot
+    var valuta: String?
+    var leden: [String]?
+    // uitgave
+    var pot: UUID?
+    var omschrijving: String?
+    var bedrag: Double?
+    var betaaldDoor: String?
+    var voor: [String]?
+    var datum: Date?
 }
 
 struct RijItem: Codable {
@@ -60,6 +78,7 @@ struct Profiel: Codable {
     private var bezig = false
     private var nogEens = false
     private var luistert = false
+    private var luisterTaak: Task<Void, Never>?
     private var gepland = 0
     private let opslag = UserDefaults.standard
     private var client: SupabaseClient { KnivCloud.client }
@@ -110,6 +129,17 @@ struct Profiel: Codable {
         gebruiker = nil
         naam = ""
         laatstOpgehaald = .distantPast
+        luisterTaak?.cancel()
+        luisterTaak = nil
+        luistert = false
+        await client.removeAllChannels()
+        // Bij opnieuw inloggen (misschien met een ander account) gaat alles weer mee.
+        let ctx = KnivOpslag.container.mainContext
+        ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<KnivTimer>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<Pot>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.gesynct = nil }
+        try? ctx.save()
     }
 
     /// Wist het account en alles in de cloud; lokale gegevens gaan ook weg.
@@ -134,7 +164,8 @@ struct Profiel: Codable {
 
     /// Kort wachten zodat een reeks wijzigingen in één keer meegaat.
     func plan() {
-        guard gebruiker != nil, !bezig else { return }
+        guard gebruiker != nil else { return }
+        if bezig { nogEens = true; return }
         gepland += 1
         let mijn = gepland
         Task {
@@ -155,35 +186,47 @@ struct Profiel: Codable {
         bezig = false
     }
 
-    func markeerVerwijderd(_ n: Notitie) {
-        guard n.gesynct != nil, let ik = gebruiker else { return }
+    /// Onthoudt dat iets in de cloud weg moet. Sleutel "soort:uid", waarde "eigenaar,groep".
+    func markeerVerwijderd(_ x: some Synchroon) {
+        guard x.gesynct != nil, x.deling != "prive", let ik = gebruiker else { return }
         var weg = teVerwijderen
-        weg[n.uid.uuidString] = "\((n.eigenaarID ?? ik).uuidString),\(n.groepID?.uuidString ?? "")"
+        weg["\(type(of: x).soort):\(x.syncID.uuidString)"] = "\((x.eigenaarID ?? ik).uuidString),\(x.groepID?.uuidString ?? "")"
         teVerwijderen = weg
+    }
+
+    private func vies<T: Synchroon>(_: T.Type, _ ctx: ModelContext) -> [T] {
+        ((try? ctx.fetch(FetchDescriptor<T>())) ?? []).filter(\.isVies)
+    }
+
+    private func rij(_ x: some Synchroon, ik: UUID) -> Rij {
+        Rij(id: x.syncID, eigenaar: x.eigenaarID ?? ik, groep: x.groepID, soort: type(of: x).soort, data: x.rijData(),
+            gewijzigd: x.gewijzigd, gewijzigdDoor: ik, verwijderd: false)
     }
 
     private func stuur() async {
         guard let ik = gebruiker else { return }
         let ctx = KnivOpslag.container.mainContext
-        let vies = ((try? ctx.fetch(FetchDescriptor<Notitie>())) ?? [])
-            .filter { n in n.deling != "prive" && (n.gesynct.map { n.gewijzigd > $0 } ?? true) }
-        var rijen = vies.map { n in
-            Rij(id: n.uid, eigenaar: n.eigenaarID ?? ik, groep: n.groepID, soort: "notitie",
-                data: RijData(tekst: n.tekst, fotoTekst: n.fotoTekst, bakje: n.bakjeNaam, gemaakt: n.gemaakt,
-                              items: n.gesorteerdeItems.map { RijItem(tekst: $0.tekst, volgorde: $0.volgorde, door: $0.door) }),
-                gewijzigd: n.gewijzigd, gewijzigdDoor: ik, verwijderd: false)
-        }
+        let notities = vies(Notitie.self, ctx), timers = vies(KnivTimer.self, ctx)
+        let potten = vies(Pot.self, ctx), uitgaven = vies(Uitgave.self, ctx)
+        var rijen = notities.map { rij($0, ik: ik) } + timers.map { rij($0, ik: ik) }
+        rijen += potten.map { rij($0, ik: ik) } + uitgaven.map { rij($0, ik: ik) }
         let weg = teVerwijderen
-        rijen += weg.compactMap { uid, info in
-            let delen = info.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
-            guard let id = UUID(uuidString: uid), let eigenaar = UUID(uuidString: delen.first ?? "") else { return nil }
-            return Rij(id: id, eigenaar: eigenaar, groep: delen.count > 1 ? UUID(uuidString: delen[1]) : nil, soort: "notitie",
-                       data: RijData(), gewijzigd: Date(), gewijzigdDoor: ik, verwijderd: true)
+        for (sleutel, info) in weg {
+            let delen = sleutel.split(separator: ":").map(String.init)
+            let soort = delen.count == 2 ? delen[0] : "notitie"
+            let uid = delen.count == 2 ? delen[1] : sleutel
+            let mensen = info.split(separator: ",", omittingEmptySubsequences: false).map(String.init)
+            guard let id = UUID(uuidString: uid), let eigenaar = UUID(uuidString: mensen.first ?? "") else { continue }
+            rijen.append(Rij(id: id, eigenaar: eigenaar, groep: mensen.count > 1 ? UUID(uuidString: mensen[1]) : nil, soort: soort,
+                             data: RijData(), gewijzigd: Date(), gewijzigdDoor: ik, verwijderd: true))
         }
         guard !rijen.isEmpty else { return }
         do {
             try await client.from("records").upsert(rijen).execute()
-            vies.forEach { $0.gesynct = $0.gewijzigd }
+            notities.forEach { $0.gesynct = $0.gewijzigd }
+            timers.forEach { $0.gesynct = $0.gewijzigd }
+            potten.forEach { $0.gesynct = $0.gewijzigd }
+            uitgaven.forEach { $0.gesynct = $0.gewijzigd }
             teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
             try? ctx.save()
             fout = nil
@@ -207,54 +250,50 @@ struct Profiel: Codable {
             return
         }
         guard let laatste = rijen.last else { return }
-
         let ctx = KnivOpslag.container.mainContext
-        var lokaal: [UUID: Notitie] = [:]
-        for n in (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? [] { lokaal[n.uid] = n }
-        let bakjes = Set(((try? ctx.fetch(FetchDescriptor<Bakje>())) ?? []).map(\.naam))
-        var nieuweBakjes: Set<String> = []
-        var personen: Set<UUID> = []
+        // Potjes vóór uitgaven, zodat een uitgave haar potje vindt.
+        pasToe(rijen, Notitie.self, ctx, ik: ik)
+        pasToe(rijen, KnivTimer.self, ctx, ik: ik)
+        pasToe(rijen, Pot.self, ctx, ik: ik)
+        pasToe(rijen, Uitgave.self, ctx, ik: ik)
+        ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
+        laatstOpgehaald = laatste.gewijzigd
+        try? ctx.save()
+        var personen = Set(rijen.map(\.eigenaar))
+        for r in rijen { r.data.items?.compactMap(\.door).forEach { personen.insert($0) } }
+        await laadProfielen(personen)
+    }
 
-        for r in rijen where r.soort == "notitie" {
+    private func pasToe<T: Synchroon>(_ rijen: [Rij], _: T.Type, _ ctx: ModelContext, ik: UUID) {
+        let deze = rijen.filter { $0.soort == T.soort }
+        guard !deze.isEmpty else { return }
+        var lokaal: [UUID: T] = [:]
+        for x in (try? ctx.fetch(FetchDescriptor<T>())) ?? [] { lokaal[x.syncID] = x }
+        for r in deze {
             let bestaand = lokaal[r.id]
             if r.verwijderd {
-                if let bestaand { Vastlegger.verwijder(bestaand, in: ctx, uitCloud: false) }
+                bestaand?.verwijderLokaal(in: ctx)
+                lokaal[r.id] = nil
                 continue
             }
             if let bestaand, bestaand.gewijzigd >= r.gewijzigd { continue }   // hier nieuwer of gelijk: laatste wint
-            let n = bestaand ?? {
-                let nieuw = Notitie(tekst: "", bron: .tekst)
-                nieuw.uid = r.id
-                ctx.insert(nieuw)
-                return nieuw
-            }()
-            n.tekst = r.data.tekst ?? ""
-            n.fotoTekst = r.data.fotoTekst ?? ""
-            n.bakjeNaam = r.data.bakje
-            n.twijfelOpties = n.bakjeNaam == nil ? Sorteerder.opTrefwoorden(n.zoekTekst, namen: Array(bakjes)) : []
-            if let gemaakt = r.data.gemaakt { n.gemaakt = gemaakt }
-            n.items.forEach(ctx.delete)
-            n.items = (r.data.items ?? []).map { i in
-                let item = LijstItem(tekst: i.tekst, volgorde: i.volgorde)
-                item.door = i.door
-                if let d = i.door { personen.insert(d) }
-                return item
+            let x: T
+            if let bestaand {
+                x = bestaand
+            } else {
+                x = T.nieuw()
+                x.syncID = r.id
+                ctx.insert(x)
+                lokaal[r.id] = x
             }
-            n.groepID = r.groep
-            n.eigenaarID = r.eigenaar
-            n.deling = r.groep == nil ? "laptop" : "gedeeld"
-            n.gewijzigd = r.gewijzigd
-            n.gesynct = r.gewijzigd
-            if let b = r.data.bakje, !bakjes.contains(b) { nieuweBakjes.insert(b) }
+            x.pasToe(r.data, in: ctx)
+            x.groepID = r.groep
+            x.eigenaarID = r.eigenaar
+            x.deling = r.groep == nil ? "laptop" : "gedeeld"
+            x.gewijzigd = r.gewijzigd
+            x.gesynct = r.gewijzigd
             if r.gewijzigdDoor != ik, r.groep != nil { nieuwVanAnderen += 1 }
-            personen.insert(r.eigenaar)
         }
-        for (i, naam) in nieuweBakjes.enumerated() {
-            ctx.insert(Bakje(naam: naam, symbool: "tray", volgorde: 100 + i))
-        }
-        laatstOpgehaald = laatste.gewijzigd
-        try? ctx.save()
-        await laadProfielen(personen)
     }
 
     private func laadProfielen(_ ids: Set<UUID>) async {
@@ -268,7 +307,7 @@ struct Profiel: Codable {
     private func luister() {
         guard !luistert else { return }
         luistert = true
-        Task {
+        luisterTaak = Task {
             let kanaal = client.channel("kniv-records")
             let stroom = kanaal.postgresChange(AnyAction.self, schema: "public", table: "records")
             await kanaal.subscribe()
@@ -289,22 +328,29 @@ struct Profiel: Codable {
         let titel: String
     }
 
-    /// Maakt (of vindt) de groep voor deze notitie en geeft het deeltoken.
-    func deel(_ n: Notitie) async -> String? {
+    /// Maakt (of vindt) de groep voor dit ding en geeft het deeltoken.
+    func deel(_ x: some Synchroon, titel: String, soort: String) async -> String? {
         guard let ik = gebruiker else { return nil }
         do {
-            if let g = n.groepID {
+            if let g = x.groepID {
                 let groep: Groep = try await client.from("groepen").select("id,deel_token").eq("id", value: g.uuidString)
                     .single().execute().value
                 return groep.deel_token
             }
             let groep: Groep = try await client.from("groepen")
-                .insert(NieuweGroep(eigenaar: ik, soort: "lijst", titel: n.titel), returning: .representation)
+                .insert(NieuweGroep(eigenaar: ik, soort: soort, titel: titel), returning: .representation)
                 .select("id,deel_token").single().execute().value
-            n.groepID = groep.id
-            n.eigenaarID = ik
-            n.deling = "gedeeld"
-            n.gewijzigd = Date()
+            x.groepID = groep.id
+            x.eigenaarID = ik
+            x.deling = "gedeeld"
+            x.gewijzigd = Date()
+            if let pot = x as? Pot {
+                for u in pot.uitgaven {
+                    u.groepID = groep.id
+                    u.deling = "gedeeld"
+                    u.gewijzigd = Date()
+                }
+            }
             try? KnivOpslag.container.mainContext.save()
             await nu()
             return groep.deel_token
@@ -313,6 +359,8 @@ struct Profiel: Codable {
             return nil
         }
     }
+
+    func deel(_ n: Notitie) async -> String? { await deel(n, titel: n.titel, soort: "lijst") }
 
     /// Uitnodigingslink geopend: lid worden en alles van die groep ophalen.
     func wordLid(_ token: String) async {
