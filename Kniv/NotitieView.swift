@@ -70,6 +70,8 @@ struct NotitieView: View {
                 }
             }
 
+            SlimmeKnoppen(notitie: notitie)
+
             DenktMeeSectie(notitie: notitie)
 
             VerjaardagKnop(notitie: notitie)

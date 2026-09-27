@@ -1,12 +1,11 @@
 {
-  "versie": "0.27.0",
-  "mesnaam": "Gerber",
+  "versie": "0.28.0",
+  "mesnaam": "Buck",
   "nieuw": [
+    "Kniv ziet wat je bedoelt: 'tandarts maandag 14:30' → zet in agenda, 'oma bellen' → bel oma, een adres → route, een nummer → bellen",
     "Kies de taal van Kniv in Instellingen: Nederlands, English of zoals je iPhone",
     "Losse timers (pasta, thee) staan nu ook op je vergrendelscherm en in het Dynamic Island",
     "Instellingen opgeruimd: account met profielfoto bovenaan",
-    "Wist je dat…: elke dag één tip over wat Kniv kan",
-    "Instellingen → Wat Kniv allemaal kan",
-    "Vertaal wat je scant: menukaarten en borden in het buitenland, offline"
+    "Wist je dat…: elke dag één tip over wat Kniv kan"
   ]
 }

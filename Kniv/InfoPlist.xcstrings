@@ -81,6 +81,26 @@
         }
       }
     },
+    "NSContactsUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv looks up who you want to call when you note 'call grandma'."
+          }
+        }
+      }
+    },
+    "NSCalendarsWriteOnlyAccessUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv adds an appointment from your note to your calendar."
+          }
+        }
+      }
+    },
     "NSSpeechRecognitionUsageDescription": {
       "localizations": {
         "en": {

@@ -2531,6 +2531,56 @@
         }
       }
     },
+    "Snel doen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick actions"
+          }
+        }
+      }
+    },
+    "Staat in je agenda": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It's in your calendar"
+          }
+        }
+      }
+    },
+    "Zet in agenda (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to calendar (%@)"
+          }
+        }
+      }
+    },
+    "Bel %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call %@"
+          }
+        }
+      }
+    },
+    "Route naar %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directions to %@"
+          }
+        }
+      }
+    },
     "Zoals mijn iPhone": {
       "localizations": {
         "en": {
