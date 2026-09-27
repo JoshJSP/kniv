@@ -300,6 +300,26 @@ struct InstellingenView: View {
 
     var body: some View {
         Form {
+            Section("Account") {
+                if Sync.shared.gebruiker != nil {
+                    HStack(spacing: 12) {
+                        ProfielBolletje(id: Sync.shared.gebruiker, maat: 42)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(Sync.shared.naam).font(.headline)
+                            Text("Ingelogd met Google").font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    if let fout = Sync.shared.fout { Text(fout).font(.footnote).foregroundStyle(.secondary) }
+                    Button("Uitloggen") { Task { await Sync.shared.uitloggen() } }
+                    Button("Account verwijderen", role: .destructive) { vraagVerwijderen = true }
+                        .confirmationDialog("Account en alles in de cloud verwijderen?", isPresented: $vraagVerwijderen, titleVisibility: .visible) {
+                            Button("Verwijder alles", role: .destructive) { Task { _ = await Sync.shared.verwijderAccount() } }
+                        } message: {
+                            Text("Gedeelde lijstjes gaan over naar wie het langst meedoet.")
+                        }
+                }
+            }
+
             Section {
                 ForEach(bakjes) { BakjeRij(bakje: $0) }
                     .onDelete(perform: verwijder)
@@ -311,20 +331,6 @@ struct InstellingenView: View {
                 Text("Mijn bakjes")
             } footer: {
                 Text("Met het slotje open je een bakje alleen met Face ID. Eigen bakjes herkent Kniv zodra je hun naam gebruikt, en leert hij van jouw keuzes.")
-            }
-
-            Section("Account") {
-                if Sync.shared.gebruiker != nil {
-                    LabeledContent("Ingelogd als", value: Sync.shared.naam)
-                    if let fout = Sync.shared.fout { Text(fout).font(.footnote).foregroundStyle(.secondary) }
-                    Button("Uitloggen") { Task { await Sync.shared.uitloggen() } }
-                    Button("Account verwijderen", role: .destructive) { vraagVerwijderen = true }
-                        .confirmationDialog("Account en alles in de cloud verwijderen?", isPresented: $vraagVerwijderen, titleVisibility: .visible) {
-                            Button("Verwijder alles", role: .destructive) { Task { _ = await Sync.shared.verwijderAccount() } }
-                        } message: {
-                            Text("Gedeelde lijstjes gaan over naar wie het langst meedoet.")
-                        }
-                }
             }
 
             Section {
@@ -358,8 +364,6 @@ struct InstellingenView: View {
             } footer: {
                 Text("In rustmodus is Kniv donker en rustig, en zwijgen de plekmeldingen.")
             }
-
-            Section { DeelmenuUitleg() }
 
             Section { NavigationLink { AlleTipsView() } label: { Label("Wat Kniv allemaal kan", systemImage: "lightbulb") } }
 

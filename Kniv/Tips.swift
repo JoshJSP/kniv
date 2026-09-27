@@ -59,6 +59,7 @@ struct AlleTipsView: View {
     var body: some View {
         List {
             Section { Toggle("Dagelijkse tip op het startscherm", isOn: $aan) }
+            Section { DeelmenuUitleg() }
             Section {
                 ForEach(Tips.alle.indices, id: \.self) { i in
                     Label { Text(Tips.alle[i].tekst) } icon: { Image(systemName: Tips.alle[i].icoon).foregroundStyle(Color.accentColor) }

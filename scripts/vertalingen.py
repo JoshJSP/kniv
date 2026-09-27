@@ -96,6 +96,7 @@ EN = {
     "Potjes": "Pots", "Bon": "Receipt", "Omzetten": "Convert", "Rad": "Wheel", "Dobbelen": "Dice",
     "Teams": "Teams", "Stemmen": "Vote", "QR-code": "QR code", "Document": "Document", "Tekst": "Text", "Liniaal": "Ruler",
     "Geluid": "Sound",
+    "Ingelogd met Google": "Signed in with Google",
     "Houd een tegel ingedrukt voor snelle acties, zoals meteen inspreken of focus starten.": "Hold a tile for quick actions, like dictating or starting focus right away.",
     "Zet de Actieknop op 'Inspreken in Kniv' en leg iets vast zonder te ontgrendelen.": "Set the Action button to 'Dictate in Kniv' and capture something without unlocking.",
     "Leg je telefoon met het scherm op tafel en je focus start vanzelf (zet het aan bij Timers).": "Put your phone face down on the table and focus starts by itself (turn it on in Timers).",
