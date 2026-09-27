@@ -2531,6 +2531,36 @@
         }
       }
     },
+    "+5 min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+5 min"
+          }
+        }
+      }
+    },
+    "Over een uur": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In an hour"
+          }
+        }
+      }
+    },
+    "Morgen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tomorrow"
+          }
+        }
+      }
+    },
     "Wanneer kan iedereen?": {
       "localizations": {
         "en": {

@@ -65,7 +65,7 @@ import UserNotifications
 }
 
 enum Meldingen {
-    static func plan(_ id: String, _ tekst: String, na seconden: TimeInterval) {
+    static func plan(_ id: String, _ tekst: String, na seconden: TimeInterval, categorie: String = MeldingActies.timer) {
         guard seconden > 0 else { return }
         let centrum = UNUserNotificationCenter.current()
         centrum.requestAuthorization(options: [.alert, .sound, .badge]) { ok, _ in
@@ -75,6 +75,7 @@ enum Meldingen {
             inhoud.body = tekst
             inhoud.sound = .default
             inhoud.interruptionLevel = .timeSensitive
+            inhoud.categoryIdentifier = categorie
             centrum.add(UNNotificationRequest(identifier: id, content: inhoud,
                                               trigger: UNTimeIntervalNotificationTrigger(timeInterval: seconden, repeats: false)))
         }

@@ -10,6 +10,7 @@ struct KnivApp: App {
     init() {
         // Vroeg aanmaken: iOS start Kniv op de achtergrond als je een bewaakte plek binnenloopt.
         _ = PlekWachter.shared
+        MeldingActies.shared.registreer()
     }
 
     var body: some Scene {

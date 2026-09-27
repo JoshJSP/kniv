@@ -201,6 +201,7 @@ enum Herinneraar {
         inhoud.title = "Kniv"
         inhoud.body = titel
         inhoud.sound = .default
+        inhoud.categoryIdentifier = MeldingActies.herinnering
         let delen = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: moment)
         let verzoek = UNNotificationRequest(identifier: UUID().uuidString, content: inhoud,
                                             trigger: UNCalendarNotificationTrigger(dateMatching: delen, repeats: false))

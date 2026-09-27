@@ -2,11 +2,11 @@
   "versie": "0.29.0",
   "mesnaam": "Kabar",
   "nieuw": [
+    "Knoppen in meldingen: timer klaar → +5 min, herinnering → over een uur of morgen",
     "Prikken (bij Kiezen): wanneer kan iedereen? Kies data, deel de link, zie de beste dag",
     "Gehoorportie (bij Meten → Geluid): Kniv waarschuwt voordat harde muziek je oren beschadigt",
     "Kniv ziet wat je bedoelt: agenda, bellen, route en links vanuit een notitie",
     "Kies de taal van Kniv in Instellingen: Nederlands, English of zoals je iPhone",
-    "Losse timers (pasta, thee) staan nu ook op je vergrendelscherm en in het Dynamic Island",
-    "Instellingen opgeruimd: account met profielfoto bovenaan"
+    "Losse timers (pasta, thee) staan nu ook op je vergrendelscherm en in het Dynamic Island"
   ]
 }
