@@ -139,10 +139,118 @@ public static class Omzetter
 
     static readonly Dictionary<string, string> Symbolen = new() { ["$"] = "USD", ["£"] = "GBP", ["¥"] = "JPY", ["₺"] = "TRY", ["kr"] = "SEK", ["zł"] = "PLN", ["chf"] = "CHF" };
 
-    public static string? Reken(string invoer, Dictionary<string, double>? koersen = null)
+    public static string? Reken(string invoer, Dictionary<string, double>? koersen = null, DateTime? nuOpt = null)
     {
         var klein = invoer.ToLowerInvariant().Trim();
-        return Procent(klein) ?? Valuta(klein, koersen ?? new()) ?? Eenheid(klein);
+        return Tijd(klein, nuOpt ?? DateTime.Now) ?? Goedkoper(klein) ?? Procent(klein) ?? Valuta(klein, koersen ?? new()) ?? Eenheid(klein);
+    }
+
+    // Rekenen met tijd, zoals Kniv/Logica/Rekenen.swift: "14:35 + 2u50", "9:15 tot 17:30", "dagen tot 25 dec", "15:00 in tokyo".
+    static string? Tijd(string t, DateTime nu)
+    {
+        if (Rx.Eerste(@"^(?:dagen tot|hoe lang tot|days until|how long until)\s+(.+)$", t) is { } d && Herinnering.Vind(d[1], nu) is { } doel)
+        {
+            var dagen = (int)(doel.dag.Date - nu.Date).TotalDays;
+            return dagen == 0 ? "Dat is vandaag!" : dagen >= 14 ? $"Nog {dagen} dagen ({dagen / 7} weken en {dagen % 7} dagen)" : $"Nog {dagen} dagen";
+        }
+        if (Rx.Eerste(@"^(?:hoe laat is het in|hoe laat in|tijd in|time in|what time in)\s+(.+?)\s*\??$", t) is { } h && Zone(h[1]) is { } z)
+        {
+            var daar = TimeZoneInfo.ConvertTime(nu, TimeZoneInfo.Local, z.tz);
+            var verschil = (daar - nu).TotalHours;
+            return $"In {z.naam} is het nu {daar:H:mm}" + (Math.Abs(verschil) < 0.01 ? "" : $" ({(verschil > 0 ? "+" : "")}{Mooi(verschil)} uur)");
+        }
+        const string klok = @"(\d{1,2}):(\d{2})";
+        if (Rx.Eerste("^" + klok + @"\s+(?:in|naar|to)\s+(.+)$", t) is { } iz && Minuten(iz[1], iz[2]) is { } m0 && Zone(iz[3]) is { } z2)
+        {
+            var daar = TimeZoneInfo.ConvertTime(nu.Date.AddMinutes(m0), TimeZoneInfo.Local, z2.tz);
+            return $"{iz[1]}:{iz[2]} hier = {daar:H:mm} in {z2.naam}";
+        }
+        if (Rx.Eerste("^" + klok + @"\s*(?:tot|-|–|to|until)\s*" + klok + "$", t) is { } r && Minuten(r[1], r[2]) is { } a && Minuten(r[3], r[4]) is { } b)
+        {
+            var duur = (b - a + 1440) % 1440;
+            return $"{r[1]}:{r[2]} tot {r[3]}:{r[4]} = {DuurTekst(duur)} ({Mooi(duur / 60.0)} uur)";
+        }
+        if (Rx.Eerste("^" + klok + @"\s*([+-])\s*(.+)$", t) is { } p && Minuten(p[1], p[2]) is { } start && Duur(p[4]) is { } lengte)
+        {
+            var som = start + (p[3] == "+" ? lengte : -lengte);
+            var dag = (int)Math.Floor(som / 1440.0);
+            var rest = som - dag * 1440;
+            var extra = dag > 0 ? " (volgende dag)" : dag < 0 ? " (dag ervoor)" : "";
+            return $"{p[1]}:{p[2]} {p[3]} {DuurTekst(lengte)} = {rest / 60}:{rest % 60:00}{extra}";
+        }
+        return null;
+    }
+
+    static int? Minuten(string u, string m) => int.Parse(u) is var uu && int.Parse(m) is var mm && uu < 24 && mm < 60 ? uu * 60 + mm : null;
+
+    public static int? Duur(string s)
+    {
+        var t = s.Trim();
+        if (Rx.Eerste(@"^(\d+):(\d{2})$", t) is { } a) return int.Parse(a[1]) * 60 + int.Parse(a[2]);
+        if (Rx.Eerste(@"^(\d+(?:[.,]\d+)?)\s*(?:u|uur|h|hours?)\s*(?:(\d+)\s*(?:m|min|minuten|minutes)?)?$", t) is { } b && Getal(b[1]) is { } u)
+            return (int)Math.Round(u * 60) + (b[2] == "" ? 0 : int.Parse(b[2]));
+        if (Rx.Eerste(@"^(\d+)\s*(?:m|min|minuten|minutes)$", t) is { } c) return int.Parse(c[1]);
+        return null;
+    }
+
+    static string DuurTekst(int min) => min < 60 ? $"{min} min" : min % 60 == 0 ? $"{min / 60} u" : $"{min / 60} u {min % 60} min";
+
+    static readonly Dictionary<string, string> Steden = new()
+    {
+        ["new york"] = "America/New_York", ["ny"] = "America/New_York", ["boston"] = "America/New_York", ["miami"] = "America/New_York",
+        ["toronto"] = "America/Toronto", ["chicago"] = "America/Chicago", ["los angeles"] = "America/Los_Angeles", ["la"] = "America/Los_Angeles",
+        ["san francisco"] = "America/Los_Angeles", ["vancouver"] = "America/Vancouver", ["mexico"] = "America/Mexico_City",
+        ["curaçao"] = "America/Curacao", ["curacao"] = "America/Curacao", ["aruba"] = "America/Aruba", ["suriname"] = "America/Paramaribo",
+        ["paramaribo"] = "America/Paramaribo", ["rio"] = "America/Sao_Paulo", ["sao paulo"] = "America/Sao_Paulo", ["hawaii"] = "Pacific/Honolulu",
+        ["londen"] = "Europe/London", ["london"] = "Europe/London", ["lissabon"] = "Europe/Lisbon", ["lisbon"] = "Europe/Lisbon",
+        ["istanbul"] = "Europe/Istanbul", ["turkije"] = "Europe/Istanbul", ["moskou"] = "Europe/Moscow", ["athene"] = "Europe/Athens",
+        ["marokko"] = "Africa/Casablanca", ["marrakech"] = "Africa/Casablanca", ["kaapstad"] = "Africa/Johannesburg", ["cape town"] = "Africa/Johannesburg",
+        ["dubai"] = "Asia/Dubai", ["india"] = "Asia/Kolkata", ["delhi"] = "Asia/Kolkata", ["mumbai"] = "Asia/Kolkata",
+        ["bangkok"] = "Asia/Bangkok", ["thailand"] = "Asia/Bangkok", ["bali"] = "Asia/Makassar", ["jakarta"] = "Asia/Jakarta",
+        ["singapore"] = "Asia/Singapore", ["hong kong"] = "Asia/Hong_Kong", ["beijing"] = "Asia/Shanghai", ["peking"] = "Asia/Shanghai",
+        ["shanghai"] = "Asia/Shanghai", ["seoul"] = "Asia/Seoul", ["korea"] = "Asia/Seoul", ["tokyo"] = "Asia/Tokyo", ["japan"] = "Asia/Tokyo",
+        ["sydney"] = "Australia/Sydney", ["melbourne"] = "Australia/Melbourne", ["perth"] = "Australia/Perth", ["auckland"] = "Pacific/Auckland",
+        ["nieuw-zeeland"] = "Pacific/Auckland", ["amsterdam"] = "Europe/Amsterdam", ["nederland"] = "Europe/Amsterdam",
+    };
+
+    static (string naam, TimeZoneInfo tz)? Zone(string naam)
+    {
+        var sleutel = naam.Trim().Trim('?', '!', '.', ',');
+        if (!Steden.TryGetValue(sleutel, out var id)) return null;
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(id);
+            return (sleutel.Length <= 2 ? sleutel.ToUpperInvariant() : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(sleutel), tz);
+        }
+        catch (Exception) { return null; }     // Windows zonder ICU kent de IANA-namen niet
+    }
+
+    // Wat is goedkoper: "2,49 voor 500g of 3,99 voor 1kg"
+    static string? Goedkoper(string t)
+    {
+        const string deel = @"€?\s*(\d+(?:[.,]\d+)?)\s*(?:voor|for|per|/)\s*(\d+(?:[.,]\d+)?)?\s*(g|gr|gram|kg|kilo|ml|cl|l|liter|stuks?|st)";
+        if (Rx.Eerste("^" + deel + @"\s*(?:of|or|vs\.?|tegen)\s*" + deel + "$", t) is not { } m
+            || PerEenheid(m[1], m[2], m[3]) is not { } a || PerEenheid(m[4], m[5], m[6]) is not { } b || a.soort != b.soort || a.prijs <= 0 || b.prijs <= 0) return null;
+        var label = a.soort == "st" ? "per stuk" : a.soort == "kg" ? "per kilo" : "per liter";
+        if (Math.Abs(a.prijs - b.prijs) < 0.005) return $"Even duur: {Euro(a.prijs)} {label}";
+        var (goed, duur, welke) = a.prijs < b.prijs ? (a.prijs, b.prijs, "De eerste") : (b.prijs, a.prijs, "De tweede");
+        return $"{welke} is {(int)Math.Round((1 - goed / duur) * 100)}% goedkoper: {Euro(goed)} tegen {Euro(duur)} {label}";
+    }
+
+    static (double prijs, string soort)? PerEenheid(string prijs, string hoeveel, string eenheid)
+    {
+        if (Getal(prijs) is not { } p) return null;
+        var n = hoeveel == "" ? 1 : Getal(hoeveel) ?? 0;
+        if (n <= 0) return null;
+        return eenheid switch
+        {
+            "g" or "gr" or "gram" => (p / (n / 1000), "kg"),
+            "kg" or "kilo" => (p / n, "kg"),
+            "ml" => (p / (n / 1000), "l"),
+            "cl" => (p / (n / 100), "l"),
+            "l" or "liter" => (p / n, "l"),
+            _ => (p / n, "st"),
+        };
     }
 
     static double? Getal(string s) => double.TryParse(s.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : null;

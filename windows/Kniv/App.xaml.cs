@@ -272,6 +272,13 @@ static class Zelftest
         Is(R("45 usd", usd).Contains("40,91"), "valuta: " + R("45 usd", usd));
         Is(R("$12.99", usd).Contains("11,81"), "dollarteken: " + R("$12.99", usd));
         Is(R("20 min pasta") == "nil" && R("gewoon tekst") == "nil", "geen omzetting");
+        Is(R("14:35 + 2u50") == "14:35 + 2 u 50 min = 17:25", "tijd optellen: " + R("14:35 + 2u50"));
+        Is(R("23:30 + 45 min") == "23:30 + 45 min = 0:15 (volgende dag)", "tijd middernacht: " + R("23:30 + 45 min"));
+        Is(R("22:00 - 6:30").StartsWith("22:00 tot 6:30 = 8 u 30 min"), "nachtdienst: " + R("22:00 - 6:30"));
+        Is(Omzetter.Reken("dagen tot 9 okt", null, new DateTime(2026, 9, 26, 10, 0, 0)) == "Nog 13 dagen", "dagen tot");
+        Is(R("15:00 in tokyo").EndsWith("in Tokyo") && R("15:00 in atlantis") == "nil", "tijdzone: " + R("15:00 in tokyo"));
+        Is(R("2,49 voor 500g of 3,99 voor 1kg").StartsWith("De tweede is 20% goedkoper"), "goedkoper kilo: " + R("2,49 voor 500g of 3,99 voor 1kg"));
+        Is(R("1,50 voor 330ml of 2,19 voor 1,5l").StartsWith("De tweede is 68% goedkoper") && R("2,49 voor 500g of 3,99 voor 1l") == "nil", "goedkoper liter");
         Is(SnelCommando.Kern("10 km = 6,21 mijl") == "6,21 mijl" && SnelCommando.Kern("3 cups = 720 ml ≈ 375 g bloem") == "720 ml", "kern");
 
         Is(TimerParser.Vind("over 20 min oven uit") == ("Oven uit", 1200), "timer uit notitie: " + TimerParser.Vind("over 20 min oven uit"));
