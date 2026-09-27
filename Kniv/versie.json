@@ -1,11 +1,13 @@
 {
-  "versie": "0.18.0",
-  "mesnaam": "Trapper",
+  "versie": "0.19.0",
+  "mesnaam": "Sgian Dubh",
   "nieuw": [
+    "Kniv denkt mee: maak van een notitie een lijstje (een gerecht wordt boodschappen, een reis een paklijst), op je iPhone zelf",
+    "Lange tekst van een whiteboard-foto? Kniv vat hem samen in een paar punten",
+    "Een persoonlijke begroeting bovenaan",
     "Regen op komst? Vandaag zegt het (paraplu mee), en ook als je de deur uit loopt",
     "Tijdcapsule: verzegel een notitie tot een datum in de toekomst",
     "Rondjes (bij Splitten): wie geeft het volgende rondje?",
-    "Studieplan: geef een countdown een hoeveelheid werk en zie hoeveel per dag",
-    "Verjaardag in een notitie? Eén tik en je krijgt er elk jaar een seintje van"
+    "Studieplan: geef een countdown een hoeveelheid werk en zie hoeveel per dag"
   ]
 }

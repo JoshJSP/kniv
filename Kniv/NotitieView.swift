@@ -69,6 +69,8 @@ struct NotitieView: View {
                 }
             }
 
+            DenktMeeSectie(notitie: notitie)
+
             VerjaardagKnop(notitie: notitie)
 
             TijdcapsuleSectie(notitie: notitie)
