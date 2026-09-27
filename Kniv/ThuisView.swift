@@ -53,6 +53,7 @@ struct ThuisView: View {
                     DagboekKaart()
                     TerugblikKaart()
                     VandaagKaart { mes in pad = NavigationPath([mes]) }
+                    TipKaart()
                 }
                 .padding([.horizontal, .top])
                 LazyVGrid(columns: kolommen, spacing: 12) {

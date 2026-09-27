@@ -361,6 +361,8 @@ struct InstellingenView: View {
 
             Section { DeelmenuUitleg() }
 
+            Section { NavigationLink { AlleTipsView() } label: { Label("Wat Kniv allemaal kan", systemImage: "lightbulb") } }
+
             Section {
                 LabeledContent("Versie", value: VersieInfo.huidig.map { "\($0.mesnaam) · \($0.versie)" } ?? "?")
                     .contentShape(Rectangle())
