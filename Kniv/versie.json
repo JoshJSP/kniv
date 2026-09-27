@@ -1,9 +1,8 @@
 {
-  "versie": "0.13.0",
-  "mesnaam": "Leatherman",
+  "versie": "0.14.0",
+  "mesnaam": "Higonokami",
   "nieuw": [
-    "Bewaar in Kniv vanuit elke app: tekst, links (met paginatitel) en foto's. Zet hem in je deelmenu via Opdrachten (uitleg in Instellingen)",
-    "Rustmodus: 's avonds donker en rustig, plekmeldingen zwijgen",
-    "Deel je weekterugblik als kaartje voor je story"
+    "Verstaat je iPhone je niet goed (of praat je Nederlands en Engels door elkaar)? Dan schrijft Whisper het uit, zonder dat je iets merkt",
+    "Gedeelde potjes zie je nu ook op de deelpagina: totaal, afrekenen en alle uitgaven"
   ]
 }

@@ -165,6 +165,7 @@ struct VastleggenView: View {
     private func wisselSpraak() async {
         if spraak.bezig {
             let _ = await spraak.stop()
+            if let beter = await spraak.verbeter() { invoer = voorSpraak + beter }
             bewaar(invoer, bron: .spraak)
         } else {
             voorSpraak = invoer.isEmpty ? "" : invoer + " "

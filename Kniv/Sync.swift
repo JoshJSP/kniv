@@ -5,9 +5,10 @@ import SwiftUI
 
 /// De brug naar Supabase. Contract: supabase/SYNC.md. Lokaal-eerst: SwiftData is de bron, dit synchroniseert.
 enum KnivCloud {
+    static let publishable = "sb_publishable_5oWWatyeuq3o-w3Qw_R_jA_qo5Tjv_l"
     static let client = SupabaseClient(
         supabaseURL: URL(string: "https://ykptlgckqppgxirtndch.supabase.co")!,
-        supabaseKey: "sb_publishable_5oWWatyeuq3o-w3Qw_R_jA_qo5Tjv_l"
+        supabaseKey: publishable
     )
 }
 

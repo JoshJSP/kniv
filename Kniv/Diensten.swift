@@ -15,6 +15,9 @@ import VisionKit
     private let motor = AVAudioEngine()
     private var verzoek: SFSpeechAudioBufferRecognitionRequest?
     private var taak: SFSpeechRecognitionTask?
+    private var opname: AVAudioFile?
+    private var zekerheid: Float = 0
+    private let opnamePad = FileManager.default.temporaryDirectory.appending(path: "kniv-spraak.m4a")
 
     enum Fout: Error { case geenToestemming, geenHerkenner }
 
@@ -38,8 +41,18 @@ import VisionKit
         self.verzoek = verzoek
 
         let invoer = motor.inputNode
-        invoer.installTap(onBus: 0, bufferSize: 1024, format: invoer.outputFormat(forBus: 0)) { @Sendable [verzoek] buffer, _ in
+        let formaat = invoer.outputFormat(forBus: 0)
+        // Tegelijk een klein m4a-bestand opnemen, voor als Whisper het beter moet verstaan.
+        try? FileManager.default.removeItem(at: opnamePad)
+        let opname = try? AVAudioFile(forWriting: opnamePad,
+                                      settings: [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: formaat.sampleRate,
+                                                 AVNumberOfChannelsKey: formaat.channelCount, AVEncoderBitRateKey: 48_000],
+                                      commonFormat: formaat.commonFormat, interleaved: formaat.isInterleaved)
+        self.opname = opname
+        zekerheid = 0
+        invoer.installTap(onBus: 0, bufferSize: 1024, format: formaat) { @Sendable [verzoek, opname] buffer, _ in
             verzoek.append(buffer)
+            try? opname?.write(from: buffer)
         }
         motor.prepare()
         try motor.start()
@@ -47,7 +60,13 @@ import VisionKit
         bezig = true
         taak = herkenner.recognitionTask(with: verzoek) { @Sendable [weak self] resultaat, _ in
             guard let resultaat else { return }
-            Task { @MainActor in self?.tekst = resultaat.bestTranscription.formattedString }
+            let tekst = resultaat.bestTranscription.formattedString
+            let segmenten = resultaat.bestTranscription.segments
+            let zeker = segmenten.isEmpty ? 0 : segmenten.map(\.confidence).reduce(0, +) / Float(segmenten.count)
+            Task { @MainActor in
+                self?.tekst = tekst
+                if resultaat.isFinal { self?.zekerheid = zeker }
+            }
         }
     }
 
@@ -61,9 +80,33 @@ import VisionKit
         taak?.cancel()
         taak = nil
         verzoek = nil
+        opname = nil      // sluit het bestand
         bezig = false
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         return tekst
+    }
+}
+
+extension Spraak {
+    /// Verstond de iPhone niets, of twijfelde hij (zekerheid onder 45%)? Dan schrijft Whisper het uit via Supabase.
+    /// Alleen als je bent ingelogd; maximaal 50 keer per dag.
+    func verbeter() async -> String? {
+        let twijfel = tekst.isEmpty || (zekerheid > 0 && zekerheid < 0.45)
+        guard twijfel, let sessie = try? await KnivCloud.client.auth.session,
+              let audio = try? Data(contentsOf: opnamePad), audio.count > 2_000 else { return nil }
+        var url = URLComponents(string: "https://ykptlgckqppgxirtndch.supabase.co/functions/v1/spraak")!
+        if let taal = Locale.current.language.languageCode?.identifier { url.queryItems = [URLQueryItem(name: "taal", value: taal)] }
+        var vraag = URLRequest(url: url.url!, timeoutInterval: 20)
+        vraag.httpMethod = "POST"
+        vraag.setValue("Bearer \(sessie.accessToken)", forHTTPHeaderField: "Authorization")
+        vraag.setValue(KnivCloud.publishable, forHTTPHeaderField: "apikey")
+        vraag.setValue("audio/m4a", forHTTPHeaderField: "Content-Type")
+        vraag.httpBody = audio
+        struct Antwoord: Decodable { let tekst: String? }
+        guard let (data, antwoord) = try? await URLSession.shared.data(for: vraag),
+              (antwoord as? HTTPURLResponse)?.statusCode == 200,
+              let beter = try? JSONDecoder().decode(Antwoord.self, from: data).tekst, !beter.isEmpty else { return nil }
+        return beter
     }
 }
 
