@@ -60,6 +60,11 @@ export function samenvatting(d: Deel): string {
     const n = dagenTot(doel);
     return n === 0 ? "vandaag!" : n === 1 ? "nog 1 dag" : `nog ${n} dagen`;
   }
+  const potUitgaven = d.records.filter((r) => r.soort === "uitgave");
+  if (d.soort === "pot") {
+    const totaal = potUitgaven.reduce((s, r) => s + (Number(r.data?.bedrag) || 0), 0);
+    return `${potUitgaven.length} uitgaven · ${new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(totaal)}`;
+  }
   const items = d.records.reduce((n, r) => n + (r.data?.items?.length || (r.data?.tekst ? 1 : 0)), 0);
   return items === 1 ? "1 item" : `${items} items`;
 }
