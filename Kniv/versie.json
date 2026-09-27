@@ -1,12 +1,12 @@
 {
-  "versie": "0.32.0",
-  "mesnaam": "Benchmade",
+  "versie": "0.33.0",
+  "mesnaam": "Mercator",
   "nieuw": [
+    "Tel samen af: houd een countdown ingedrukt en deel hem met vrienden",
     "Siri kiest voor je: 'Gooi een dobbelsteen met Kniv', 'Kop of munt met Kniv', 'Kies iets met Kniv'",
     "Vastpinnen: houd een notitie ingedrukt en hij staat altijd bovenaan",
     "Prullenbak: weggegooide notities blijven 30 dagen, zodat je ze kunt terugzetten (Instellingen)",
     "Ingesproken notities bewaren de opname: luister terug als de tekst niet klopt",
-    "Splitten → Bon: zie per maand wat je aan gescande bonnen uitgaf",
-    "Exporteer alles (Instellingen): al je gegevens in één leesbaar bestand"
+    "Splitten → Bon: zie per maand wat je aan gescande bonnen uitgaf"
   ]
 }

@@ -2531,6 +2531,46 @@
         }
       }
     },
+    "Tel samen af": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Count down together"
+          }
+        }
+      }
+    },
+    "Vrienden met Kniv zien de countdown bij hun Timers. Iedereen anders kan meekijken via de link.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends with Kniv see the countdown in their Timers. Anyone else can follow along via the link."
+          }
+        }
+      }
+    },
+    "Tel met me af in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Count down with me in Kniv"
+          }
+        }
+      }
+    },
+    "Link om mee te kijken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View-only link"
+          }
+        }
+      }
+    },
     "Gooi een dobbelsteen": {
       "localizations": {
         "en": {

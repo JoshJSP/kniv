@@ -211,6 +211,7 @@ struct TimersView: View {
     @State private var nieuw: NieuwSoort?
     @State private var toonAdem = false
     @State private var toonSlaap = false
+    @State private var deelToken: String?
     @AppStorage("omdraaien") private var omdraaien = false
     @State private var omdraaier = Omdraaier.shared
     @AppStorage("haptiek") private var haptiek = true
@@ -252,6 +253,21 @@ struct TimersView: View {
         .sensoryFeedback(.impact(weight: .medium), trigger: pomo.fase) { _, _ in haptiek }
         .fullScreenCover(isPresented: $toonAdem) { AdemView() }
         .sheet(isPresented: $toonSlaap) { SlaapView() }
+        .sheet(item: Binding(get: { deelToken.map(DeelToken.init) }, set: { deelToken = $0?.token })) { t in
+            VStack(spacing: 16) {
+                Image(systemName: "calendar.badge.clock").font(.system(size: 44)).foregroundStyle(Color.accentColor)
+                Text("Tel samen af").font(.title2.bold())
+                Text("Vrienden met Kniv zien de countdown bij hun Timers. Iedereen anders kan meekijken via de link.")
+                    .multilineTextAlignment(.center).foregroundStyle(.secondary)
+                ShareLink(item: Sync.uitnodiging(t.token), message: Text("Tel met me af in Kniv")) {
+                    Label("Nodig uit", systemImage: "person.badge.plus").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent).controlSize(.large)
+                ShareLink(item: Sync.bekijklink(t.token)) { Label("Link om mee te kijken", systemImage: "eye") }
+            }
+            .padding(28)
+            .presentationDetents([.medium])
+        }
         .onAppear { if omdraaien { omdraaier.start() } }
         .onDisappear { omdraaier.stop() }
         .onChange(of: omdraaien) { _, aan in aan ? omdraaier.start() : omdraaier.stop() }
@@ -327,6 +343,11 @@ struct TimersView: View {
                     .padding(14)
                     .glas(18)
                     .contextMenu {
+                        if t.isCountdown && Sync.shared.gebruiker != nil {
+                            Button { Task { deelToken = await Sync.shared.deel(t, titel: t.naam, soort: "countdown") } } label: {
+                                Label("Deel met vrienden", systemImage: "person.2")
+                            }
+                        }
                         Button(role: .destructive) { Meldingen.annuleer(t.id.uuidString); Sync.shared.markeerVerwijderd(t); ctx.delete(t) } label: {
                             Label("Verwijder", systemImage: "trash")
                         }
