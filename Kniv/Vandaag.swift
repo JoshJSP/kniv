@@ -17,7 +17,7 @@ struct VandaagKaart: View {
         let mes: Mes
     }
 
-    private func regels(_ nu: Date) -> [Regel] {
+    private func regels(_ nu: Date, vast: [Regel]) -> [Regel] {
         var r: [Regel] = []
         if pomo.actief {
             r.append(Regel(id: "pomo", icoon: "timer",
@@ -27,6 +27,12 @@ struct VandaagKaart: View {
         for t in timers where t.loopt {
             r.append(Regel(id: "t\(t.id)", icoon: "timer", tekst: "\(t.naam) \(TimerParser.klok(t.resterend(nu)))", mes: .timers))
         }
+        return r + vast
+    }
+
+    /// Alles wat niet per seconde verandert. Wordt alleen opnieuw berekend als de notities, potjes of het uur veranderen.
+    private func vasteRegels(_ nu: Date) -> [Regel] {
+        var r: [Regel] = []
         if let weer = WeerDienst.advies {
             r.append(Regel(id: "w", icoon: weer.contains("°") ? "thermometer.low" : "cloud.rain", tekst: weer, mes: .vastleggen))
         }
@@ -58,8 +64,10 @@ struct VandaagKaart: View {
     }
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { klok in
-            let lijst = regels(klok.date)
+        let vast = vasteRegels(Date())
+        let tikt = pomo.loopt || timers.contains(where: \.loopt)
+        TimelineView(.periodic(from: .now, by: tikt ? 1 : 60)) { klok in
+            let lijst = regels(klok.date, vast: vast)
             if !lijst.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Vandaag").font(.headline)

@@ -1,12 +1,12 @@
 {
-  "versie": "0.22.0",
-  "mesnaam": "Victorinox",
+  "versie": "0.23.0",
+  "mesnaam": "Opinel Twee",
   "nieuw": [
+    "Terugvinden met parkeertijd: leg je auto vast en de parkeertimer loopt meteen",
+    "Zuiniger: de Vandaag-kaart rekent alleen nog als er iets verandert",
     "Vingerkiezer (bij Kiezen): iedereen een vinger op het scherm, Kniv kiest wie begint",
     "Streeplijst (bij Splitten): turf drankjes per persoon en deel de afrekening",
     "Fooi rondt af op hele of halve euro's",
-    "Eén zin per dag: 's avonds vraagt Kniv hoe je dag was, in je eigen Dagboek-bakje",
-    "Op deze dag: bovenaan zie je wat je een maand en een jaar geleden schreef",
-    "Beurten (bij Splitten): roosters voor het rondje, de afwas, de boodschappen"
+    "Eén zin per dag: 's avonds vraagt Kniv hoe je dag was, in je eigen Dagboek-bakje"
   ]
 }

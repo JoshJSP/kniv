@@ -112,6 +112,8 @@ struct TerugvindenView: View {
     @AppStorage("terug.wanneer") private var wanneer = 0.0
     @AppStorage("haptiek") private var haptiek = true
     @State private var nieuweNaam = ""
+    @State private var parkeren = 0
+    @Environment(\.modelContext) private var ctx
 
     private var heeftDoel: Bool { wanneer > 0 }
     private var doel: CLLocation { CLLocation(latitude: breedte, longitude: lengte) }
@@ -155,13 +157,23 @@ struct TerugvindenView: View {
                         TextField("Naam, bijv. Fiets", text: $nieuweNaam)
                             .padding(14)
                             .glas(16)
+                        Stepper(parkeren == 0 ? String(localized: "Geen parkeertijd") : String(localized: "Parkeren: \(parkeren) min"),
+                                value: $parkeren, in: 0...600, step: 15)
+                            .padding(.horizontal, 4)
                         Button {
                             guard let hier = vinder.hier else { return }
                             naam = nieuweNaam
                             breedte = hier.coordinate.latitude
                             lengte = hier.coordinate.longitude
                             wanneer = Date().timeIntervalSince1970
+                            if parkeren > 0 {
+                                let t = KnivTimer(naam: String(localized: "Parkeren \(nieuweNaam)").trimmingCharacters(in: .whitespaces),
+                                                  duur: TimeInterval(parkeren * 60))
+                                ctx.insert(t)
+                                t.start()
+                            }
                             nieuweNaam = ""
+                            parkeren = 0
                         } label: { Label("Leg deze plek vast", systemImage: "pin.fill").frame(maxWidth: .infinity) }
                             .buttonStyle(.borderedProminent)
                             .controlSize(.large)

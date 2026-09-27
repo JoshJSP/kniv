@@ -2531,6 +2531,36 @@
         }
       }
     },
+    "Geen parkeertijd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No parking time"
+          }
+        }
+      }
+    },
+    "Parkeren: %lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parking: %lld min"
+          }
+        }
+      }
+    },
+    "Parkeren %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parking %@"
+          }
+        }
+      }
+    },
     "Vinger": {
       "localizations": {
         "en": {
