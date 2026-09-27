@@ -2531,6 +2531,116 @@
         }
       }
     },
+    "Samen · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Together · %@"
+          }
+        }
+      }
+    },
+    "Wachten op anderen…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for others…"
+          }
+        }
+      }
+    },
+    "Kies mee in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick together in Kniv"
+          }
+        }
+      }
+    },
+    "Nodig uit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite"
+          }
+        }
+      }
+    },
+    "Stop samen kiezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop picking together"
+          }
+        }
+      }
+    },
+    "Kies samen met vrienden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick together with friends"
+          }
+        }
+      }
+    },
+    "Doe mee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join"
+          }
+        }
+      }
+    },
+    "Code van je vriend": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your friend's code"
+          }
+        }
+      }
+    },
+    "Start stemming voor iedereen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start vote for everyone"
+          }
+        }
+      }
+    },
+    "Wachten tot iedereen gestemd heeft (%lld/%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for everyone to vote (%1$lld/%2$lld)"
+          }
+        }
+      }
+    },
+    "Ik": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me"
+          }
+        }
+      }
+    },
     "Vandaag": {
       "localizations": {
         "en": {

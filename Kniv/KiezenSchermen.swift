@@ -20,12 +20,14 @@ struct KiezenView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal)
             .padding(.vertical, 8)
+            if tab == .rad || tab == .stemmen { SamenBalk().padding(.bottom, 6) }
             switch tab {
             case .rad: RadView(opties: opties)
             case .dobbelen: DobbelView()
             case .munt: MuntTab()
             case .teams: TeamsView(namen: opties)
-            case .stemmen: StemView(opties: opties)
+            case .stemmen:
+                if SamenKiezen.shared.code != nil { SamenStemView(opties: opties) } else { StemView(opties: opties) }
             }
         }
         .background(KnivAchtergrond())
@@ -116,6 +118,7 @@ struct RadView: View {
             }
             .padding()
         }
+        .onChange(of: SamenKiezen.shared.worp) { _, w in volg(w) }
         .sensoryFeedback(.impact(weight: .light, intensity: 0.6), trigger: tik) { _, _ in haptiek && begon != nil }
         .sensoryFeedback(.success, trigger: winnaar) { _, nu in haptiek && nu != nil }
     }
@@ -140,6 +143,18 @@ struct RadView: View {
         winnaar = nil
         start = hoek
         snelheid = s
+        begon = Date()
+        if SamenKiezen.shared.code != nil { SamenKiezen.shared.draai(opties: opties, start: hoek, snelheid: s) }
+    }
+
+    /// Iemand anders draaide: zelfde opties, beginhoek en snelheid, dus hier dezelfde uitkomst.
+    private func volg(_ w: SamenKiezen.Worp?) {
+        guard let w, begon == nil else { return }
+        opties = w.opties
+        winnaar = nil
+        hoek = w.start
+        start = w.start
+        snelheid = w.snelheid
         begon = Date()
     }
 

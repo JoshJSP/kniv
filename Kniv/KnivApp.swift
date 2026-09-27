@@ -36,6 +36,12 @@ struct KnivApp: App {
             .onOpenURL { url in
                 switch url.host() {
                 case "auth": break
+                case "kies":
+                    if let code = url.pathComponents.last, code != "/" {
+                        Task { await SamenKiezen.shared.doeMee(code) }
+                        AppStatus.shared.kiesTab = "Rad"
+                        AppStatus.shared.openKiezen = true
+                    }
                 case "join": if let token = url.pathComponents.last, token != "/" { Task { await Sync.shared.wordLid(token) } }
                 case "inspreken": AppStatus.shared.startInspreken = true
                 case let actie?: AppStatus.shared.actie = actie
