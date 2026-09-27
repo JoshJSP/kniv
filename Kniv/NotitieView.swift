@@ -174,13 +174,16 @@ struct NotitieView: View {
             }
 
             Section {
-                Button("Verwijder notitie", role: .destructive) {
+                Button {
+                    notitie.vastgepind.toggle()
+                } label: { Label(notitie.vastgepind ? "Losmaken" : "Vastpinnen", systemImage: notitie.vastgepind ? "pin.slash" : "pin") }
+                Button("Naar prullenbak", role: .destructive) {
                     let n = notitie
                     dismiss()
                     // Pas weghalen als het scherm weg is, anders leest het een verwijderde notitie.
                     Task {
                         try? await Task.sleep(for: .milliseconds(450))
-                        Vastlegger.verwijder(n, in: ctx)
+                        Prullenbak.gooi(n)
                     }
                 }
             }
@@ -371,6 +374,8 @@ struct InstellingenView: View {
             }
 
             Section { NavigationLink { AlleTipsView() } label: { Label("Wat Kniv allemaal kan", systemImage: "lightbulb") } }
+
+            Section { NavigationLink { PrullenbakView() } label: { Label("Prullenbak", systemImage: "trash") } }
 
             Section {
                 ExportKnop()

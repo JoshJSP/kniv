@@ -38,7 +38,7 @@ struct GarantieSectie: View {
 
 /// In Vastleggen: alle bonnen in de kluis, met hoe lang de garantie nog loopt.
 struct KluisRij: View {
-    @Query(filter: #Predicate<Notitie> { $0.garantieTot != nil }, sort: \Notitie.gemaakt, order: .reverse) private var bonnen: [Notitie]
+    @Query(filter: #Predicate<Notitie> { $0.garantieTot != nil && $0.weggegooid == nil }, sort: \Notitie.gemaakt, order: .reverse) private var bonnen: [Notitie]
 
     var body: some View {
         if !bonnen.isEmpty {

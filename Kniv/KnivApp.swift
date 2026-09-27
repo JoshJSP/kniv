@@ -30,6 +30,7 @@ struct KnivApp: App {
             .task {
                 KnivOpslag.zaaiBakjes()
                 KnivOpslag.herstelUIDs()
+                Prullenbak.ruimOp()
                 PlekWachter.shared.start()
                 await Sync.shared.start()
             }

@@ -1,12 +1,12 @@
 {
-  "versie": "0.31.0",
-  "mesnaam": "Spyderco",
+  "versie": "0.32.0",
+  "mesnaam": "Benchmade",
   "nieuw": [
+    "Vastpinnen: houd een notitie ingedrukt en hij staat altijd bovenaan",
+    "Prullenbak: weggegooide notities blijven 30 dagen, zodat je ze kunt terugzetten (Instellingen)",
     "Ingesproken notities bewaren de opname: luister terug als de tekst niet klopt",
     "Splitten → Bon: zie per maand wat je aan gescande bonnen uitgaf",
     "Exporteer alles (Instellingen): al je gegevens in één leesbaar bestand",
-    "Knoppen in meldingen: timer klaar → +5 min, herinnering → over een uur of morgen",
-    "Prikken (bij Kiezen): wanneer kan iedereen? Kies data, deel de link, zie de beste dag",
-    "Gehoorportie (bij Meten → Geluid): Kniv waarschuwt voordat harde muziek je oren beschadigt"
+    "Knoppen in meldingen: timer klaar → +5 min, herinnering → over een uur of morgen"
   ]
 }

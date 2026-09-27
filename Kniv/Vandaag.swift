@@ -37,7 +37,7 @@ struct VandaagKaart: View {
             r.append(Regel(id: "w", icoon: weer.contains("°") ? "thermometer.low" : "cloud.rain", tekst: weer, mes: .vastleggen))
         }
         let kal = Calendar.current
-        for n in notities where !n.isVerzegeld {
+        for n in notities where !n.isVerzegeld && n.weggegooid == nil {
             if let moment = Herinnering.vind(in: n.zoekTekst, nu: n.gemaakt), kal.isDateInToday(moment.dag) {
                 r.append(Regel(id: "h\(n.uid)", icoon: "bell",
                                tekst: moment.heeftTijd ? "\(moment.dag.formatted(date: .omitted, time: .shortened)) \(n.titel)" : n.titel,
@@ -50,7 +50,7 @@ struct VandaagKaart: View {
                 r.append(Regel(id: "d\(terug)", icoon: "clock.arrow.circlepath", tekst: "\(label): \(oud.titel)", mes: .vastleggen))
             }
         }
-        let boodschappen = notities.filter { $0.bakjeNaam == "Boodschappen" }.reduce(0) { $0 + max($1.items.count, $1.isLijst ? 0 : 1) }
+        let boodschappen = notities.filter { $0.bakjeNaam == "Boodschappen" && $0.weggegooid == nil }.reduce(0) { $0 + max($1.items.count, $1.isLijst ? 0 : 1) }
         if boodschappen > 0 {
             r.append(Regel(id: "b", icoon: "cart", tekst: String(localized: "\(boodschappen) boodschappen open"), mes: .vastleggen))
         }

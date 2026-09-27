@@ -39,7 +39,7 @@ struct ThuisView: View {
     @Environment(\.scenePhase) private var fase
     @AppStorage("laatstGezieneVersie") private var laatstGezien = ""
     @Environment(\.accessibilityReduceMotion) private var minderBeweging
-    @Query(filter: #Predicate<Notitie> { $0.bakjeNaam == nil }) private var teSorteren: [Notitie]
+    @Query(filter: #Predicate<Notitie> { $0.bakjeNaam == nil && $0.weggegooid == nil }) private var teSorteren: [Notitie]
 
     private let kolommen = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
 

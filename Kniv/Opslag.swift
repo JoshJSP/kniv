@@ -43,6 +43,8 @@ enum Bron: String {
     var garantieTot: Date?
     var verzegeldTot: Date?
     var audioBestand: String?
+    var vastgepind: Bool = false
+    var weggegooid: Date?
     @Relationship(deleteRule: .cascade, inverse: \LijstItem.notitie) var items: [LijstItem] = []
 
     init(tekst: String, bron: Bron, fotoBestand: String? = nil) {

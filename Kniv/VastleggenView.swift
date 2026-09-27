@@ -4,7 +4,7 @@ import SwiftUI
 
 struct VastleggenView: View {
     @Environment(\.modelContext) private var ctx
-    @Query(sort: \Notitie.gewijzigd, order: .reverse) private var notities: [Notitie]
+    @Query(filter: #Predicate<Notitie> { $0.weggegooid == nil }, sort: \Notitie.gewijzigd, order: .reverse) private var notities: [Notitie]
     @Query(sort: \Bakje.volgorde) private var bakjes: [Bakje]
     @StateObject private var spraak = Spraak()
     @AppStorage("haptiek") private var haptiek = true
@@ -27,6 +27,7 @@ struct VastleggenView: View {
                 invoerKaart
                 if let voorstel { herinneringBalk(voorstel.notitie, voorstel.moment) }
                 twijfelSectie
+                VastgepindRij()
                 KluisRij()
                 ForEach(Volgorde.slim(bakjes)) { bakje in
                     let lijst = notities(in: bakje)
@@ -291,6 +292,14 @@ struct VastleggenView: View {
                     LazyHStack(spacing: 12) {
                         ForEach(lijst) { n in
                             NavigationLink(value: n) { NotitieKaart(notitie: n) }.buttonStyle(.plain)
+                                .contextMenu {
+                                    Button { n.vastgepind.toggle() } label: {
+                                        Label(n.vastgepind ? "Losmaken" : "Vastpinnen", systemImage: n.vastgepind ? "pin.slash" : "pin")
+                                    }
+                                    Button(role: .destructive) { withAnimation { Prullenbak.gooi(n) } } label: {
+                                        Label("Naar prullenbak", systemImage: "trash")
+                                    }
+                                }
                         }
                     }
                     .scrollTargetLayout()
