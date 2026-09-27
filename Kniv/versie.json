@@ -1,12 +1,12 @@
 {
-  "versie": "0.26.0",
-  "mesnaam": "Stiletto",
+  "versie": "0.27.0",
+  "mesnaam": "Gerber",
   "nieuw": [
+    "Kies de taal van Kniv in Instellingen: Nederlands, English of zoals je iPhone",
+    "Losse timers (pasta, thee) staan nu ook op je vergrendelscherm en in het Dynamic Island",
+    "Instellingen opgeruimd: account met profielfoto bovenaan",
     "Wist je dat…: elke dag één tip over wat Kniv kan",
     "Instellingen → Wat Kniv allemaal kan",
-    "Vertaal wat je scant: menukaarten en borden in het buitenland, offline",
-    "Slaapadvies (bij Timers): hoe laat naar bed om fris wakker te worden, met een seintje",
-    "Win+Shift+K op je laptop rekent nu ook sommen uit",
-    "Bij het openen klapt het lemmet uit het handvat"
+    "Vertaal wat je scant: menukaarten en borden in het buitenland, offline"
   ]
 }

@@ -2531,6 +2531,76 @@
         }
       }
     },
+    "Zoals mijn iPhone": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same as my iPhone"
+          }
+        }
+      }
+    },
+    "Nederlands": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nederlands"
+          }
+        }
+      }
+    },
+    "English": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        }
+      }
+    },
+    "Taal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        }
+      }
+    },
+    "Open Kniv opnieuw": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reopen Kniv"
+          }
+        }
+      }
+    },
+    "Oké": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Sluit Kniv (veeg hem weg in de appkiezer) en open hem opnieuw. Dan spreekt hij je nieuwe taal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close Kniv (swipe it away in the app switcher) and open it again. It will then speak your new language."
+          }
+        }
+      }
+    },
     "Ingelogd met Google": {
       "localizations": {
         "en": {

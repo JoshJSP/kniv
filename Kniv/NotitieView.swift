@@ -354,6 +354,7 @@ struct InstellingenView: View {
             }
 
             Section {
+                TaalKeuze()
                 Toggle("Trillingen", isOn: $haptiek)
                 Toggle("Eén zin per dag", isOn: $dagboek)
                 Toggle("Rustmodus 's avonds", isOn: $rust)
