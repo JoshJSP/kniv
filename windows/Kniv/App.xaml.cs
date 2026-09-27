@@ -279,6 +279,8 @@ static class Zelftest
         Is(R("15:00 in tokyo").EndsWith("in Tokyo") && R("15:00 in atlantis") == "nil", "tijdzone: " + R("15:00 in tokyo"));
         Is(R("2,49 voor 500g of 3,99 voor 1kg").StartsWith("De tweede is 20% goedkoper"), "goedkoper kilo: " + R("2,49 voor 500g of 3,99 voor 1kg"));
         Is(R("1,50 voor 330ml of 2,19 voor 1,5l").StartsWith("De tweede is 68% goedkoper") && R("2,49 voor 500g of 3,99 voor 1l") == "nil", "goedkoper liter");
+        Is(Kenteken.Normaal("gz-738-t") == "GZ738T" && Kenteken.Normaal("GZ738T") == "GZ738T" && Kenteken.Normaal("pasta1") == null && Kenteken.Normaal("melk") == null, "kenteken herkennen");
+        Is(Kenteken.Mooi("GZ738T") == "GZ-738-T" && Kenteken.Mooi("12ABC3") == "12-ABC-3" && Kenteken.Mooi("ABCD12") == "AB-CD-12", "kenteken streepjes");
         Is(SnelCommando.Kern("10 km = 6,21 mijl") == "6,21 mijl" && SnelCommando.Kern("3 cups = 720 ml ≈ 375 g bloem") == "720 ml", "kern");
 
         Is(TimerParser.Vind("over 20 min oven uit") == ("Oven uit", 1200), "timer uit notitie: " + TimerParser.Vind("over 20 min oven uit"));

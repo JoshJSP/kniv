@@ -17,6 +17,7 @@ public sealed class SnelVenster : Window
     readonly TextBlock _status = Ui.Tekst(Uitleg, "CaptionTextBlockStyle", zacht: true);
     readonly TextBlock _uitkomst = new() { FontSize = 22, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, Visibility = Visibility.Collapsed, Margin = new Thickness(28, 0, 0, 0) };
     readonly IntPtr _hwnd;
+    string? _kenteken, _kentekenUitkomst;     // laatste opgezochte kenteken en wat de RDW zei
 
     public SnelVenster()
     {
@@ -74,6 +75,17 @@ public sealed class SnelVenster : Window
         var t = _invoer.Text;
         if (SnelCommando.Reken(t) is { } u) Zet(u, "Enter kopieert de uitkomst · Ctrl+Enter bewaart als notitie · Esc sluit");
         else if (SnelCommando.Timer(t) is { } tm) Zet($"Timer {tm.naam} · {SnelCommando.Klok(tm.seconden)}", "Enter start de timer · Ctrl+Enter bewaart als notitie · Esc sluit");
+        else if (Kenteken.Normaal(t) is { } k)
+        {
+            if (k == _kenteken && _kentekenUitkomst != null) Zet(_kentekenUitkomst, "Enter kopieert · Ctrl+Enter bewaart als notitie · Esc sluit");
+            else if (k != _kenteken)
+            {
+                _kenteken = k;
+                _kentekenUitkomst = null;
+                Zet("Kenteken opzoeken bij de RDW…", Uitleg);
+                _ = ZoekKenteken(k);
+            }
+        }
         else
         {
             _uitkomst.Visibility = Visibility.Collapsed;
@@ -88,8 +100,25 @@ public sealed class SnelVenster : Window
         }
     }
 
+    async Task ZoekKenteken(string k)
+    {
+        var uitkomst = await Kenteken.Zoek(k);
+        if (k != _kenteken) return;       // intussen verder getypt
+        _kentekenUitkomst = uitkomst ?? $"{Kenteken.Mooi(k)}: onbekend bij de RDW";
+        if (Kenteken.Normaal(_invoer.Text) == k) ToonCommando();
+    }
+
     bool Commando(string t)
     {
+        if (Kenteken.Normaal(t) is { } k && k == _kenteken && _kentekenUitkomst != null)
+        {
+            var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
+            dp.SetText(_kentekenUitkomst);
+            Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+            _invoer.Text = "";
+            Klaar("Gekopieerd");
+            return true;
+        }
         if (SnelCommando.Reken(t) is { } u)
         {
             var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();

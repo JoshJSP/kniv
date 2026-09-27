@@ -5,6 +5,67 @@ namespace Kniv;
 
 // Vrij getypte commando's, precies zoals op de iPhone (Kniv/Logica/TimerParser.swift, Rekenen.swift › Omzetter, Herinnering.swift).
 
+/// Kenteken opzoeken bij de RDW (open data), zoals Kniv/KentekenView.swift. "GZ-738-T" in het snelvenster.
+public static class Kenteken
+{
+    static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(8) };
+
+    /// Alleen iets dat echt op een kenteken lijkt: met streepjes, of 6 tekens met letters én minstens 2 cijfers.
+    public static string? Normaal(string tekst)
+    {
+        var t = tekst.Trim().ToUpperInvariant();
+        var schoon = new string(t.Where(c => c is (>= 'A' and <= 'Z') or (>= '0' and <= '9')).ToArray());
+        if (schoon.Length != 6) return null;
+        var metStreepjes = Regex.IsMatch(t, @"^[A-Z0-9]{1,3}[- ][A-Z0-9]{2,3}[- ][A-Z0-9]{1,3}$");
+        var los = t == schoon && schoon.Count(char.IsDigit) >= 2 && schoon.Any(char.IsLetter);
+        return metStreepjes || los ? schoon : null;
+    }
+
+    public static string Mooi(string k)
+    {
+        var uit = "";
+        for (var i = 0; i < k.Length; i++)
+        {
+            if (i > 0 && char.IsLetter(k[i]) != char.IsLetter(k[i - 1])) uit += "-";
+            uit += k[i];
+        }
+        return uit.Count(c => c == '-') == 2 ? uit : $"{k[..2]}-{k[2..4]}-{k[4..]}";
+    }
+
+    static string? Datum(System.Text.Json.JsonElement e, string veld) =>
+        e.TryGetProperty(veld, out var v) && v.GetString() is { Length: 8 } s ? $"{s[6..]}-{s[4..6]}-{s[..4]}" : null;
+
+    static string? Veld(System.Text.Json.JsonElement e, string veld) => e.TryGetProperty(veld, out var v) ? v.GetString() : null;
+
+    /// Eén regel: "GZ-738-T · Mitsubishi Asx · wit · 2015 · APK tot 26-09-2027 · verzekerd". Null als de RDW het niet kent.
+    public static async Task<string?> Zoek(string k)
+    {
+        try
+        {
+            var json = await Http.GetStringAsync($"https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken={k}");
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.GetArrayLength() == 0) return null;
+            var v = doc.RootElement[0];
+            var ti = CultureInfo.InvariantCulture.TextInfo;
+            var merk = Veld(v, "merk") ?? "";
+            var model = (Veld(v, "handelsbenaming") ?? "").Replace(merk, "").Trim();
+            var delen = new List<string?>
+            {
+                Mooi(k),
+                ti.ToTitleCase($"{merk} {model}".Trim().ToLowerInvariant()),
+                Veld(v, "eerste_kleur")?.ToLowerInvariant(),
+                Datum(v, "datum_eerste_toelating")?[^4..],
+                Datum(v, "vervaldatum_apk") is { } apk ? $"APK tot {apk}" : null,
+                Veld(v, "wam_verzekerd") == "Ja" ? "verzekerd" : "NIET verzekerd",
+                Veld(v, "tellerstandoordeel") is { } t and not "Logisch" and not "Geen oordeel" ? $"teller: {t.ToLowerInvariant()}" : null,
+                Veld(v, "openstaande_terugroepactie_indicator") == "Ja" ? "terugroepactie open" : null,
+            };
+            return string.Join(" · ", delen.Where(d => !string.IsNullOrWhiteSpace(d)));
+        }
+        catch (Exception e) { App.Log("kenteken: " + e.Message); return null; }
+    }
+}
+
 static class Rx
 {
     /// Zoals Herinnering.eersteMatch: alle groepen, "" voor een groep die niet meedeed.
