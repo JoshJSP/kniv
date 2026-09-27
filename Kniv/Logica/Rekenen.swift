@@ -126,9 +126,54 @@ enum Omzetter {
 
     static let symbolen = ["$": "USD", "£": "GBP", "¥": "JPY", "₺": "TRY", "kr": "SEK", "zł": "PLN", "chf": "CHF"]
 
-    static func reken(_ invoer: String, koersen: [String: Double] = [:]) -> String? {
+    static func reken(_ invoer: String, koersen: [String: Double] = [:], nu: Date = Date()) -> String? {
         let klein = invoer.lowercased().trimmingCharacters(in: .whitespaces)
-        return procent(klein) ?? valuta(klein, koersen) ?? eenheid(klein)
+        return tijd(klein, nu: nu) ?? procent(klein) ?? valuta(klein, koersen) ?? eenheid(klein)
+    }
+
+    // MARK: rekenen met tijd: "14:35 + 2u50", "9:15 tot 17:30", "dagen tot 25 dec"
+
+    static func tijd(_ t: String, nu: Date) -> String? {
+        if let m = Herinnering.eersteMatch(#"^(?:dagen tot|hoe lang tot|days until|how long until)\s+(.+)$"#, in: t),
+           let doel = Herinnering.vind(in: m[1], nu: nu) {
+            let kal = Calendar.current
+            let dagen = kal.dateComponents([.day], from: kal.startOfDay(for: nu), to: kal.startOfDay(for: doel.dag)).day ?? 0
+            return dagen == 0 ? "Dat is vandaag!" : dagen >= 14 ? "Nog \(dagen) dagen (\(dagen / 7) weken en \(dagen % 7) dagen)" : "Nog \(dagen) dagen"
+        }
+        let klok = #"(\d{1,2}):(\d{2})"#
+        if let m = Herinnering.eersteMatch("^" + klok + #"\s*(?:tot|-|–|to|until)\s*"# + klok + "$", in: t),
+           let a = minuten(m[1], m[2]), let b = minuten(m[3], m[4]) {
+            let d = (b - a + 1440) % 1440
+            return "\(m[1]):\(m[2]) tot \(m[3]):\(m[4]) = \(duurTekst(d)) (\(mooi(Double(d) / 60)) uur)"
+        }
+        if let m = Herinnering.eersteMatch("^" + klok + #"\s*([+-])\s*(.+)$"#, in: t),
+           let a = minuten(m[1], m[2]), let d = duur(m[4]) {
+            let som = a + (m[3] == "+" ? d : -d)
+            let dagen = Int((Double(som) / 1440).rounded(.down))
+            let r = som - dagen * 1440
+            let extra = dagen > 0 ? " (volgende dag)" : dagen < 0 ? " (dag ervoor)" : ""
+            return "\(m[1]):\(m[2]) \(m[3]) \(duurTekst(d)) = \(r / 60):\(String(format: "%02d", r % 60))\(extra)"
+        }
+        return nil
+    }
+
+    static func minuten(_ u: String, _ m: String) -> Int? {
+        guard let u = Int(u), let m = Int(m), u < 24, m < 60 else { return nil }
+        return u * 60 + m
+    }
+
+    /// "2u50", "2:50", "45 min", "1,5 uur", "2h" → minuten.
+    static func duur(_ s: String) -> Int? {
+        let t = s.trimmingCharacters(in: .whitespaces)
+        if let m = Herinnering.eersteMatch(#"^(\d+):(\d{2})$"#, in: t), let u = Int(m[1]), let mi = Int(m[2]) { return u * 60 + mi }
+        if let m = Herinnering.eersteMatch(#"^(\d+(?:[.,]\d+)?)\s*(?:u|uur|h|hours?)\s*(?:(\d+)\s*(?:m|min|minuten|minutes)?)?$"#, in: t),
+           let u = getal(m[1]) { return Int((u * 60).rounded()) + (Int(m[2]) ?? 0) }
+        if let m = Herinnering.eersteMatch(#"^(\d+)\s*(?:m|min|minuten|minutes)$"#, in: t) { return Int(m[1]) }
+        return nil
+    }
+
+    static func duurTekst(_ min: Int) -> String {
+        min < 60 ? "\(min) min" : min % 60 == 0 ? "\(min / 60) u" : "\(min / 60) u \(min % 60) min"
     }
 
     static func getal(_ s: String) -> Double? { Double(s.replacingOccurrences(of: ",", with: ".")) }

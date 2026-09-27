@@ -210,7 +210,7 @@ struct VastleggenView: View {
             Spacer()
             Button("Ja") {
                 Task {
-                    let gepland = await Herinneraar.plan(n.titel, moment)
+                    let gepland = await Herinneraar.plan(n.titel, moment, id: n.uid)
                     withAnimation { voorstel = nil }
                     melding = gepland.map { "Staat erin voor \($0.formatted(.dateTime.weekday(.wide).hour().minute()))." }
                         ?? "Kniv mag geen meldingen sturen. Zet het aan in Instellingen."
@@ -372,6 +372,12 @@ extension Herinnering.Voorstel {
         let dagTekst = kal.isDateInToday(dag) ? String(localized: "vandaag")
             : kal.isDateInTomorrow(dag) ? String(localized: "morgen")
             : dag.formatted(.dateTime.weekday(.wide).day().month())
-        return heeftTijd ? "\(dagTekst) \(dag.formatted(date: .omitted, time: .shortened))" : dagTekst
+        let tijd = heeftTijd ? " " + dag.formatted(date: .omitted, time: .shortened) : ""
+        switch herhaal {
+        case .dagelijks?: return String(localized: "elke dag") + tijd
+        case .wekelijks?: return String(localized: "elke \(dag.formatted(.dateTime.weekday(.wide)))") + tijd
+        case .elke(let n)?: return String(localized: "elke \(n) dagen") + tijd
+        case nil: return dagTekst + tijd
+        }
     }
 }

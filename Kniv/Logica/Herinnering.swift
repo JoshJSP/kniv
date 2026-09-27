@@ -2,9 +2,12 @@ import Foundation
 
 /// Vindt een moment in een notitie: "morgen oma bellen", "maandag om 14:30", "deadline 9 okt".
 enum Herinnering {
+    enum Herhaling: Equatable { case dagelijks, wekelijks, elke(dagen: Int) }
+
     struct Voorstel {
         let dag: Date
         let heeftTijd: Bool
+        var herhaal: Herhaling? = nil
     }
 
     static let dagen = ["zondag": 1, "maandag": 2, "dinsdag": 3, "woensdag": 4, "donderdag": 5, "vrijdag": 6, "zaterdag": 7,
@@ -13,6 +16,27 @@ enum Herinnering {
                           "jul": 7, "aug": 8, "sep": 9, "okt": 10, "oct": 10, "nov": 11, "dec": 12]
 
     static func vind(in tekst: String, nu: Date = Date()) -> Voorstel? {
+        guard var v = eenmalig(in: tekst, nu: nu) ?? herhaling(in: tekst).map({ _ in Voorstel(dag: Calendar.current.startOfDay(for: nu), heeftTijd: false) })
+        else { return nil }
+        v.herhaal = herhaling(in: tekst)
+        return v
+    }
+
+    /// "elke dag", "iedere maandag", "elke 3 dagen", "elke 2 weken", "wekelijks".
+    static func herhaling(in tekst: String) -> Herhaling? {
+        let klein = tekst.lowercased()
+        let woorden = Set(klein.components(separatedBy: CharacterSet.letters.inverted))
+        if let m = eersteMatch(#"\b(?:elke|iedere|every)\s+(\d+)\s+(dagen|days|weken|weeks)\b"#, in: klein), let n = Int(m[1]), n > 0 {
+            return .elke(dagen: m[2].hasPrefix("w") ? n * 7 : n)
+        }
+        if !woorden.isDisjoint(with: ["dagelijks", "daily"])
+            || eersteMatch(#"\b(?:elke|iedere|every)\s+(?:dag|day|ochtend|middag|avond|morning|evening|night)\b"#, in: klein) != nil { return .dagelijks }
+        if !woorden.isDisjoint(with: ["wekelijks", "weekly"])
+            || eersteMatch(#"\b(?:elke|iedere|every)\s+(week|\w+)\b"#, in: klein).map({ $0[1] == "week" || dagen[$0[1]] != nil }) == true { return .wekelijks }
+        return nil
+    }
+
+    static func eenmalig(in tekst: String, nu: Date) -> Voorstel? {
         let kal = Calendar.current
         let klein = tekst.lowercased()
         let woorden = Set(klein.components(separatedBy: CharacterSet.letters.inverted))

@@ -123,7 +123,7 @@ struct NotitieView: View {
                 Section {
                     Button {
                         Task {
-                            let gepland = await Herinneraar.plan(notitie.titel, moment)
+                            let gepland = await Herinneraar.plan(notitie.titel, moment, id: notitie.uid)
                             herinnering = gepland.map { "Herinnering: \($0.formatted(.dateTime.weekday(.wide).hour().minute()))" }
                                 ?? "Meldingen staan uit voor Kniv"
                         }

@@ -61,6 +61,7 @@ enum Prullenbak {
     @MainActor static func gooi(_ n: Notitie) {
         if n.deling != "prive" { Sync.shared.markeerVerwijderd(n) }
         n.weggegooid = Date()
+        Herinneraar.trekIn(n.uid)
         n.vastgepind = false
         n.gesynct = .distantFuture      // niet opnieuw sturen zolang hij in de prullenbak ligt
     }

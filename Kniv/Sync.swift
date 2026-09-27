@@ -305,7 +305,9 @@ struct Profiel: Codable {
         let rijen: [Rij]
         do {
             rijen = try await client.from("records").select()
-                .gte("ontvangen", value: iso.string(from: laatstOpgehaald))
+                // Een minuut terug: now() in de trigger is het begin van de transactie, dus een rij kan
+                // met een iets oudere tijd pas na een nieuwere vastgelegd worden. Dubbel toepassen kan geen kwaad.
+                .gte("ontvangen", value: iso.string(from: laatstOpgehaald.addingTimeInterval(-60)))
                 .order("ontvangen").limit(1000)
                 .execute().value
         } catch {
@@ -322,8 +324,10 @@ struct Profiel: Codable {
         pasToe(rijen, Prik.self, ctx, ik: ik)
         pasToe(rijen, PrikStem.self, ctx, ik: ik)
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
-        laatstOpgehaald = laatste.ontvangen ?? laatste.gewijzigd
-        if rijen.count == 1000 { nogEens = true }     // er is meer: meteen nog een ronde
+        let vorige = laatstOpgehaald
+        laatstOpgehaald = max(laatste.ontvangen ?? laatste.gewijzigd, vorige)
+        // Er is meer: meteen nog een ronde, maar alleen als de cursor voorbij de marge komt (anders dezelfde bladzijde).
+        if rijen.count == 1000, laatstOpgehaald.timeIntervalSince(vorige) > 60 { nogEens = true }
         if ctx.hasChanges {
             eigenOpslag = Date()
             try? ctx.save()

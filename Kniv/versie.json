@@ -1,12 +1,12 @@
 {
-  "versie": "0.34.0",
-  "mesnaam": "Fallkniven",
+  "versie": "0.35.0",
+  "mesnaam": "Leatherman",
   "nieuw": [
-    "Gedeelde potjes: Kniv vraagt één keer wie jij bent, zodat 'je krijgt nog' klopt",
-    "Delen werkt nu echt (de database weigerde het maken van een gedeelde groep)",
-    "Prullenbak en 'alleen deze telefoon' wissen niets meer per ongeluk",
-    "Offline wijzigingen komen altijd aan, en een oude versie overschrijft nooit een nieuwere",
-    "Geen crash meer als iemand een notitie verwijdert die jij open hebt",
-    "Tientallen kleinere verbeteringen na een grondige code-review"
+    "Lamp in de Scanner: zaklamp met dimmer, SOS, morse seinen en je scherm als lamp of bordje",
+    "Bordje: typ 'Hier!' of een naam en houd je telefoon omhoog, met knipperstand voor drukke zalen",
+    "Herhalen: 'elke maandag vuilnis buiten' of 'elke 3 dagen planten water' herinnert je steeds opnieuw",
+    "Rekenen met tijd in Omzetten: '9:15 tot 17:30', '14:35 + 2u50', 'dagen tot 25 dec'",
+    "Een notitie in de prullenbak haalt haar herinneringen ook weg",
+    "Sync mist nooit meer een wijziging die precies tegelijk binnenkwam"
   ]
 }

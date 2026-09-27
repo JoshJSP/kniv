@@ -138,4 +138,22 @@ check(kal.component(.hour, from: Herinnering.vind(in: "morgen om 3 bellen", nu: 
 check(kal.component(.hour, from: Herinnering.vind(in: "morgen om 3 uur 's ochtends vroeg", nu: zaterdag)!.dag) == 3, "om 3 's ochtends vroeg = 3:00")
 check(Herinnering.vind(in: "morgen melk 2.50", nu: zaterdag)?.heeftTijd == false, "prijs is geen tijd")
 
+check(Morse.code("SOS") == "... --- ...", "morse: sos")
+check(Morse.code("hé jij") == ".... . / .--- .. .---", "morse: woorden en accenten")
+check(Morse.stappen("et").map(\.eenheden) == [1, 3, 3], "morse: e, letterpauze, t")
+
+check(Omzetter.reken("14:35 + 2u50") == "14:35 + 2 u 50 min = 17:25", "tijd: optellen")
+check(Omzetter.reken("23:30 + 45 min") == "23:30 + 45 min = 0:15 (volgende dag)", "tijd: over middernacht")
+check(Omzetter.reken("9:15 tot 17:30")?.hasPrefix("9:15 tot 17:30 = 8 u 15 min") == true, "tijd: werkuren")
+check(Omzetter.reken("22:00 - 6:30")?.hasPrefix("22:00 tot 6:30 = 8 u 30 min") == true, "tijd: nachtdienst")
+check(Omzetter.reken("dagen tot 9 okt", nu: zaterdag) == "Nog 13 dagen", "tijd: dagen tot")
+check(Omzetter.duur("1,5 uur") == 90, "tijd: anderhalf uur")
+
+check(Herinnering.vind(in: "elke maandag vuilnis buiten", nu: zaterdag)?.herhaal == .wekelijks, "herhaal: elke maandag")
+check(Herinnering.vind(in: "elke dag om 8:00 pil", nu: zaterdag)?.herhaal == .dagelijks, "herhaal: elke dag")
+check(Herinnering.vind(in: "elke 3 dagen planten water", nu: zaterdag)?.herhaal == .elke(dagen: 3), "herhaal: elke 3 dagen")
+check(Herinnering.vind(in: "iedere 2 weken beddengoed", nu: zaterdag)?.herhaal == .elke(dagen: 14), "herhaal: elke 2 weken")
+check(Herinnering.vind(in: "elke verjaardag taart", nu: zaterdag) == nil, "herhaal: verjaardag is geen weekdag")
+check(Herinnering.vind(in: "morgen om 9:00 tandarts", nu: zaterdag)?.herhaal == nil, "eenmalig blijft eenmalig")
+
 print("Alle Kniv-checks geslaagd")

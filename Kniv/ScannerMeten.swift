@@ -10,7 +10,7 @@ import VisionKit
 // MARK: Scanner
 
 struct ScannerView: View {
-    enum Tab: String, CaseIterable { case qr = "QR-code", document = "Document", tekst = "Tekst", maak = "Maak QR" }
+    enum Tab: String, CaseIterable { case qr = "QR-code", document = "Document", tekst = "Tekst", maak = "Maak QR", lamp = "Lamp" }
     @State private var tab: Tab = .qr
 
     var body: some View {
@@ -22,6 +22,7 @@ struct ScannerView: View {
             case .tekst: LiveScanTab(soort: .text(), uitleg: "Tik op tekst om hem te kopiëren")
             case .document: DocumentTab()
             case .maak: QRMakenView()
+            case .lamp: LampView()
             }
         }
         .background(KnivAchtergrond())

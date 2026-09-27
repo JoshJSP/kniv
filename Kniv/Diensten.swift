@@ -202,7 +202,8 @@ struct DocumentCamera: UIViewControllerRepresentable {
 
 enum Herinneraar {
     /// Plant een melding. Zonder tijd zoekt Kniv het eerste vrije uur (9–21) in je agenda.
-    static func plan(_ titel: String, _ voorstel: Herinnering.Voorstel) async -> Date? {
+    /// Met `id` (de uid van de notitie) kan Kniv de meldingen later weer intrekken, bijvoorbeeld bij de prullenbak.
+    static func plan(_ titel: String, _ voorstel: Herinnering.Voorstel, id: UUID? = nil) async -> Date? {
         let centrum = UNUserNotificationCenter.current()
         guard (try? await centrum.requestAuthorization(options: [.alert, .sound, .badge])) == true else { return nil }
         let moment = voorstel.heeftTijd ? voorstel.dag : await vrijMoment(op: voorstel.dag)
@@ -212,12 +213,38 @@ enum Herinneraar {
         inhoud.title = "Kniv"
         inhoud.body = titel
         inhoud.sound = .default
-        inhoud.categoryIdentifier = MeldingActies.herinnering
-        let delen = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: moment)
-        let verzoek = UNNotificationRequest(identifier: UUID().uuidString, content: inhoud,
-                                            trigger: UNCalendarNotificationTrigger(dateMatching: delen, repeats: false))
-        guard (try? await centrum.add(verzoek)) != nil else { return nil }
+        inhoud.categoryIdentifier = voorstel.herhaal == nil ? MeldingActies.herinnering : MeldingActies.herhaal
+        let basis = "herinnering." + (id ?? UUID()).uuidString
+        let kal = Calendar.current
+        var verzoeken: [UNNotificationRequest] = []
+        switch voorstel.herhaal {
+        case nil:
+            let delen = kal.dateComponents([.year, .month, .day, .hour, .minute], from: moment)
+            verzoeken = [UNNotificationRequest(identifier: basis, content: inhoud, trigger: UNCalendarNotificationTrigger(dateMatching: delen, repeats: false))]
+        case .dagelijks?, .wekelijks?:
+            let velden: Set<Calendar.Component> = voorstel.herhaal == .dagelijks ? [.hour, .minute] : [.weekday, .hour, .minute]
+            verzoeken = [UNNotificationRequest(identifier: basis + ".r", content: inhoud,
+                                               trigger: UNCalendarNotificationTrigger(dateMatching: kal.dateComponents(velden, from: moment), repeats: true))]
+        case .elke(let n)?:
+            // ponytail: iOS kent geen "elke n dagen", dus de volgende 8 keer los; daarna opnieuw instellen.
+            verzoeken = (0..<8).compactMap { k in
+                kal.date(byAdding: .day, value: k * n, to: moment).map {
+                    UNNotificationRequest(identifier: "\(basis).\(k)", content: inhoud,
+                                          trigger: UNCalendarNotificationTrigger(dateMatching: kal.dateComponents([.year, .month, .day, .hour, .minute], from: $0), repeats: false))
+                }
+            }
+        }
+        for v in verzoeken { guard (try? await centrum.add(v)) != nil else { return nil } }
         return moment
+    }
+
+    /// Haalt alle geplande meldingen van deze notitie weg (ook een hele reeks).
+    static func trekIn(_ id: UUID) {
+        let basis = "herinnering." + id.uuidString
+        let c = UNUserNotificationCenter.current()
+        c.getPendingNotificationRequests { verzoeken in
+            c.removePendingNotificationRequests(withIdentifiers: verzoeken.map(\.identifier).filter { $0.hasPrefix(basis) })
+        }
     }
 
     static func vrijMoment(op dag: Date) async -> Date {

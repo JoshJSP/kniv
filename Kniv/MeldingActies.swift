@@ -6,6 +6,7 @@ final class MeldingActies: NSObject, UNUserNotificationCenterDelegate {
 
     static let timer = "kniv.timer"
     static let herinnering = "kniv.herinnering"
+    static let herhaal = "kniv.herhaal"
 
     func registreer() {
         let c = UNUserNotificationCenter.current()
@@ -13,7 +14,9 @@ final class MeldingActies: NSObject, UNUserNotificationCenterDelegate {
         let plus5 = UNNotificationAction(identifier: "plus5", title: String(localized: "+5 min"), options: [])
         let uur = UNNotificationAction(identifier: "uur", title: String(localized: "Over een uur"), options: [])
         let morgen = UNNotificationAction(identifier: "morgen", title: String(localized: "Morgen"), options: [])
+        let stop = UNNotificationAction(identifier: "stop", title: String(localized: "Niet meer herinneren"), options: [.destructive])
         c.setNotificationCategories([
+            UNNotificationCategory(identifier: Self.herhaal, actions: [stop], intentIdentifiers: []),
             UNNotificationCategory(identifier: Self.timer, actions: [plus5], intentIdentifiers: []),
             UNNotificationCategory(identifier: Self.herinnering, actions: [uur, morgen], intentIdentifiers: []),
         ])
@@ -26,6 +29,13 @@ final class MeldingActies: NSObject, UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ c: UNUserNotificationCenter, didReceive antwoord: UNNotificationResponse) async {
         let oud = antwoord.notification.request.content
+        if antwoord.actionIdentifier == "stop" {
+            // "herinnering.<uid>.r" of "herinnering.<uid>.3": alles met dezelfde uid eruit.
+            let basis = antwoord.notification.request.identifier.split(separator: ".").prefix(2).joined(separator: ".")
+            let wachtend = await c.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(basis) }
+            c.removePendingNotificationRequests(withIdentifiers: wachtend)
+            return
+        }
         let seconden: TimeInterval
         switch antwoord.actionIdentifier {
         case "plus5": seconden = 5 * 60
