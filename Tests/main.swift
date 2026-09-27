@@ -92,4 +92,13 @@ check(Rekenmachine.uitkomst("2^10") == 1024 && Rekenmachine.uitkomst("-3*-2") ==
 check(Rekenmachine.uitkomst("1/0") == nil && Rekenmachine.uitkomst("melk") == nil && Rekenmachine.uitkomst("06-12345678") == nil && Rekenmachine.uitkomst("10 - 3") == 7, "rekenen: grensgevallen")
 check(Rekenmachine.uitkomst("42") == nil && Rekenmachine.uitkomst("3 x 4") == 12, "rekenen: los getal is geen som, x = keer")
 
+let bonDatum = Garantie.aankoopdatum(in: "MEDIAMARKT\nDatum 14-03-2026 15:22\nTotaal 199,00", nu: zaterdag)
+check(bonDatum.map { kal.component(.month, from: $0) == 3 && kal.component(.year, from: $0) == 2026 } == true, "bon: aankoopdatum")
+check(Garantie.aankoopdatum(in: "datum 01/01/30", nu: zaterdag) == nil, "bon: datum in de toekomst telt niet")
+check(kal.component(.year, from: Garantie.tot(bonDatum!)) == 2028, "garantie: twee jaar")
+check(QRInhoud.wifi(netwerk: "Thuis;5G", wachtwoord: "a:b\\c") == "WIFI:T:WPA;S:Thuis\\;5G;P:a\\:b\\\\c;;", "wifi-QR escapen")
+check(QRInhoud.wifi(netwerk: "Gast", wachtwoord: "") == "WIFI:T:nopass;S:Gast;P:;;", "wifi-QR zonder wachtwoord")
+check(abs(Kompas.peiling(van: (51.58, 4.77), naar: (52.37, 4.90)) - 6) < 3, "kompas: Breda → Amsterdam is ongeveer noord")
+check(abs(Kompas.peiling(van: (0, 0), naar: (0, 1)) - 90) < 0.01, "kompas: oost is 90°")
+
 print("Alle Kniv-checks geslaagd")

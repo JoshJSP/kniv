@@ -2531,6 +2531,296 @@
         }
       }
     },
+    "Garantie tot": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warranty until"
+          }
+        }
+      }
+    },
+    "Uit de kluis halen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from vault"
+          }
+        }
+      }
+    },
+    "Bewaar in de garantiekluis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save in warranty vault"
+          }
+        }
+      }
+    },
+    "Garantie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warranty"
+          }
+        }
+      }
+    },
+    "De garantie op %@ loopt over een maand af. Nog iets mis mee?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The warranty on %@ ends in a month. Anything wrong with it?"
+          }
+        }
+      }
+    },
+    "Je hebt in Nederland minstens twee jaar recht op een product dat werkt. Kniv waarschuwt een maand voordat die tijd om is.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the Netherlands you're entitled to a working product for at least two years. Kniv warns you a month before that ends."
+          }
+        }
+      }
+    },
+    "Garantiekluis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warranty vault"
+          }
+        }
+      }
+    },
+    "verlopen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "expired"
+          }
+        }
+      }
+    },
+    "nog even": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "almost over"
+          }
+        }
+      }
+    },
+    "nog %lld mnd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mo left"
+          }
+        }
+      }
+    },
+    "Je plek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spot"
+          }
+        }
+      }
+    },
+    "Je bent er!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're there!"
+          }
+        }
+      }
+    },
+    "Vastgelegd %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved %@"
+          }
+        }
+      }
+    },
+    "Plek vergeten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forget spot"
+          }
+        }
+      }
+    },
+    "Kompas zoekt je locatie…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compass is finding you…"
+          }
+        }
+      }
+    },
+    "Waar laat je iets achter?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where are you leaving something?"
+          }
+        }
+      }
+    },
+    "Leg de plek van je fiets, auto of tent vast. Straks wijst een pijl je de weg terug.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save where your bike, car or tent is. Later an arrow points you back."
+          }
+        }
+      }
+    },
+    "Naam, bijv. Fiets": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, e.g. Bike"
+          }
+        }
+      }
+    },
+    "Leg deze plek vast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save this spot"
+          }
+        }
+      }
+    },
+    "Wifi": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi-Fi"
+          }
+        }
+      }
+    },
+    "Tekst of link": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text or link"
+          }
+        }
+      }
+    },
+    "Soort": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "Netwerknaam": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network name"
+          }
+        }
+      }
+    },
+    "Wachtwoord": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password"
+          }
+        }
+      }
+    },
+    "QR-code, tik om te vergroten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR code, tap to enlarge"
+          }
+        }
+      }
+    },
+    "Laat je vrienden deze code scannen met hun camera.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let your friends scan this code with their camera."
+          }
+        }
+      }
+    },
+    "Tik om te vergroten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to enlarge."
+          }
+        }
+      }
+    },
+    "Maak QR": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make QR"
+          }
+        }
+      }
+    },
+    "Terug": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find back"
+          }
+        }
+      }
+    },
     "Omdraaien om te focussen": {
       "localizations": {
         "en": {

@@ -10,7 +10,7 @@ import VisionKit
 // MARK: Scanner
 
 struct ScannerView: View {
-    enum Tab: String, CaseIterable { case qr = "QR-code", document = "Document", tekst = "Tekst" }
+    enum Tab: String, CaseIterable { case qr = "QR-code", document = "Document", tekst = "Tekst", maak = "Maak QR" }
     @State private var tab: Tab = .qr
 
     var body: some View {
@@ -25,6 +25,7 @@ struct ScannerView: View {
             case .qr: LiveScanTab(soort: .barcode(), uitleg: "Richt op een QR-code of streepjescode")
             case .tekst: LiveScanTab(soort: .text(), uitleg: "Tik op tekst om hem te kopiëren")
             case .document: DocumentTab()
+            case .maak: QRMakenView()
             }
         }
         .background(KnivAchtergrond())
@@ -206,7 +207,7 @@ struct MeerPaginaCamera: UIViewControllerRepresentable {
 // MARK: Meten
 
 struct MetenView: View {
-    enum Tab: String, CaseIterable { case waterpas = "Waterpas", liniaal = "Liniaal", geluid = "Geluid" }
+    enum Tab: String, CaseIterable { case waterpas = "Waterpas", liniaal = "Liniaal", geluid = "Geluid", terug = "Terug" }
     @State private var tab: Tab = .waterpas
 
     var body: some View {
@@ -221,6 +222,7 @@ struct MetenView: View {
             case .waterpas: WaterpasView()
             case .liniaal: LiniaalView()
             case .geluid: GeluidView()
+            case .terug: TerugvindenView()
             }
         }
         .background(KnivAchtergrond())

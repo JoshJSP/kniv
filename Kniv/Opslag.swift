@@ -40,6 +40,7 @@ enum Bron: String {
     var deling: String = "laptop"      // prive, laptop, gedeeld
     var groepID: UUID?
     var eigenaarID: UUID?
+    var garantieTot: Date?
     @Relationship(deleteRule: .cascade, inverse: \LijstItem.notitie) var items: [LijstItem] = []
 
     init(tekst: String, bron: Bron, fotoBestand: String? = nil) {

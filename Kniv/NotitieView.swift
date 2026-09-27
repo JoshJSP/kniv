@@ -69,6 +69,10 @@ struct NotitieView: View {
                 }
             }
 
+            if BonParser.lijktBon(notitie.fotoTekst) || notitie.garantieTot != nil {
+                GarantieSectie(notitie: notitie)
+            }
+
             if BonParser.lijktBon(notitie.fotoTekst) {
                 Section {
                     Button {

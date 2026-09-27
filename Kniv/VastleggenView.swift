@@ -27,6 +27,7 @@ struct VastleggenView: View {
                 invoerKaart
                 if let voorstel { herinneringBalk(voorstel.notitie, voorstel.moment) }
                 twijfelSectie
+                KluisRij()
                 ForEach(Volgorde.slim(bakjes)) { bakje in
                     let lijst = notities(in: bakje)
                     if !lijst.isEmpty || (bakje.vergrendeld && zoek.isEmpty && heeftNotities(bakje)) {
