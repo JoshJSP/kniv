@@ -266,6 +266,8 @@ static class Zelftest
         Is(TimerParser.Vind("pasta 9 minuten")?.seconden == 540, "pasta 9 minuten");
         Is(TimerParser.Vind("1 uur")?.naam == "Timer", "naamloze timer");
         Is(TimerParser.Vind("tandarts om 14:30") == null, "kloktijd is geen timer");
+        Is(Weer.Bepaal(new[] { (14, 10, 0.0, 15.0), (15, 70, 1.2, 14.0) }) == "Regen rond 15:00, paraplu mee", "weer regen");
+        Is(Weer.Bepaal(new[] { (8, 0, 0.0, 4.0) }) == "Fris vandaag (4°), jas aan" && Weer.Bepaal(new[] { (12, 0, 0.0, 18.0) }) == null, "weer koud/droog");
         Is(Rekenmachine.Uitkomst("12*3+4") == 40 && Rekenmachine.Uitkomst("2^10") == 1024 && Rekenmachine.Uitkomst("-3*-2") == 6, "rekenen");
         Is(Rekenmachine.Uitkomst("06-12345678") == null && Rekenmachine.Uitkomst("10 - 3") == 7 && Rekenmachine.Uitkomst("1/0") == null, "rekenen grensgevallen");
         Is(SnelCommando.Kern(Rekenmachine.Tekst("12*3+4")!) == "40", "rekenen in snelvenster");

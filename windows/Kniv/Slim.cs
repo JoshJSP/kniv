@@ -294,3 +294,55 @@ public static class Rekenmachine
         }
     }
 }
+
+/// Weeradvies zoals op de iPhone (Kniv/Logica/Advies.swift): regen op komst, of koud genoeg voor een jas.
+public static class Weer
+{
+    static string? _advies;
+    static DateTime _tijd = DateTime.MinValue;
+
+    public static string? Advies => DateTime.Now - _tijd < TimeSpan.FromHours(1) ? _advies : null;
+
+    public static string? Bepaal(IEnumerable<(int uur, int kans, double mm, double temp)> uren)
+    {
+        var lijst = uren.ToList();
+        var regen = lijst.FirstOrDefault(u => u.kans >= 50 && u.mm >= 0.2);
+        if (regen != default) return $"Regen rond {regen.uur:00}:00, paraplu mee";
+        if (lijst.Count > 0 && lijst.Min(u => u.temp) is var k && k < 8) return $"Fris vandaag ({Math.Round(k)}°), jas aan";
+        return null;
+    }
+
+    /// Haalt het weer op voor waar de laptop is (Windows-locatie). Lukt dat niet, dan geen advies.
+    public static async Task VerversAsync()
+    {
+        if (DateTime.Now - _tijd < TimeSpan.FromMinutes(30)) return;
+        try
+        {
+            var plek = await new Windows.Devices.Geolocation.Geolocator().GetGeopositionAsync(TimeSpan.FromHours(1), TimeSpan.FromSeconds(6));
+            var p = plek.Coordinate.Point.Position;
+            using var http = new HttpClient();
+            var json = await http.GetStringAsync(FormattableString.Invariant(
+                $"https://api.open-meteo.com/v1/forecast?latitude={p.Latitude:0.###}&longitude={p.Longitude:0.###}&hourly=precipitation_probability,precipitation,temperature_2m&forecast_hours=12&timezone=auto"));
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            var h = doc.RootElement.GetProperty("hourly");
+            var tijden = h.GetProperty("time").EnumerateArray().Select(t => t.GetString() ?? "").ToList();
+            var kans = h.GetProperty("precipitation_probability").EnumerateArray().Select(v => v.ValueKind == System.Text.Json.JsonValueKind.Number ? v.GetInt32() : 0).ToList();
+            var mm = h.GetProperty("precipitation").EnumerateArray().Select(v => v.ValueKind == System.Text.Json.JsonValueKind.Number ? v.GetDouble() : 0).ToList();
+            var temp = h.GetProperty("temperature_2m").EnumerateArray().Select(v => v.ValueKind == System.Text.Json.JsonValueKind.Number ? v.GetDouble() : 15).ToList();
+            _advies = Bepaal(tijden.Select((t, i) => (int.TryParse(t.Length >= 13 ? t.Substring(11, 2) : "0", out var u) ? u : 0, kans[i], mm[i], temp[i])));
+            _tijd = DateTime.Now;
+        }
+        catch { /* geen locatie of geen internet: dan maar geen weer */ }
+    }
+}
+
+/// Regels of lijstjes met "mee", "meenemen" of "niet vergeten" (zoals op de iPhone).
+public static class Meenemen
+{
+    static readonly Regex Patroon = new(@"(?i)\b(mee|meenemen|meebrengen|niet vergeten|vergeet niet)\b");
+
+    public static List<string> Lijst(IEnumerable<Notitie> notities) =>
+        notities.SelectMany(n => n.Items.Count > 0 && Patroon.IsMatch(n.Tekst ?? "")
+            ? n.Items.Select(i => i.Tekst)
+            : (n.Tekst ?? "").Split('\n').Where(r => Patroon.IsMatch(r))).Where(r => !string.IsNullOrWhiteSpace(r)).ToList();
+}

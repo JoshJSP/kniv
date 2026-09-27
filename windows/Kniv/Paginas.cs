@@ -20,6 +20,13 @@ public sealed class VandaagPagina : UserControl
         Opslag.Gewijzigd += Vul;
         Klok.Tik += Tik;
         Vul();
+        _ = LaadWeer();
+    }
+
+    async Task LaadWeer()
+    {
+        await Weer.VerversAsync();
+        DispatcherQueue.TryEnqueue(Vul);
     }
 
     void Vul()
@@ -63,6 +70,19 @@ public sealed class VandaagPagina : UserControl
             foreach (var (n, m) in vandaag)
                 lijst.Children.Add(Regel(n.Titel, new TextBlock { Text = m!.Value.heeftTijd ? m.Value.dag.ToString("HH:mm") : n.Bakje ?? "" }));
             _inhoud.Children.Add(Blok("Voor vandaag", lijst));
+        }
+
+        // Weer: regen op komst of koud.
+        if (Weer.Advies is { } weer)
+            _inhoud.Children.Add(Blok("Weer", new TextBlock { Text = weer, TextWrapping = TextWrapping.Wrap }));
+
+        // Wat mee moet.
+        var mee = Meenemen.Lijst(Opslag.Data.Notities);
+        if (mee.Count > 0)
+        {
+            var lijst = new StackPanel { Spacing = 2 };
+            foreach (var m in mee.Take(8)) lijst.Children.Add(new TextBlock { Text = "·  " + m, TextWrapping = TextWrapping.Wrap });
+            _inhoud.Children.Add(Blok("Niet vergeten", lijst));
         }
 
         if (_inhoud.Children.Count == 0)
