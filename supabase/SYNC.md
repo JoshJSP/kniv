@@ -50,6 +50,11 @@ Foto's gaan (nog) niet mee; alleen `fotoTekst`.
 { "pot": "<uuid van het potje>", "omschrijving": "Pizza", "bedrag": 24.5, "betaaldDoor": "Ik", "voor": ["Ik", "Sam"], "datum": "…" }
 ```
 Uitgaven zijn aparte records, zodat twee mensen tegelijk iets kunnen toevoegen. Een gedeeld potje: potje én uitgaven krijgen dezelfde `groep`.
+### data voor `soort = prik` en `soort = prikstem` (datumprikker; alleen iPhone)
+```json
+{ "naam": "Etentje", "opties": ["2026-10-03T17:00:00Z", "2026-10-04T17:00:00Z"], "gemaakt": "…" }
+{ "prik": "<uuid van de prik>", "naam": "Josh", "wie": "<auth uid>", "ja": ["2026-10-03T17:00:00Z"] }
+```
 Windows haalt alleen `soort=notitie` op en negeert de rest.
 
 ## Ophalen

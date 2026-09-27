@@ -393,6 +393,22 @@ struct GeluidView: View {
                     }
                 }
                 Text(Geluidsmeter.omschrijving(db)).font(.title3)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text("Gehoorportie vandaag")
+                        Spacer()
+                        Text(verbatim: "\(Int(min(meter.portie, 9.99) * 100))%").monospacedDigit()
+                    }
+                    .font(.subheadline)
+                    ProgressView(value: min(meter.portie, 1)).tint(meter.portie > 0.5 ? Color.accentColor : .secondary)
+                    if meter.portie > 0.5 {
+                        Label("Je oren hebben al veel te verduren gehad. Oordopjes in of even een pauze!", systemImage: "ear.trianglebadge.exclamationmark")
+                            .font(.footnote).foregroundStyle(Color.accentColor)
+                    }
+                }
+                .padding(16)
+                .glas(18)
+                .padding(.horizontal)
                 Text("Schatting via de microfoon, geen geijkte meter.").font(.caption).foregroundStyle(.secondary)
                 Spacer()
             }
@@ -406,6 +422,10 @@ struct GeluidView: View {
 
 final class Geluidsmeter {
     private var recorder: AVAudioRecorder?
+    private var vorige: Date?
+    private var sleutel: String { "gehoor." + Focuslog.dagSleutel(Date()) }
+    /// Deel van de veilige dagdosis (1 = vol), bewaard per dag.
+    private(set) lazy var portie: Double = UserDefaults.standard.double(forKey: sleutel)
 
     func start() {
         Task {
@@ -429,7 +449,12 @@ final class Geluidsmeter {
     func lees() -> Double {
         guard let r = recorder else { return 0 }
         r.updateMeters()
-        return min(max(Double(r.averagePower(forChannel: 0)) + 100, 0), 120)
+        let db = min(max(Double(r.averagePower(forChannel: 0)) + 100, 0), 120)
+        let nu = Date()
+        if let vorige { portie += Gehoor.portie([(db: db, seconden: min(nu.timeIntervalSince(vorige), 2))]) }
+        vorige = nu
+        UserDefaults.standard.set(portie, forKey: sleutel)
+        return db
     }
 
     static func omschrijving(_ db: Double) -> LocalizedStringKey {

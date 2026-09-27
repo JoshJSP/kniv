@@ -77,7 +77,7 @@ enum Bron: String {
 
 enum KnivOpslag {
     static let container: ModelContainer = {
-        do { return try ModelContainer(for: Notitie.self, LijstItem.self, Bakje.self, KnivTimer.self, Pot.self, Uitgave.self, Plek.self) }
+        do { return try ModelContainer(for: Notitie.self, LijstItem.self, Bakje.self, KnivTimer.self, Pot.self, Uitgave.self, Plek.self, Prik.self, PrikStem.self) }
         catch { fatalError("Kniv-opslag kon niet openen: \(error)") }
     }()
 

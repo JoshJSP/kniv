@@ -125,4 +125,8 @@ check(kal.component(.hour, from: bed[0].tijd) == 22 && kal.component(.minute, fr
 check(kal.component(.hour, from: bed[2].tijd) == 1 && kal.component(.minute, from: bed[2].tijd) == 15, "slaap: 4 cycli = 1:15")
 check(Slaap.wektijden(vanaf: wekker)[0].tijd.timeIntervalSince(wekker) == 6.25 * 3600, "slaap: nu slapen, over 6u15 wakker")
 
+check(Gehoor.veiligeMinuten(bij: 85) == 480 && Gehoor.veiligeMinuten(bij: 100) == 15, "gehoor: 85 dB 8 uur, 100 dB 15 min")
+check(Gehoor.veiligeMinuten(bij: 60) == .infinity, "gehoor: rustig is onbeperkt")
+check(abs(Gehoor.portie([(db: 100, seconden: 450)]) - 0.5) < 0.001, "gehoor: 7,5 min bij 100 dB = halve portie")
+
 print("Alle Kniv-checks geslaagd")

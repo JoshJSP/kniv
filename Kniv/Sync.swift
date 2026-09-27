@@ -54,6 +54,11 @@ struct RijData: Codable {
     var betaaldDoor: String?
     var voor: [String]?
     var datum: Date?
+    // prik en prikstem
+    var opties: [Date]?
+    var prik: UUID?
+    var ja: [Date]?
+    var wie: UUID?
 }
 
 struct RijItem: Codable {
@@ -143,6 +148,8 @@ struct Profiel: Codable {
         ((try? ctx.fetch(FetchDescriptor<KnivTimer>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<Pot>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<Prik>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<PrikStem>())) ?? []).forEach { $0.gesynct = nil }
         try? ctx.save()
     }
 
@@ -214,8 +221,10 @@ struct Profiel: Codable {
         let ctx = KnivOpslag.container.mainContext
         let notities = vies(Notitie.self, ctx), timers = vies(KnivTimer.self, ctx)
         let potten = vies(Pot.self, ctx), uitgaven = vies(Uitgave.self, ctx)
+        let prikken = vies(Prik.self, ctx), prikstemmen = vies(PrikStem.self, ctx)
         var rijen = notities.map { rij($0, ik: ik) } + timers.map { rij($0, ik: ik) }
         rijen += potten.map { rij($0, ik: ik) } + uitgaven.map { rij($0, ik: ik) }
+        rijen += prikken.map { rij($0, ik: ik) } + prikstemmen.map { rij($0, ik: ik) }
         let weg = teVerwijderen
         for (sleutel, info) in weg {
             let delen = sleutel.split(separator: ":").map(String.init)
@@ -233,6 +242,8 @@ struct Profiel: Codable {
             timers.forEach { $0.gesynct = $0.gewijzigd }
             potten.forEach { $0.gesynct = $0.gewijzigd }
             uitgaven.forEach { $0.gesynct = $0.gewijzigd }
+            prikken.forEach { $0.gesynct = $0.gewijzigd }
+            prikstemmen.forEach { $0.gesynct = $0.gewijzigd }
             teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
             eigenOpslag = Date()
             try? ctx.save()
@@ -263,6 +274,8 @@ struct Profiel: Codable {
         pasToe(rijen, KnivTimer.self, ctx, ik: ik)
         pasToe(rijen, Pot.self, ctx, ik: ik)
         pasToe(rijen, Uitgave.self, ctx, ik: ik)
+        pasToe(rijen, Prik.self, ctx, ik: ik)
+        pasToe(rijen, PrikStem.self, ctx, ik: ik)
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
         laatstOpgehaald = laatste.gewijzigd
         if ctx.hasChanges {

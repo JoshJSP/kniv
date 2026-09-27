@@ -2531,6 +2531,206 @@
         }
       }
     },
+    "Wanneer kan iedereen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When can everyone make it?"
+          }
+        }
+      }
+    },
+    "Kies een paar data, deel de link, en zie welke dag het beste uitkomt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick a few dates, share the link, and see which day works best."
+          }
+        }
+      }
+    },
+    "%lld data%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld dates%2$@"
+          }
+        }
+      }
+    },
+    "Nieuwe prik": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New poll"
+          }
+        }
+      }
+    },
+    "Waarvoor? Bijv. Etentje met de groep": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What for? E.g. Dinner with the group"
+          }
+        }
+      }
+    },
+    "Opties": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Options"
+          }
+        }
+      }
+    },
+    "Datum en tijd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date and time"
+          }
+        }
+      }
+    },
+    "Afspraak": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meetup"
+          }
+        }
+      }
+    },
+    "Jij kunt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can"
+          }
+        }
+      }
+    },
+    "Jij kunt niet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can't"
+          }
+        }
+      }
+    },
+    "Tik aan wanneer jij kunt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap when you can"
+          }
+        }
+      }
+    },
+    "%lld %@ gestemd": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@ voted"
+          }
+        }
+      }
+    },
+    "Beste dag: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best day: %@"
+          }
+        }
+      }
+    },
+    "Log in om deze prik met vrienden te delen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to share this poll with friends."
+          }
+        }
+      }
+    },
+    "Wanneer kun jij? %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When can you? %@"
+          }
+        }
+      }
+    },
+    "Nodig vrienden uit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite friends"
+          }
+        }
+      }
+    },
+    "Deel met vrienden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share with friends"
+          }
+        }
+      }
+    },
+    "Prikken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polls"
+          }
+        }
+      }
+    },
+    "Gehoorportie vandaag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearing dose today"
+          }
+        }
+      }
+    },
+    "Je oren hebben al veel te verduren gehad. Oordopjes in of even een pauze!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your ears have had a lot today. Earplugs in or take a break!"
+          }
+        }
+      }
+    },
     "Snel doen": {
       "localizations": {
         "en": {
