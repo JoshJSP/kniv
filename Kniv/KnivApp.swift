@@ -33,6 +33,7 @@ struct KnivApp: App {
                 await Sync.shared.start()
             }
             .modifier(MeldSchudden())
+            .modifier(Rustmodus())
             .onOpenURL { url in
                 switch url.host() {
                 case "auth": break
@@ -123,5 +124,8 @@ struct KnivSnelkoppelingen: AppShortcutsProvider {
         AppShortcut(intent: StartFocusIntent(),
                     phrases: ["Start focus in \(.applicationName)", "Focus met \(.applicationName)"],
                     shortTitle: "Start focus", systemImageName: "timer")
+        AppShortcut(intent: BewaarInKnivIntent(),
+                    phrases: ["Bewaar in \(.applicationName)"],
+                    shortTitle: "Bewaar in Kniv", systemImageName: "tray.and.arrow.down")
     }
 }

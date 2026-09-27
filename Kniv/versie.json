@@ -1,10 +1,9 @@
 {
-  "versie": "0.12.0",
-  "mesnaam": "Hori Hori",
+  "versie": "0.13.0",
+  "mesnaam": "Leatherman",
   "nieuw": [
-    "Timers en countdowns synchroniseren tussen je apparaten (loopt hij op het ene apparaat, dan krijg je ook hier een melding)",
-    "Potjes synchroniseren, en je kunt een potje delen: vrienden voegen zelf hun uitgaven toe",
-    "Wijzigingen tijdens het synchroniseren gaan niet meer verloren",
-    "Uitloggen en opnieuw inloggen werkt nu netjes"
+    "Bewaar in Kniv vanuit elke app: tekst, links (met paginatitel) en foto's. Zet hem in je deelmenu via Opdrachten (uitleg in Instellingen)",
+    "Rustmodus: 's avonds donker en rustig, plekmeldingen zwijgen",
+    "Deel je weekterugblik als kaartje voor je story"
   ]
 }

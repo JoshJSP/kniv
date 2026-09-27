@@ -138,6 +138,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     // MARK: melden
 
     @MainActor private func meld(_ id: String) {
+        guard !Rustmodus.nu() else { return }
         let ctx = KnivOpslag.container.mainContext
         let notities = (try? ctx.fetch(FetchDescriptor<Notitie>())) ?? []
         func open(_ bakje: String) -> [String] {

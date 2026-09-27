@@ -2531,6 +2531,136 @@
         }
       }
     },
+    "Bewaar in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save to Kniv"
+          }
+        }
+      }
+    },
+    "Er viel niks te bewaren.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There was nothing to save."
+          }
+        }
+      }
+    },
+    "Bewaard in %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved in %@."
+          }
+        }
+      }
+    },
+    "Bewaard in Kniv.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved in Kniv."
+          }
+        }
+      }
+    },
+    "Kniv in je deelmenu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv in your share sheet"
+          }
+        }
+      }
+    },
+    "Open Opdrachten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Shortcuts"
+          }
+        }
+      }
+    },
+    "Rustmodus 's avonds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiet mode in the evening"
+          }
+        }
+      }
+    },
+    "Vanaf %lld:00": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From %lld:00"
+          }
+        }
+      }
+    },
+    "Tot %lld:00": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Until %lld:00"
+          }
+        }
+      }
+    },
+    "In rustmodus is Kniv donker en rustig, en zwijgen de plekmeldingen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In quiet mode Kniv is dark and calm, and place notifications stay silent."
+          }
+        }
+      }
+    },
+    "Mijn week in Kniv": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My week in Kniv"
+          }
+        }
+      }
+    },
+    "Deel je week": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share your week"
+          }
+        }
+      }
+    },
+    "Open Opdrachten → + → Voeg actie toe → Kniv → Bewaar in Kniv. Tik op ⓘ en zet **Toon in deelmenu** aan. Daarna staat Kniv onder Deel in elke app.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Shortcuts → + → Add action → Kniv → Save to Kniv. Tap ⓘ and turn on **Show in Share Sheet**. Kniv then appears under Share in every app."
+          }
+        }
+      }
+    },
     "Deel %@": {
       "localizations": {
         "en": {

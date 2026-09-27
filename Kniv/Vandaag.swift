@@ -100,6 +100,12 @@ struct TerugblikKaart: View {
                 HStack {
                     Text("Jouw week").font(.headline)
                     Spacer()
+                    if let plaatje = deelbaar(focus: focus, vastgelegd: vastgelegd, uitgegeven: uitgegeven) {
+                        ShareLink(item: plaatje, preview: SharePreview("Mijn week in Kniv", image: plaatje)) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .accessibilityLabel("Deel je week")
+                    }
                     Button { withAnimation(.snappy) { gezien = weekSleutel } } label: { Image(systemName: "xmark") }
                         .buttonStyle(.plain)
                         .foregroundStyle(.secondary)
@@ -115,6 +121,30 @@ struct TerugblikKaart: View {
             .glas(22)
             .transition(.opacity)
         }
+    }
+
+    /// De terugblik als strak kaartje voor je story.
+    @MainActor private func deelbaar(focus: Int, vastgelegd: Int, uitgegeven: Double) -> Image? {
+        let kaart = VStack(alignment: .leading, spacing: 28) {
+            HStack(spacing: 12) {
+                LemmetVorm().fill(Color.white).frame(width: 60, height: 18).rotationEffect(.degrees(-30))
+                Text("Mijn week in Kniv").font(.system(size: 34, weight: .bold, design: .rounded))
+            }
+            HStack(spacing: 0) {
+                cijfer("\(focus / 60)u \(focus % 60)m", "gefocust")
+                cijfer("\(vastgelegd)", "vastgelegd")
+                cijfer(Omzetter.euro(uitgegeven), "in potjes")
+            }
+            .environment(\.colorScheme, .dark)
+        }
+        .foregroundStyle(.white)
+        .padding(44)
+        .frame(width: 1080 / 2.5, height: 1920 / 2.5)
+        .background(LinearGradient(colors: [Color(red: 0.89, green: 0.2, blue: 0.16), Color(red: 0.55, green: 0.08, blue: 0.06)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing))
+        let r = ImageRenderer(content: kaart)
+        r.scale = 2.5
+        return r.uiImage.map { Image(uiImage: $0) }
     }
 
     private func cijfer(_ waarde: String, _ label: LocalizedStringKey) -> some View {

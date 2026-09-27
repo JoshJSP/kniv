@@ -275,6 +275,9 @@ struct InstellingenView: View {
     @AppStorage("haptiek") private var haptiek = true
     @AppStorage("supermarktMeldingen") private var supermarkt = false
     @AppStorage("ontwikkelaar") private var ontwikkelaar = false
+    @AppStorage("rust") private var rust = false
+    @AppStorage("rustVanaf") private var rustVanaf = 22
+    @AppStorage("rustTot") private var rustTot = 7
     @State private var versieTikken = 0
     @State private var vraagVerwijderen = false
     @Query private var plekken: [Plek]
@@ -331,7 +334,16 @@ struct InstellingenView: View {
 
             Section {
                 Toggle("Trillingen", isOn: $haptiek)
+                Toggle("Rustmodus 's avonds", isOn: $rust)
+                if rust {
+                    Stepper("Vanaf \(rustVanaf):00", value: $rustVanaf, in: 18...23)
+                    Stepper("Tot \(rustTot):00", value: $rustTot, in: 5...10)
+                }
+            } footer: {
+                Text("In rustmodus is Kniv donker en rustig, en zwijgen de plekmeldingen.")
             }
+
+            Section { DeelmenuUitleg() }
 
             Section {
                 LabeledContent("Versie", value: VersieInfo.huidig.map { "\($0.mesnaam) · \($0.versie)" } ?? "?")
