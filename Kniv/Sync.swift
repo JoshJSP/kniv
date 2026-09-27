@@ -83,6 +83,7 @@ struct Profiel: Codable {
     private var luistert = false
     private var luisterTaak: Task<Void, Never>?
     private var gepland = 0
+    private var eigenOpslag = Date.distantPast
     private let opslag = UserDefaults.standard
     private var client: SupabaseClient { KnivCloud.client }
 
@@ -168,6 +169,8 @@ struct Profiel: Codable {
     /// Kort wachten zodat een reeks wijzigingen in één keer meegaat.
     func plan() {
         guard gebruiker != nil else { return }
+        // Een save die de sync zelf deed, is geen reden om opnieuw te synchroniseren.
+        if Date().timeIntervalSince(eigenOpslag) < 1 { return }
         if bezig { nogEens = true; return }
         gepland += 1
         let mijn = gepland
@@ -231,6 +234,7 @@ struct Profiel: Codable {
             potten.forEach { $0.gesynct = $0.gewijzigd }
             uitgaven.forEach { $0.gesynct = $0.gewijzigd }
             teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
+            eigenOpslag = Date()
             try? ctx.save()
             fout = nil
         } catch {
@@ -261,7 +265,10 @@ struct Profiel: Codable {
         pasToe(rijen, Uitgave.self, ctx, ik: ik)
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
         laatstOpgehaald = laatste.gewijzigd
-        try? ctx.save()
+        if ctx.hasChanges {
+            eigenOpslag = Date()
+            try? ctx.save()
+        }
         var personen = Set(rijen.map(\.eigenaar))
         for r in rijen { r.data.items?.compactMap(\.door).forEach { personen.insert($0) } }
         await laadProfielen(personen)
