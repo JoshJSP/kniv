@@ -6,6 +6,16 @@ import SwiftUI
 
 // MARK: Achtergrondgeluid: ruis om bij te focussen of in slaap te vallen
 
+/// Filtergeheugen voor de ruis (Paul Kellet's roze-ruisfilter), alleen gebruikt op de audio-thread.
+final class RuisStaat {
+    var bruin: Float = 0
+    var roze = [Float](repeating: 0, count: 7)
+    subscript(i: Int) -> Float {
+        get { roze[i] }
+        set { roze[i] = newValue }
+    }
+}
+
 @Observable final class Ruis {
     static let shared = Ruis()
     enum Kleur: String, CaseIterable { case bruin = "Bruin", roze = "Roze", wit = "Wit" }
@@ -26,8 +36,7 @@ import SwiftUI
         let rate = e.outputNode.outputFormat(forBus: 0).sampleRate
         guard let mono = AVAudioFormat(standardFormatWithSampleRate: rate > 0 ? rate : 44_100, channels: 1) else { return }
         let soort = kleur
-        var bruin: Float = 0
-        var p = [Float](repeating: 0, count: 7)      // Paul Kellet's roze-ruisfilter
+        let staat = RuisStaat()      // een klasse: de audio-thread mag geen losse vars aanpassen
         let bron = AVAudioSourceNode { _, _, frames, lijst -> OSStatus in
             let buffers = UnsafeMutableAudioBufferListPointer(lijst)
             for f in 0..<Int(frames) {
@@ -37,9 +46,10 @@ import SwiftUI
                 case .wit:
                     s = wit * 0.25
                 case .bruin:
-                    bruin = (bruin + 0.02 * wit) / 1.02
-                    s = bruin * 3.5 * 0.5
+                    staat.bruin = (staat.bruin + 0.02 * wit) / 1.02
+                    s = staat.bruin * 3.5 * 0.5
                 case .roze:
+                    let p = staat
                     p[0] = 0.99886 * p[0] + wit * 0.0555179
                     p[1] = 0.99332 * p[1] + wit * 0.0750759
                     p[2] = 0.96900 * p[2] + wit * 0.1538520

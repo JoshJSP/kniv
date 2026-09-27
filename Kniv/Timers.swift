@@ -295,7 +295,7 @@ struct TimersView: View {
             .buttonStyle(.plain)
             Divider()
             Button { toonRuis = true } label: {
-                Label(Ruis.shared.aan ? "Achtergrondgeluid speelt" : "Achtergrondgeluid", systemImage: "waveform").frame(maxWidth: .infinity, alignment: .leading)
+                Label(LocalizedStringKey(Ruis.shared.aan ? "Achtergrondgeluid speelt" : "Achtergrondgeluid"), systemImage: "waveform").frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.plain)
             Divider()
