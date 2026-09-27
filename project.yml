@@ -47,6 +47,7 @@ targets:
         NSMicrophoneUsageDescription: Kniv luistert alleen terwijl je inspreekt.
         NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit, op je iPhone zelf.
         NSCameraUsageDescription: Kniv maakt foto's van papiertjes, whiteboards en bonnetjes.
+        NSMotionUsageDescription: Kniv leest de barometer om te laten zien hoeveel verdiepingen je omhoog bent gegaan.
         NSLocationWhenInUseUsageDescription: Kniv bewaart een plek, zodat hij je daar kan herinneren.
         NSLocationAlwaysAndWhenInUseUsageDescription: Kniv laat je bij de supermarkt, op school of thuis je lijstje zien, ook als de app dicht is.
         NSContactsUsageDescription: Kniv zoekt wie je wilt bellen als je 'oma bellen' noteert.

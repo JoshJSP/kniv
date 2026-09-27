@@ -5,14 +5,15 @@ const WINDOWS = "https://github.com/JoshJSP/kniv-releases/releases/download/win/
 
 const MESJES = [
   ["Vastleggen", "Typ, spreek in of fotografeer. Kniv sorteert het zelf in bakjes"],
-  ["Timers", "Focus door je telefoon om te draaien, countdowns met studieplan, even ademen"],
-  ["Splitten", "Rekening, fooi naar sterren, potjes met vrienden, streeplijst, beurten"],
-  ["Kiezen", "Rad, vingerkiezer, glazen dobbelstenen, en samen live kiezen"],
-  ["Scanner", "QR-codes, documenten naar PDF, tekst kopiëren, wifi delen"],
-  ["Meten", "Waterpas, AR-liniaal, geluid, en een kompas terug naar je fiets"],
+  ["Timers", "Focus door je telefoon om te draaien, stopwatch met rondes, countdowns met studieplan, even ademen"],
+  ["Splitten", "Rekening, fooi naar sterren, potjes met vrienden, streeplijst, rekenen met tijd"],
+  ["Kiezen", "Rad, vingerkiezer, glazen dobbelstenen, scoreblok, en samen live kiezen"],
+  ["Scanner", "QR-codes, documenten naar PDF, loep, zaklamp met morse, en je scherm als bordje"],
+  ["Meten", "Waterpas, AR-liniaal, geluid, hoogte, snelheid, en een kompas terug naar je fiets"],
 ];
 
 const EXTRA = [
+  "Elke maandag vuilnis buiten? Zeg het één keer, Kniv herinnert je elke week",
   "Loop je de deur uit? Kniv laat zien wat je mee moest nemen, en of je een paraplu nodig hebt",
   "Bij de supermarkt je boodschappen, op volgorde van je rondje door de winkel",
   "Een briefje aan morgen-jij, een zin per dag, en wat je een jaar geleden schreef",

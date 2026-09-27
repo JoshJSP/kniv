@@ -156,4 +156,8 @@ check(Herinnering.vind(in: "iedere 2 weken beddengoed", nu: zaterdag)?.herhaal =
 check(Herinnering.vind(in: "elke verjaardag taart", nu: zaterdag) == nil, "herhaal: verjaardag is geen weekdag")
 check(Herinnering.vind(in: "morgen om 9:00 tandarts", nu: zaterdag)?.herhaal == nil, "eenmalig blijft eenmalig")
 
+check(Scores.totalen([[10, 5], [3, 20]], spelers: 3) == [13, 25, 0], "score: totalen, nieuwe speler op 0")
+check(Scores.stand([13, 25, 0], laagsteWint: false) == [1, 0, 2], "score: hoogste wint")
+check(Scores.stand([13, 25, 13], laagsteWint: true) == [0, 2, 1], "score: laagste wint, gelijk op volgorde")
+
 print("Alle Kniv-checks geslaagd")

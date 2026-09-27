@@ -1,12 +1,12 @@
 {
-  "versie": "0.35.0",
-  "mesnaam": "Leatherman",
+  "versie": "0.36.0",
+  "mesnaam": "Mora",
   "nieuw": [
-    "Lamp in de Scanner: zaklamp met dimmer, SOS, morse seinen en je scherm als lamp of bordje",
-    "Bordje: typ 'Hier!' of een naam en houd je telefoon omhoog, met knipperstand voor drukke zalen",
-    "Herhalen: 'elke maandag vuilnis buiten' of 'elke 3 dagen planten water' herinnert je steeds opnieuw",
-    "Rekenen met tijd in Omzetten: '9:15 tot 17:30', '14:35 + 2u50', 'dagen tot 25 dec'",
-    "Een notitie in de prullenbak haalt haar herinneringen ook weg",
-    "Sync mist nooit meer een wijziging die precies tegelijk binnenkwam"
+    "Loep in de Scanner: kleine lettertjes lezen met zoom, lamp en stilzetten",
+    "Stopwatch met rondes bij Timers, loopt door als Kniv dicht is",
+    "Meten: hoogte (hoeveel verdiepingen je omhoog bent) en snelheid op de fiets of in de trein",
+    "Scoreblok bij Kiezen voor een spelletjesavond: spelers, rondes, kroon voor wie er voor staat",
+    "Lamp met SOS, morse en je scherm als bordje",
+    "Herhaalde herinneringen en rekenen met tijd"
   ]
 }

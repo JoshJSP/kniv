@@ -3,7 +3,7 @@ import SceneKit
 import SwiftUI
 
 struct KiezenView: View {
-    enum Tab: String, CaseIterable { case rad = "Rad", vinger = "Vinger", dobbelen = "Dobbelen", munt = "Munt", teams = "Teams", stemmen = "Stemmen", prikken = "Prikken" }
+    enum Tab: String, CaseIterable { case rad = "Rad", vinger = "Vinger", dobbelen = "Dobbelen", munt = "Munt", teams = "Teams", stemmen = "Stemmen", prikken = "Prikken", score = "Score" }
     @State private var tab: Tab = .rad
     @AppStorage("kiesOpties") private var optiesTekst = "Pizza\nSushi\nThai\nBurgers"
 
@@ -24,6 +24,7 @@ struct KiezenView: View {
             case .munt: MuntTab()
             case .teams: TeamsView(namen: opties)
             case .prikken: PrikkenView()
+            case .score: ScoreblokView()
             case .stemmen:
                 if SamenKiezen.shared.code != nil { SamenStemView(opties: opties) } else { StemView(opties: opties) }
             }

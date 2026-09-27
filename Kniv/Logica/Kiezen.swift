@@ -37,3 +37,17 @@ enum Stemming {
         return hoogste == 0 ? [] : opties.filter { ja($0, stemmen) == hoogste }
     }
 }
+
+/// Scoreblok: totalen per speler en de volgorde van de stand.
+enum Scores {
+    static func totalen(_ rondes: [[Int]], spelers: Int) -> [Int] {
+        (0..<spelers).map { i in rondes.reduce(0) { $0 + (i < $1.count ? $1[i] : 0) } }
+    }
+
+    /// Indexen van spelers, beste eerst; bij gelijke stand blijft de volgorde van aanmelden.
+    static func stand(_ totalen: [Int], laagsteWint: Bool) -> [Int] {
+        totalen.indices.sorted { a, b in
+            totalen[a] == totalen[b] ? a < b : (laagsteWint ? totalen[a] < totalen[b] : totalen[a] > totalen[b])
+        }
+    }
+}

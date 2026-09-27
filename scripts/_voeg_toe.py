@@ -2,7 +2,10 @@
 import json, pathlib, re
 
 NIEUW = {
-    "Niet meer herinneren": "Stop reminding me", "elke dag": "every day", "elke %@": "every %@", "elke %lld dagen": "every %lld days",
+    "Score": "Score", "%@ wint!": "%@ wins!", "Speler toevoegen": "Add player", "Voeg toe": "Add",
+    "Spelers": "Players", "Stand na %lld rondes": "Standings after %lld rounds", "Nieuwe ronde": "New round",
+    "Ronde opslaan": "Save round", "Rondes": "Rounds", "Laagste score wint": "Lowest score wins",
+    "Spelen tot": "Play to", "geen doel": "no target", "Nieuw spel, zelfde spelers": "New game, same players",
 }
 
 pad = pathlib.Path(__file__).with_name("vertalingen.py")

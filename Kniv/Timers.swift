@@ -211,6 +211,7 @@ struct TimersView: View {
     @State private var nieuw: NieuwSoort?
     @State private var toonAdem = false
     @State private var toonSlaap = false
+    @State private var toonStopwatch = false
     @State private var deelToken: String?
     @AppStorage("omdraaien") private var omdraaien = false
     @State private var omdraaier = Omdraaier.shared
@@ -241,6 +242,7 @@ struct TimersView: View {
         }
         .background(KnivAchtergrond())
         .navigationTitle("Timers")
+        .sheet(isPresented: $toonStopwatch) { StopwatchView() }
         .toolbar {
             Menu {
                 Button { nieuw = .timer } label: { Label("Timer", systemImage: "timer") }
@@ -282,6 +284,11 @@ struct TimersView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
+            Divider()
+            Button { toonStopwatch = true } label: {
+                Label("Stopwatch", systemImage: "stopwatch").frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
             Divider()
             Button { toonAdem = true } label: {
                 Label("Even ademen", systemImage: "wind").frame(maxWidth: .infinity, alignment: .leading)
