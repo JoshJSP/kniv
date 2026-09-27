@@ -65,7 +65,9 @@ import UserNotifications
 }
 
 enum Meldingen {
-    static func plan(_ id: String, _ tekst: String, na seconden: TimeInterval, categorie: String = MeldingActies.timer) {
+    static func plan(_ id: String, _ tekst: String, na seconden: TimeInterval, categorie: String? = nil) {
+        // Timers (uuid of de pomodoro) krijgen "+5 min"; garantie, tijdcapsule, uitlenen en slaap "over een uur / morgen".
+        let categorie = categorie ?? (UUID(uuidString: id) != nil || id == "kniv.pomodoro" ? MeldingActies.timer : MeldingActies.herinnering)
         guard seconden > 0 else { return }
         let centrum = UNUserNotificationCenter.current()
         centrum.requestAuthorization(options: [.alert, .sound, .badge]) { ok, _ in
