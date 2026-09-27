@@ -2531,6 +2531,96 @@
         }
       }
     },
+    "Ik wil wakker worden om": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I want to wake up at"
+          }
+        }
+      }
+    },
+    "Over een kwartier naar bed voor %lld slaapcycli": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bed in fifteen minutes for %lld sleep cycles"
+          }
+        }
+      }
+    },
+    "%lld cycli · %@ uur": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld cycles · %2$@ hours"
+          }
+        }
+      }
+    },
+    "Ga slapen om": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to sleep at"
+          }
+        }
+      }
+    },
+    "Tik op een tijd voor een seintje een kwartier van tevoren. Kniv rekent met cycli van 90 minuten en een kwartier om in slaap te vallen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap a time for a reminder fifteen minutes before. Kniv counts 90-minute cycles plus fifteen minutes to fall asleep."
+          }
+        }
+      }
+    },
+    "Ga je nu slapen? Word wakker om": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Going to sleep now? Wake up at"
+          }
+        }
+      }
+    },
+    "%lld cycli": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cycles"
+          }
+        }
+      }
+    },
+    "Slaapadvies": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep advice"
+          }
+        }
+      }
+    },
+    "Vertaal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Translate"
+          }
+        }
+      }
+    },
     "Wat staat er vandaag?": {
       "localizations": {
         "en": {

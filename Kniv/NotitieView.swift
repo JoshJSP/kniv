@@ -55,6 +55,7 @@ struct NotitieView: View {
             if !notitie.fotoTekst.isEmpty {
                 Section("Tekst uit de foto") {
                     Text(notitie.fotoTekst).textSelection(.enabled)
+                    VertaalKnop(tekst: notitie.fotoTekst)
                 }
             }
 

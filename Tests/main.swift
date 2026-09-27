@@ -119,4 +119,10 @@ check(Uitlenen.vind(in: "boek geleend aan Lisa").map { $0.wie == "Lisa" && $0.wa
 check(Uitlenen.vind(in: "mijn fiets uitgeleend aan Tom").map { $0.wie == "Tom" && $0.wat == "fiets" } == true, "uitlenen: mijn Y uitgeleend aan X")
 check(Uitlenen.vind(in: "morgen oma bellen") == nil, "uitlenen: gewone notitie")
 
+let wekker = DateComponents(calendar: kal, year: 2026, month: 9, day: 28, hour: 7, minute: 30).date!
+let bed = Slaap.bedtijden(wakker: wekker)
+check(kal.component(.hour, from: bed[0].tijd) == 22 && kal.component(.minute, from: bed[0].tijd) == 15 && bed[0].cycli == 6, "slaap: 6 cycli voor 7:30 = 22:15")
+check(kal.component(.hour, from: bed[2].tijd) == 1 && kal.component(.minute, from: bed[2].tijd) == 15, "slaap: 4 cycli = 1:15")
+check(Slaap.wektijden(vanaf: wekker)[0].tijd.timeIntervalSince(wekker) == 6.25 * 3600, "slaap: nu slapen, over 6u15 wakker")
+
 print("Alle Kniv-checks geslaagd")

@@ -202,6 +202,7 @@ struct TimersView: View {
     @State private var pomo = Pomodoro.shared
     @State private var nieuw: NieuwSoort?
     @State private var toonAdem = false
+    @State private var toonSlaap = false
     @AppStorage("omdraaien") private var omdraaien = false
     @State private var omdraaier = Omdraaier.shared
     @AppStorage("haptiek") private var haptiek = true
@@ -242,6 +243,7 @@ struct TimersView: View {
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: pomo.fase) { _, _ in haptiek }
         .fullScreenCover(isPresented: $toonAdem) { AdemView() }
+        .sheet(isPresented: $toonSlaap) { SlaapView() }
         .onAppear { if omdraaien { omdraaier.start() } }
         .onDisappear { omdraaier.stop() }
         .onChange(of: omdraaien) { _, aan in aan ? omdraaier.start() : omdraaier.stop() }
@@ -259,6 +261,11 @@ struct TimersView: View {
             Divider()
             Button { toonAdem = true } label: {
                 Label("Even ademen", systemImage: "wind").frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            Divider()
+            Button { toonSlaap = true } label: {
+                Label("Slaapadvies", systemImage: "moon.zzz").frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.plain)
         }

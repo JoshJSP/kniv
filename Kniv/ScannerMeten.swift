@@ -59,6 +59,7 @@ struct LiveScanTab: View {
                         }
                         Button { UIPasteboard.general.string = gevonden } label: { Label("Kopieer", systemImage: "doc.on.doc") }
                             .buttonStyle(.bordered)
+                        VertaalKnop(tekst: gevonden).buttonStyle(.bordered)
                         Button {
                             if let n = Vastlegger.bewaar(gevonden, bron: .foto, in: ctx) { Task { await Vastlegger.sorteer(n, in: ctx) } }
                             bewaard = true

@@ -1,12 +1,13 @@
 {
-  "versie": "0.24.0",
-  "mesnaam": "Laguiole",
+  "versie": "0.25.0",
+  "mesnaam": "Santoku Twee",
   "nieuw": [
+    "Vertaal wat je scant: menukaarten en borden in het buitenland, offline",
+    "Slaapadvies (bij Timers): hoe laat naar bed om fris wakker te worden, met een seintje",
+    "Win+Shift+K op je laptop rekent nu ook sommen uit",
     "Bij het openen klapt het lemmet uit het handvat",
     "Vraag Siri: 'Wat staat er vandaag in Kniv?' en hoor je dag in één adem",
     "Terugvinden met parkeertijd: leg je auto vast en de parkeertimer loopt meteen",
-    "Zuiniger: de Vandaag-kaart rekent alleen nog als er iets verandert",
-    "Vingerkiezer (bij Kiezen): iedereen een vinger op het scherm, Kniv kiest wie begint",
-    "Streeplijst (bij Splitten): turf drankjes per persoon en deel de afrekening"
+    "Zuiniger: de Vandaag-kaart rekent alleen nog als er iets verandert"
   ]
 }
