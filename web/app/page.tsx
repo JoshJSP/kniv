@@ -4,12 +4,20 @@ const BRON = "https://raw.githubusercontent.com/JoshJSP/kniv-releases/main/apps.
 const WINDOWS = "https://github.com/JoshJSP/kniv-releases/releases/download/win/Kniv-Setup.exe";
 
 const MESJES = [
-  ["Vastleggen", "Notities, lijstjes, foto's en spraak"],
-  ["Timers", "Focus, countdowns en losse timers"],
-  ["Splitten", "Rekening delen en omrekenen"],
-  ["Kiezen", "Rad, dobbelsteen, munt en stemmen"],
-  ["Scanner", "QR-codes en documenten"],
-  ["Meten", "Waterpas, liniaal en geluid"],
+  ["Vastleggen", "Typ, spreek in of fotografeer. Kniv sorteert het zelf in bakjes"],
+  ["Timers", "Focus door je telefoon om te draaien, countdowns met studieplan, even ademen"],
+  ["Splitten", "Rekening, fooi naar sterren, potjes met vrienden, streeplijst, beurten"],
+  ["Kiezen", "Rad, vingerkiezer, glazen dobbelstenen, en samen live kiezen"],
+  ["Scanner", "QR-codes, documenten naar PDF, tekst kopiëren, wifi delen"],
+  ["Meten", "Waterpas, AR-liniaal, geluid, en een kompas terug naar je fiets"],
+];
+
+const EXTRA = [
+  "Loop je de deur uit? Kniv laat zien wat je mee moest nemen, en of je een paraplu nodig hebt",
+  "Bij de supermarkt je boodschappen, op volgorde van je rondje door de winkel",
+  "Een briefje aan morgen-jij, een zin per dag, en wat je een jaar geleden schreef",
+  "Garantiekluis: een seintje voordat de garantie op je aankoop afloopt",
+  "Kniv denkt mee op je iPhone zelf: van een recept een boodschappenlijst",
 ];
 
 export default function Installeren() {
@@ -34,6 +42,11 @@ export default function Installeren() {
             </div>
           ))}
         </div>
+        <ul className="klein zacht" style={{ marginTop: 18, paddingLeft: 18, lineHeight: 1.6 }}>
+          {EXTRA.map((e) => (
+            <li key={e}>{e}</li>
+          ))}
+        </ul>
       </section>
 
       <section className="glas" id="iphone">
