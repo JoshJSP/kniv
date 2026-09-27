@@ -80,58 +80,6 @@ struct VerzegeldView: View {
     }
 }
 
-// MARK: Rondjes: wie geeft het volgende rondje?
-
-struct RondjesView: View {
-    @AppStorage("rondje.leden") private var ledenTekst = ""
-    @AppStorage("rondje.beurt") private var beurt = 0
-    @AppStorage("rondje.log") private var logTekst = ""
-    @AppStorage("haptiek") private var haptiek = true
-
-    private var leden: Binding<[String]> {
-        Binding(get: { ledenTekst.split(separator: "\n").map(String.init) }, set: { ledenTekst = $0.joined(separator: "\n") })
-    }
-    private var log: [String] { logTekst.split(separator: "\n").map(String.init) }
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 18) {
-                if leden.wrappedValue.count >= 2 {
-                    let wie = leden.wrappedValue[beurt % leden.wrappedValue.count]
-                    VStack(spacing: 8) {
-                        Text("Aan de beurt").foregroundStyle(.secondary)
-                        Text(wie).font(.system(size: 46, weight: .bold, design: .rounded)).foregroundStyle(Color.accentColor)
-                            .contentTransition(.numericText())
-                        Button {
-                            withAnimation(.snappy) {
-                                let tijd = Date().formatted(date: .abbreviated, time: .shortened)
-                                logTekst = (["\(wie) · \(tijd)"] + log.prefix(19)).joined(separator: "\n")
-                                beurt += 1
-                            }
-                        } label: { Label("\(wie) gaf een rondje", systemImage: "wineglass").frame(maxWidth: .infinity) }
-                            .buttonStyle(.borderedProminent)
-                            .controlSize(.large)
-                    }
-                    .padding(22)
-                    .glas(26)
-                    .sensoryFeedback(.success, trigger: beurt) { _, _ in haptiek }
-                }
-                OptieEditor(opties: leden, placeholder: "Wie doen er mee?")
-                if !log.isEmpty {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Eerdere rondjes").font(.headline)
-                        ForEach(log, id: \.self) { Text($0).font(.subheadline).foregroundStyle(.secondary) }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .glas(20)
-                }
-            }
-            .padding()
-        }
-    }
-}
-
 // MARK: Verjaardagen: elk jaar een seintje
 
 struct VerjaardagKnop: View {

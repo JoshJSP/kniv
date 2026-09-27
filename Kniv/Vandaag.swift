@@ -38,6 +38,12 @@ struct VandaagKaart: View {
                                mes: .vastleggen))
             }
         }
+        for (terug, label) in [(365, String(localized: "Een jaar geleden")), (30, String(localized: "Een maand geleden"))] {
+            if let dag = kal.date(byAdding: .day, value: -terug, to: nu),
+               let oud = notities.first(where: { $0.bakjeNaam == "Dagboek" && kal.isDate($0.gemaakt, inSameDayAs: dag) }) {
+                r.append(Regel(id: "d\(terug)", icoon: "clock.arrow.circlepath", tekst: "\(label): \(oud.titel)", mes: .vastleggen))
+            }
+        }
         let boodschappen = notities.filter { $0.bakjeNaam == "Boodschappen" }.reduce(0) { $0 + max($1.items.count, $1.isLijst ? 0 : 1) }
         if boodschappen > 0 {
             r.append(Regel(id: "b", icoon: "cart", tekst: String(localized: "\(boodschappen) boodschappen open"), mes: .vastleggen))

@@ -2531,6 +2531,156 @@
         }
       }
     },
+    "Beurten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turns"
+          }
+        }
+      }
+    },
+    "Nieuw rooster": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New rota"
+          }
+        }
+      }
+    },
+    "Bijv. Afwas": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E.g. Dishes"
+          }
+        }
+      }
+    },
+    "Gedaan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Sla over": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        }
+      }
+    },
+    "Eerder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier"
+          }
+        }
+      }
+    },
+    "Rooster verwijderen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete rota"
+          }
+        }
+      }
+    },
+    "Rondje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Round"
+          }
+        }
+      }
+    },
+    "Eén zin over vandaag?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One line about today?"
+          }
+        }
+      }
+    },
+    "Wat bleef je bij?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What stayed with you?"
+          }
+        }
+      }
+    },
+    "Bewaar in je dagboek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save in your journal"
+          }
+        }
+      }
+    },
+    "Een jaar geleden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A year ago"
+          }
+        }
+      }
+    },
+    "Een maand geleden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A month ago"
+          }
+        }
+      }
+    },
+    "Eén zin per dag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One line a day"
+          }
+        }
+      }
+    },
+    "Dagboek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journal"
+          }
+        }
+      }
+    },
     "Heeft %@ je %@ al teruggegeven?": {
       "localizations": {
         "en": {

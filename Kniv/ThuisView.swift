@@ -50,6 +50,7 @@ struct ThuisView: View {
                 VStack(spacing: 12) {
                     Begroeting().padding(.bottom, 4)
                     MorgenBriefKaart()
+                    DagboekKaart()
                     TerugblikKaart()
                     VandaagKaart { mes in pad = NavigationPath([mes]) }
                 }

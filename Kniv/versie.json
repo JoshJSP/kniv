@@ -1,13 +1,12 @@
 {
-  "versie": "0.20.0",
-  "mesnaam": "Swiss Champ",
+  "versie": "0.21.0",
+  "mesnaam": "Kukri Twee",
   "nieuw": [
+    "Eén zin per dag: 's avonds vraagt Kniv hoe je dag was, in je eigen Dagboek-bakje",
+    "Op deze dag: bovenaan zie je wat je een maand en een jaar geleden schreef",
+    "Beurten (bij Splitten): roosters voor het rondje, de afwas, de boodschappen",
     "Lang indrukken op een tegel: meteen inspreken, een foto, focus of het rad",
     "Iets uitgeleend? 'Sam heeft mijn oplader' en Kniv vraagt over twee weken of je hem terug hebt",
-    "Nieuw icoon voor donkere modus en een getint icoon",
-    "Kniv denkt mee: maak van een notitie een lijstje (een gerecht wordt boodschappen, een reis een paklijst), op je iPhone zelf",
-    "Lange tekst van een whiteboard-foto? Kniv vat hem samen in een paar punten",
-    "Een persoonlijke begroeting bovenaan",
-    "Regen op komst? Vandaag zegt het (paraplu mee), en ook als je de deur uit loopt"
+    "Nieuw icoon voor donkere modus en een getint icoon"
   ]
 }

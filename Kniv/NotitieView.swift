@@ -289,6 +289,7 @@ struct InstellingenView: View {
     @AppStorage("supermarktMeldingen") private var supermarkt = false
     @AppStorage("ontwikkelaar") private var ontwikkelaar = false
     @AppStorage("rust") private var rust = false
+    @AppStorage("dagboekAan") private var dagboek = true
     @AppStorage("rustVanaf") private var rustVanaf = 22
     @AppStorage("rustTot") private var rustTot = 7
     @State private var versieTikken = 0
@@ -347,6 +348,7 @@ struct InstellingenView: View {
 
             Section {
                 Toggle("Trillingen", isOn: $haptiek)
+                Toggle("Eén zin per dag", isOn: $dagboek)
                 Toggle("Rustmodus 's avonds", isOn: $rust)
                 if rust {
                     Stepper("Vanaf \(rustVanaf):00", value: $rustVanaf, in: 18...23)
