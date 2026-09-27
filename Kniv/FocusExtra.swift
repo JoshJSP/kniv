@@ -1,4 +1,5 @@
 import CoreMotion
+import SwiftData
 import SwiftUI
 
 /// Telefoon met het scherm op tafel = focus. Oppakken = pauze. De nabijheidssensor zet het scherm dan uit,
@@ -115,21 +116,53 @@ struct AdemView: View {
 }
 
 /// Onder de invoerbalk: typ je een som, dan staat het antwoord er meteen.
+/// Direct antwoord onder de invoer, zoals het snelvenster op Windows: sommen, omzetten, tijd, en "20 min pasta" start een timer.
 struct RekenChip: View {
     @Binding var invoer: String
+    @Environment(\.modelContext) private var ctx
+    @State private var gekopieerd = false
+
+    private var regel: String? {
+        let t = invoer.trimmingCharacters(in: .whitespacesAndNewlines)
+        return t.isEmpty || t.contains(where: \.isNewline) ? nil : t
+    }
 
     var body: some View {
-        if let uitkomst = Rekenmachine.uitkomst(invoer) {
-            Button {
-                invoer = "\(invoer.trimmingCharacters(in: .whitespaces)) = \(Omzetter.mooi(uitkomst))"
-            } label: {
-                Label("= \(Omzetter.mooi(uitkomst))", systemImage: "equal.circle.fill")
-                    .font(.headline)
-                    .foregroundStyle(Color.accentColor)
+        if let t = regel, let uitkomst = Rekenmachine.uitkomst(t) {
+            chip("= \(Omzetter.mooi(uitkomst))", icoon: "equal.circle.fill", hint: "Zet het antwoord in je notitie") {
+                invoer = "\(t) = \(Omzetter.mooi(uitkomst))"
             }
-            .buttonStyle(.plain)
-            .transition(.opacity.combined(with: .move(edge: .top)))
-            .accessibilityHint("Zet het antwoord in je notitie")
+        } else if let t = regel, let antwoord = Omzetter.reken(t, koersen: UserDefaults.standard.dictionary(forKey: "koersen") as? [String: Double] ?? [:]) {
+            chip(antwoord, icoon: gekopieerd ? "checkmark.circle.fill" : "arrow.left.arrow.right.circle.fill", hint: "Kopieert de uitkomst") {
+                UIPasteboard.general.string = Self.kern(antwoord)
+                gekopieerd = true
+            }
+            .onChange(of: invoer) { gekopieerd = false }
+        } else if let t = regel, Herinnering.vind(in: t) == nil, let timer = TimerParser.vind(in: t) {
+            chip("Timer \(timer.naam) · \(TimerParser.klok(TimeInterval(timer.seconden)))", icoon: "timer", hint: "Start de timer") {
+                let nieuw = KnivTimer(naam: timer.naam, duur: TimeInterval(timer.seconden))
+                ctx.insert(nieuw)
+                nieuw.start()
+                invoer = ""
+            }
         }
+    }
+
+    private func chip(_ tekst: String, icoon: String, hint: LocalizedStringKey, actie: @escaping () -> Void) -> some View {
+        Button(action: actie) {
+            Label { Text(verbatim: tekst).multilineTextAlignment(.leading) } icon: { Image(systemName: icoon) }
+                .font(.headline)
+                .foregroundStyle(Color.accentColor)
+        }
+        .buttonStyle(.plain)
+        .transition(.opacity.combined(with: .move(edge: .top)))
+        .accessibilityHint(hint)
+    }
+
+    /// "10 km = 6,21 mijl" → "6,21 mijl"
+    static func kern(_ uitkomst: String) -> String {
+        guard let i = uitkomst.firstIndex(where: { $0 == "=" || $0 == "≈" }) else { return uitkomst }
+        let rest = uitkomst[uitkomst.index(after: i)...].trimmingCharacters(in: .whitespaces)
+        return rest.components(separatedBy: " ≈ ").first ?? rest
     }
 }

@@ -226,9 +226,11 @@ struct IntroView: View {
     @State private var pagina = 0
 
     private let paginas: [(symbool: String, titel: LocalizedStringKey, uitleg: LocalizedStringKey)] = [
-        ("square.grid.2x2", "Eén zakmes", "Vier handige mesjes in één app. Strak, snel en altijd bij de hand."),
-        ("square.and.pencil", "Leg alles vast", "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri."),
+        ("square.grid.2x2", "Eén zakmes", "Zes mesjes in één app: vastleggen, timers, splitten, kiezen, scanner en meten. Houd een tegel ingedrukt voor snelkoppelingen."),
+        ("square.and.pencil", "Leg alles vast", "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri. 'Morgen om 3 tandarts' wordt vanzelf een herinnering."),
         ("sparkles", "Kniv ruimt op", "Alles belandt vanzelf in het juiste bakje. Twijfelt Kniv, dan vraagt hij het even."),
+        ("equal.circle", "Typ en het rekent", "'12*3+4', '10 km in mijl', '15:00 in tokyo' of '20 min pasta': het antwoord staat er meteen onder."),
+        ("person.2", "Samen", "Deel lijstjes, houd potjes bij met vrienden, kies samen waar je gaat eten, en zie alles ook op je laptop."),
     ]
 
     var body: some View {
@@ -256,7 +258,7 @@ struct IntroView: View {
             Button {
                 if pagina < paginas.count - 1 { withAnimation { pagina += 1 } } else { klaar() }
             } label: {
-                Text(pagina < paginas.count - 1 ? "Volgende" : "Aan de slag").frame(maxWidth: .infinity)
+                Text(LocalizedStringKey(pagina < paginas.count - 1 ? "Volgende" : "Aan de slag")).frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

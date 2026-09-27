@@ -6580,6 +6580,96 @@
           }
         }
       }
+    },
+    "Rondleiding opnieuw bekijken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch the tour again"
+          }
+        }
+      }
+    },
+    "Kopieert de uitkomst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copies the result"
+          }
+        }
+      }
+    },
+    "Start de timer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts the timer"
+          }
+        }
+      }
+    },
+    "Zes mesjes in één app: vastleggen, timers, splitten, kiezen, scanner en meten. Houd een tegel ingedrukt voor snelkoppelingen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Six blades in one app: capture, timers, split, choose, scanner and measure. Press and hold a tile for shortcuts."
+          }
+        }
+      }
+    },
+    "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri. 'Morgen om 3 tandarts' wordt vanzelf een herinnering.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type, dictate or take a photo. Also with the Action button or Siri. 'Dentist tomorrow at 3' becomes a reminder by itself."
+          }
+        }
+      }
+    },
+    "Typ en het rekent": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type and it calculates"
+          }
+        }
+      }
+    },
+    "'12*3+4', '10 km in mijl', '15:00 in tokyo' of '20 min pasta': het antwoord staat er meteen onder.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'12*3+4', '10 km in miles', '15:00 in tokyo' or '20 min pasta': the answer appears right below."
+          }
+        }
+      }
+    },
+    "Samen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Together"
+          }
+        }
+      }
+    },
+    "Deel lijstjes, houd potjes bij met vrienden, kies samen waar je gaat eten, en zie alles ook op je laptop.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share lists, track shared pots with friends, pick together where to eat, and see it all on your laptop too."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

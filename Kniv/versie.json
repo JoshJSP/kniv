@@ -1,12 +1,9 @@
 {
-  "versie": "0.38.0",
-  "mesnaam": "Victorinox",
+  "versie": "0.39.0",
+  "mesnaam": "Laguiole",
   "nieuw": [
-    "Kenteken in de Scanner: typ of fotografeer een kenteken en zie merk, APK, verzekering, kilometerstand en terugroepacties (RDW)",
-    "Omzetten weet wat goedkoper is: '2,49 voor 500g of 3,99 voor 1kg'",
-    "Ik ben er om…: aankomsttijd uitrekenen (ook op de fiets) en meteen doorsturen",
-    "Achtergrondgeluid om te focussen of te slapen, stopt vanzelf",
-    "Loep, stopwatch, hoogte, snelheid, scoreblok en tijdzones",
-    "Lamp met SOS en morse, herhaalde herinneringen, rekenen met tijd"
+    "Typ in Vastleggen en het antwoord staat er meteen onder: '10 km in mijl', '15:00 in tokyo', '2,49 voor 500g of 3,99 voor 1kg'. Tik om te kopiëren",
+    "'20 min pasta' in Vastleggen: één tik en de timer loopt",
+    "Nieuwe rondleiding voor wie Kniv voor het eerst opent, en terug te kijken in Instellingen"
   ]
 }

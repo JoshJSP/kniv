@@ -315,6 +315,7 @@ struct InstellingenView: View {
     @AppStorage("haptiek") private var haptiek = true
     @AppStorage("supermarktMeldingen") private var supermarkt = false
     @AppStorage("ontwikkelaar") private var ontwikkelaar = false
+    @AppStorage("introGezien") private var introGezien = true
     @AppStorage("rust") private var rust = false
     @AppStorage("dagboekAan") private var dagboek = true
     @AppStorage("rustVanaf") private var rustVanaf = 22
@@ -403,6 +404,7 @@ struct InstellingenView: View {
             }
 
             Section {
+                Button("Rondleiding opnieuw bekijken") { introGezien = false }
                 LabeledContent("Versie", value: VersieInfo.huidig.map { "\($0.mesnaam) · \($0.versie)" } ?? "?")
                     .contentShape(Rectangle())
                     .onTapGesture {
