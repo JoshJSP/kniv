@@ -42,6 +42,8 @@ import UserNotifications
         rest = nil
         gewijzigd = Date()
         Meldingen.plan(id.uuidString, "\(naam) is klaar", na: resterend(Date()))
+        // Op het vergrendelscherm, tenzij er een focusronde loopt (die gaat voor).
+        if !Pomodoro.shared.loopt, let eind { LiveTimer.start(naam: naam, eind: eind, duur: duur) }
     }
 
     func pauze() {
@@ -49,13 +51,16 @@ import UserNotifications
         eind = nil
         gewijzigd = Date()
         Meldingen.annuleer(id.uuidString)
+        if !Pomodoro.shared.loopt { LiveTimer.stop() }
     }
 
     func herstel() {
+        let liep = eind != nil
         eind = nil
         rest = nil
         gewijzigd = Date()
         Meldingen.annuleer(id.uuidString)
+        if liep && !Pomodoro.shared.loopt { LiveTimer.stop() }
     }
 }
 
