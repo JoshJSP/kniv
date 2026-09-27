@@ -63,7 +63,9 @@ struct VastleggenView: View {
         .scrollDismissesKeyboard(.interactively)
         .searchable(text: $zoek, prompt: "Zoek in alles")
         .navigationTitle("Vastleggen")
-        .navigationDestination(for: Notitie.self) { NotitieView(notitie: $0) }
+        .navigationDestination(for: Notitie.self) { n in
+            if let tot = n.verzegeldTot, tot > Date() { VerzegeldView(tot: tot) } else { NotitieView(notitie: n) }
+        }
         .fullScreenCover(isPresented: $toonCamera) {
             DocumentCamera { beeld in
                 toonCamera = false
@@ -264,7 +266,7 @@ struct VastleggenView: View {
 
     private func notities(in b: Bakje) -> [Notitie] {
         if b.vergrendeld && !ontgrendeld.contains(b.naam) { return [] }
-        return notities.filter { $0.bakjeNaam == b.naam && (zoek.isEmpty || $0.zoekTekst.localizedStandardContains(zoek)) }
+        return notities.filter { $0.bakjeNaam == b.naam && (zoek.isEmpty || (!$0.isVerzegeld && $0.zoekTekst.localizedStandardContains(zoek))) }
     }
 
     private func bakjeRij(_ b: Bakje, _ lijst: [Notitie]) -> some View {
@@ -312,7 +314,10 @@ struct NotitieKaart: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .accessibilityHidden(true)
             }
-            if notitie.isLijst {
+            if notitie.isVerzegeld {
+                Label("Tijdcapsule", systemImage: "hourglass").font(.subheadline.bold()).foregroundStyle(Color.accentColor)
+                Text("Opent \(notitie.verzegeldTot!.formatted(date: .abbreviated, time: .omitted))").font(.caption).foregroundStyle(.secondary)
+            } else if notitie.isLijst {
                 if !notitie.tekst.isEmpty { Text(notitie.titel).font(.subheadline.bold()).lineLimit(1) }
                 ForEach(notitie.gesorteerdeItems.prefix(notitie.fotoBestand == nil ? 4 : 1)) { item in
                     Label(item.tekst, systemImage: "circle").font(.caption).lineLimit(1)

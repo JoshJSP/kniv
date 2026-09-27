@@ -42,6 +42,8 @@ struct RijData: Codable {
     var eind: Date?
     var rest: Double?
     var doel: Date?
+    var werk: Int?
+    var eenheid: String?
     // pot
     var valuta: String?
     var leden: [String]?

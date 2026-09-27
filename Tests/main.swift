@@ -101,4 +101,16 @@ check(QRInhoud.wifi(netwerk: "Gast", wachtwoord: "") == "WIFI:T:nopass;S:Gast;P:
 check(abs(Kompas.peiling(van: (51.58, 4.77), naar: (52.37, 4.90)) - 6) < 3, "kompas: Breda → Amsterdam is ongeveer noord")
 check(abs(Kompas.peiling(van: (0, 0), naar: (0, 1)) - 90) < 0.01, "kompas: oost is 90°")
 
+let droog = (10...18).map { Weer.Uur(uur: $0, kans: 5, mm: 0, temp: 15) }
+check(Weer.advies(droog) == nil, "weer: droog en mild = geen advies")
+var nat = droog
+nat[5] = Weer.Uur(uur: 15, kans: 70, mm: 1.2, temp: 14)
+check(Weer.advies(nat)?.contains("15:00") == true, "weer: regen rond 15:00")
+check(Weer.advies([Weer.Uur(uur: 8, kans: 0, mm: 0, temp: 4)])?.contains("4°") == true, "weer: koud = jas")
+check(Verjaardag.vind(in: "verjaardag Sam 12 mei").map { $0.dag == 12 && $0.maand == 5 } == true, "verjaardag met maandnaam")
+check(Verjaardag.vind(in: "Lisa jarig 3-4").map { $0.dag == 3 && $0.maand == 4 } == true, "verjaardag met d-m")
+check(Verjaardag.vind(in: "tandarts 12 mei") == nil, "geen verjaardag zonder dat woord")
+check(Studieplan.werk(uit: "120 pagina's").map { $0.aantal == 120 && $0.eenheid == "pagina's" } == true, "studieplan: werk lezen")
+check(Studieplan.perDag(werk: 120, dagen: 11) == 11 && Studieplan.perDag(werk: 5, dagen: 0) == 5, "studieplan: per dag afronden")
+
 print("Alle Kniv-checks geslaagd")

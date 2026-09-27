@@ -1,14 +1,11 @@
 {
-  "versie": "0.17.0",
-  "mesnaam": "Wharncliffe",
+  "versie": "0.18.0",
+  "mesnaam": "Trapper",
   "nieuw": [
-    "Garantiekluis: bewaar een bon en Kniv waarschuwt een maand voordat je twee jaar garantie afloopt",
-    "Terugvinden (bij Meten): leg de plek van je fiets, auto of tent vast en een kompaspijl brengt je terug",
-    "Maak QR (bij Scanner): deel je wifi met een code die vrienden met hun camera scannen",
-    "Omdraaien om te focussen: telefoon met het scherm op tafel = focus, oppakken = pauze",
-    "Even ademen: box breathing met een lemmet dat meeademt",
-    "Typ een som in de invoerbalk (12*3+4) en zie meteen het antwoord",
-    "'s Avonds in rustmodus: schrijf een briefje aan morgen-jij, 's ochtends staat het bovenaan",
-    "Loop je de deur uit? Dan laat Kniv zien wat je mee moest nemen"
+    "Regen op komst? Vandaag zegt het (paraplu mee), en ook als je de deur uit loopt",
+    "Tijdcapsule: verzegel een notitie tot een datum in de toekomst",
+    "Rondjes (bij Splitten): wie geeft het volgende rondje?",
+    "Studieplan: geef een countdown een hoeveelheid werk en zie hoeveel per dag",
+    "Verjaardag in een notitie? Eén tik en je krijgt er elk jaar een seintje van"
   ]
 }

@@ -14,6 +14,8 @@ import UserNotifications
     var eind: Date?                     // loopt tot
     var rest: TimeInterval?             // gepauzeerd met zoveel over
     var doel: Date?                     // countdown naar datum
+    var werk: Int?                      // studieplan: zoveel werk tot de deadline
+    var eenheid: String?
     var gemaakt: Date = Date()
     var gewijzigd: Date = Date()
     var gesynct: Date?
@@ -400,6 +402,10 @@ struct CountdownRij: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(timer.naam).font(.headline)
                 if let doel = timer.doel { Text(doel, format: .dateTime.weekday(.wide).day().month()).font(.caption).foregroundStyle(.secondary) }
+                if let werk = timer.werk, dagen > 0 {
+                    Label("\(Studieplan.perDag(werk: werk, dagen: dagen)) \(timer.eenheid ?? "") per dag", systemImage: "books.vertical")
+                        .font(.caption.weight(.semibold)).foregroundStyle(Color.accentColor)
+                }
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 0) {
@@ -419,6 +425,7 @@ struct NieuweTimerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var naam = ""
     @State private var minuten = 10
+    @State private var werk = ""
     @State private var doel = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
 
     private let snel: [(String, Int)] = [("Pasta", 9), ("Thee", 4), ("Eieren", 7), ("Was", 60)]
@@ -429,6 +436,7 @@ struct NieuweTimerView: View {
                 TextField(countdown ? "Waar tel je naar af?" : "Naam", text: $naam)
                 if countdown {
                     DatePicker("Datum", selection: $doel, in: Date()..., displayedComponents: .date)
+                    TextField("Hoeveel werk? Bijv. 120 pagina's", text: $werk)
                 } else {
                     Stepper("\(minuten) minuten", value: $minuten, in: 1...600)
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -448,7 +456,9 @@ struct NieuweTimerView: View {
                     Button(countdown ? "Bewaar" : "Start") {
                         let t = naam.trimmingCharacters(in: .whitespaces)
                         if countdown {
-                            ctx.insert(KnivTimer(naam: t.isEmpty ? "Countdown" : t, doel: doel))
+                            let c = KnivTimer(naam: t.isEmpty ? "Countdown" : t, doel: doel)
+                            if let w = Studieplan.werk(uit: werk) { c.werk = w.aantal; c.eenheid = w.eenheid }
+                            ctx.insert(c)
                         } else {
                             let timer = KnivTimer(naam: t.isEmpty ? "Timer" : t, duur: TimeInterval(minuten * 60))
                             ctx.insert(timer)

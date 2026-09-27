@@ -140,7 +140,8 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
     @MainActor private func meldVertrek() {
         guard !Rustmodus.nu() else { return }
         let notities = (try? KnivOpslag.container.mainContext.fetch(FetchDescriptor<Notitie>())) ?? []
-        let mee = Meenemen.lijst(notities)
+        var mee = Meenemen.lijst(notities)
+        if let weer = WeerDienst.advies { mee.insert(weer, at: 0) }
         guard !mee.isEmpty else { return }
         let inhoud = mee.prefix(5).joined(separator: ", ") + (mee.count > 5 ? " (+\(mee.count - 5))" : "")
         let sleutel = Focuslog.dagSleutel(Date()) + inhoud

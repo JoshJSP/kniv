@@ -56,7 +56,7 @@ extension KnivTimer: Synchroon {
     var syncID: UUID { get { id } set { id = newValue } }
 
     func rijData() -> RijData {
-        RijData(naam: naam, isCountdown: isCountdown, duur: duur, eind: eind, rest: rest, doel: doel)
+        RijData(naam: naam, isCountdown: isCountdown, duur: duur, eind: eind, rest: rest, doel: doel, werk: werk, eenheid: eenheid)
     }
 
     func pasToe(_ d: RijData, in ctx: ModelContext) {
@@ -65,6 +65,8 @@ extension KnivTimer: Synchroon {
         duur = d.duur ?? 0
         rest = d.rest
         doel = d.doel
+        werk = d.werk
+        eenheid = d.eenheid
         let liep = eind != nil
         eind = d.eind
         // Loopt hij op een ander apparaat, dan ook hier een melding als hij klaar is.

@@ -27,8 +27,11 @@ struct VandaagKaart: View {
         for t in timers where t.loopt {
             r.append(Regel(id: "t\(t.id)", icoon: "timer", tekst: "\(t.naam) \(TimerParser.klok(t.resterend(nu)))", mes: .timers))
         }
+        if let weer = WeerDienst.advies {
+            r.append(Regel(id: "w", icoon: weer.contains("°") ? "thermometer.low" : "cloud.rain", tekst: weer, mes: .vastleggen))
+        }
         let kal = Calendar.current
-        for n in notities {
+        for n in notities where !n.isVerzegeld {
             if let moment = Herinnering.vind(in: n.zoekTekst, nu: n.gemaakt), kal.isDateInToday(moment.dag) {
                 r.append(Regel(id: "h\(n.uid)", icoon: "bell",
                                tekst: moment.heeftTijd ? "\(moment.dag.formatted(date: .omitted, time: .shortened)) \(n.titel)" : n.titel,

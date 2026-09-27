@@ -41,6 +41,7 @@ enum Bron: String {
     var groepID: UUID?
     var eigenaarID: UUID?
     var garantieTot: Date?
+    var verzegeldTot: Date?
     @Relationship(deleteRule: .cascade, inverse: \LijstItem.notitie) var items: [LijstItem] = []
 
     init(tekst: String, bron: Bron, fotoBestand: String? = nil) {
@@ -52,6 +53,7 @@ enum Bron: String {
     var isLijst: Bool { !items.isEmpty }
     var gesorteerdeItems: [LijstItem] { items.sorted { $0.volgorde < $1.volgorde } }
     var zoekTekst: String { ([tekst, fotoTekst] + items.map(\.tekst)).joined(separator: "\n") }
+    var isVerzegeld: Bool { verzegeldTot.map { $0 > Date() } ?? false }
 
     var titel: String {
         let eerste = tekst.split(separator: "\n").first.map(String.init)

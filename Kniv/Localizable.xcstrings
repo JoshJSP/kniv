@@ -2531,6 +2531,216 @@
         }
       }
     },
+    "Regen rond %02d:00, paraplu mee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rain around %02d:00, bring an umbrella"
+          }
+        }
+      }
+    },
+    "Fris vandaag (%d°), jas aan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chilly today (%d°), wear a coat"
+          }
+        }
+      }
+    },
+    "Verzegeld tot %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sealed until %@"
+          }
+        }
+      }
+    },
+    "Opent op": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens on"
+          }
+        }
+      }
+    },
+    "Je tijdcapsule is open: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your time capsule is open: %@"
+          }
+        }
+      }
+    },
+    "Verzegel als tijdcapsule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seal as time capsule"
+          }
+        }
+      }
+    },
+    "Tijdcapsule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time capsule"
+          }
+        }
+      }
+    },
+    "Schrijf iets voor later. Tot die dag zie je alleen een slotje, ook niet in zoeken.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write something for later. Until that day you only see a lock, not even in search."
+          }
+        }
+      }
+    },
+    "Nog even geduld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Just a little longer"
+          }
+        }
+      }
+    },
+    "Deze tijdcapsule opent %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This time capsule opens %@."
+          }
+        }
+      }
+    },
+    "Opent %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens %@"
+          }
+        }
+      }
+    },
+    "Aan de beurt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your turn"
+          }
+        }
+      }
+    },
+    "%@ gaf een rondje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bought a round"
+          }
+        }
+      }
+    },
+    "Wie doen er mee?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who's in?"
+          }
+        }
+      }
+    },
+    "Eerdere rondjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier rounds"
+          }
+        }
+      }
+    },
+    "Rondjes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rounds"
+          }
+        }
+      }
+    },
+    "Verjaardag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birthday"
+          }
+        }
+      }
+    },
+    "Elk jaar op %lld-%lld een seintje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A reminder every year on %1$lld-%2$lld"
+          }
+        }
+      }
+    },
+    "Elk jaar herinneren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me every year"
+          }
+        }
+      }
+    },
+    "%lld %@ per dag": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@ per day"
+          }
+        }
+      }
+    },
+    "Hoeveel werk? Bijv. 120 pagina's": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How much work? E.g. 120 pages"
+          }
+        }
+      }
+    },
     "Garantie tot": {
       "localizations": {
         "en": {

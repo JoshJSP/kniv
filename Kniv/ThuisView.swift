@@ -102,6 +102,7 @@ struct ThuisView: View {
         .task(id: fase) {
             guard fase == .active else { return }
             await Sync.shared.nu()
+            await WeerDienst.ververs()
             let gevonden = await Updater.zoek()
             withAnimation(.snappy) { update = gevonden }
         }

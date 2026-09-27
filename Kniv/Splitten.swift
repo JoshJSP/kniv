@@ -75,7 +75,7 @@ func bedrag(_ tekst: String) -> Double { Double(tekst.replacingOccurrences(of: "
 // MARK: scherm
 
 struct SplittenView: View {
-    enum Tab: String, CaseIterable { case delen = "Delen", fooi = "Fooi", pot = "Potjes", bon = "Bon", omzetten = "Omzetten" }
+    enum Tab: String, CaseIterable { case delen = "Delen", fooi = "Fooi", pot = "Potjes", rondjes = "Rondjes", bon = "Bon", omzetten = "Omzetten" }
     @State private var tab: Tab = .delen
 
     var body: some View {
@@ -90,6 +90,7 @@ struct SplittenView: View {
             case .delen: DelenView()
             case .fooi: FooiView()
             case .pot: PottenView()
+            case .rondjes: RondjesView()
             case .bon: BonView()
             case .omzetten: OmzettenView()
             }
