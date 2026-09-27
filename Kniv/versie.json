@@ -1,12 +1,12 @@
 {
-  "versie": "0.36.0",
-  "mesnaam": "Mora",
+  "versie": "0.37.0",
+  "mesnaam": "Buck",
   "nieuw": [
-    "Loep in de Scanner: kleine lettertjes lezen met zoom, lamp en stilzetten",
-    "Stopwatch met rondes bij Timers, loopt door als Kniv dicht is",
-    "Meten: hoogte (hoeveel verdiepingen je omhoog bent) en snelheid op de fiets of in de trein",
-    "Scoreblok bij Kiezen voor een spelletjesavond: spelers, rondes, kroon voor wie er voor staat",
-    "Lamp met SOS, morse en je scherm als bordje",
-    "Herhaalde herinneringen en rekenen met tijd"
+    "Ik ben er om…: kies een plek, Kniv rekent je aankomst uit (ook op de fiets) en je stuurt het meteen door",
+    "Achtergrondgeluid bij Timers: bruine, roze of witte ruis om te focussen of te slapen, stopt vanzelf",
+    "Loep in de Scanner, en hoogte en snelheid bij Meten",
+    "Stopwatch met rondes, en een scoreblok voor spelletjesavonden",
+    "Omzetten kent tijdzones: '15:00 in tokyo' of 'hoe laat is het in new york'",
+    "Lamp met SOS en morse, herhaalde herinneringen, rekenen met tijd"
   ]
 }

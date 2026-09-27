@@ -212,6 +212,8 @@ struct TimersView: View {
     @State private var toonAdem = false
     @State private var toonSlaap = false
     @State private var toonStopwatch = false
+    @State private var toonRuis = false
+    @State private var toonOnderweg = false
     @State private var deelToken: String?
     @AppStorage("omdraaien") private var omdraaien = false
     @State private var omdraaier = Omdraaier.shared
@@ -243,6 +245,8 @@ struct TimersView: View {
         .background(KnivAchtergrond())
         .navigationTitle("Timers")
         .sheet(isPresented: $toonStopwatch) { StopwatchView() }
+        .sheet(isPresented: $toonRuis) { RuisView().presentationDetents([.medium, .large]) }
+        .sheet(isPresented: $toonOnderweg) { OnderwegView() }
         .toolbar {
             Menu {
                 Button { nieuw = .timer } label: { Label("Timer", systemImage: "timer") }
@@ -287,6 +291,16 @@ struct TimersView: View {
             Divider()
             Button { toonStopwatch = true } label: {
                 Label("Stopwatch", systemImage: "stopwatch").frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            Divider()
+            Button { toonRuis = true } label: {
+                Label(Ruis.shared.aan ? "Achtergrondgeluid speelt" : "Achtergrondgeluid", systemImage: "waveform").frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            Divider()
+            Button { toonOnderweg = true } label: {
+                Label("Ik ben er om…", systemImage: "figure.walk.arrival").frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.plain)
             Divider()

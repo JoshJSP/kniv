@@ -54,7 +54,7 @@ struct ScoreblokView: View {
                     Button("Voeg toe", action: voegToe).disabled(nieuweSpeler.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             } header: {
-                Text(spel.rondes.isEmpty ? "Spelers" : "Stand na \(spel.rondes.count) rondes")
+                if spel.rondes.isEmpty { Text("Spelers") } else { Text("Stand na \(spel.rondes.count) rondes") }
             }
 
             if !spel.spelers.isEmpty {

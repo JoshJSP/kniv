@@ -140,7 +140,17 @@ enum Omzetter {
             let dagen = kal.dateComponents([.day], from: kal.startOfDay(for: nu), to: kal.startOfDay(for: doel.dag)).day ?? 0
             return dagen == 0 ? "Dat is vandaag!" : dagen >= 14 ? "Nog \(dagen) dagen (\(dagen / 7) weken en \(dagen % 7) dagen)" : "Nog \(dagen) dagen"
         }
+        if let m = Herinnering.eersteMatch(#"^(?:hoe laat is het in|hoe laat in|tijd in|time in|what time in)\s+(.+?)\s*\??$"#, in: t),
+           let z = zone(m[1]) {
+            let verschil = Double(z.tz.secondsFromGMT(for: nu) - TimeZone.current.secondsFromGMT(for: nu)) / 3600
+            return "In \(z.naam) is het nu \(klokTekst(nu, z.tz))" + (verschil == 0 ? "" : " (\(verschil > 0 ? "+" : "")\(mooi(verschil)) uur)")
+        }
         let klok = #"(\d{1,2}):(\d{2})"#
+        if let m = Herinnering.eersteMatch("^" + klok + #"\s+(?:in|naar|to)\s+(.+)$"#, in: t),
+           let u = Int(m[1]), let mi = Int(m[2]), u < 24, mi < 60, let z = zone(m[3]),
+           let hier = Calendar.current.date(bySettingHour: u, minute: mi, second: 0, of: nu) {
+            return "\(m[1]):\(m[2]) hier = \(klokTekst(hier, z.tz)) in \(z.naam)"
+        }
         if let m = Herinnering.eersteMatch("^" + klok + #"\s*(?:tot|-|–|to|until)\s*"# + klok + "$", in: t),
            let a = minuten(m[1], m[2]), let b = minuten(m[3], m[4]) {
             let d = (b - a + 1440) % 1440
@@ -155,6 +165,36 @@ enum Omzetter {
             return "\(m[1]):\(m[2]) \(m[3]) \(duurTekst(d)) = \(r / 60):\(String(format: "%02d", r % 60))\(extra)"
         }
         return nil
+    }
+
+    static let steden: [String: String] = [
+        "new york": "America/New_York", "ny": "America/New_York", "boston": "America/New_York", "miami": "America/New_York",
+        "toronto": "America/Toronto", "chicago": "America/Chicago", "los angeles": "America/Los_Angeles", "la": "America/Los_Angeles",
+        "san francisco": "America/Los_Angeles", "vancouver": "America/Vancouver", "mexico": "America/Mexico_City",
+        "curaçao": "America/Curacao", "curacao": "America/Curacao", "aruba": "America/Aruba", "suriname": "America/Paramaribo",
+        "paramaribo": "America/Paramaribo", "rio": "America/Sao_Paulo", "sao paulo": "America/Sao_Paulo", "hawaii": "Pacific/Honolulu",
+        "londen": "Europe/London", "london": "Europe/London", "lissabon": "Europe/Lisbon", "lisbon": "Europe/Lisbon",
+        "istanbul": "Europe/Istanbul", "turkije": "Europe/Istanbul", "moskou": "Europe/Moscow", "athene": "Europe/Athens",
+        "marokko": "Africa/Casablanca", "marrakech": "Africa/Casablanca", "kaapstad": "Africa/Johannesburg", "cape town": "Africa/Johannesburg",
+        "dubai": "Asia/Dubai", "india": "Asia/Kolkata", "delhi": "Asia/Kolkata", "mumbai": "Asia/Kolkata",
+        "bangkok": "Asia/Bangkok", "thailand": "Asia/Bangkok", "bali": "Asia/Makassar", "jakarta": "Asia/Jakarta",
+        "singapore": "Asia/Singapore", "hong kong": "Asia/Hong_Kong", "beijing": "Asia/Shanghai", "peking": "Asia/Shanghai",
+        "shanghai": "Asia/Shanghai", "seoul": "Asia/Seoul", "korea": "Asia/Seoul", "tokyo": "Asia/Tokyo", "japan": "Asia/Tokyo",
+        "sydney": "Australia/Sydney", "melbourne": "Australia/Melbourne", "perth": "Australia/Perth", "auckland": "Pacific/Auckland",
+        "nieuw-zeeland": "Pacific/Auckland", "amsterdam": "Europe/Amsterdam", "nederland": "Europe/Amsterdam",
+    ]
+
+    static func zone(_ naam: String) -> (naam: String, tz: TimeZone)? {
+        let sleutel = naam.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        guard let id = steden[sleutel], let tz = TimeZone(identifier: id) else { return nil }
+        return (sleutel.count <= 2 ? sleutel.uppercased() : sleutel.capitalized, tz)
+    }
+
+    static func klokTekst(_ d: Date, _ tz: TimeZone) -> String {
+        var kal = Calendar(identifier: .gregorian)
+        kal.timeZone = tz
+        let c = kal.dateComponents([.hour, .minute], from: d)
+        return "\(c.hour ?? 0):" + String(format: "%02d", c.minute ?? 0)
     }
 
     static func minuten(_ u: String, _ m: String) -> Int? {

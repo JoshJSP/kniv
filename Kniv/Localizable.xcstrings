@@ -6180,6 +6180,246 @@
           }
         }
       }
+    },
+    "Bruin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brown"
+          }
+        }
+      }
+    },
+    "Roze": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pink"
+          }
+        }
+      }
+    },
+    "Stopt vanzelf na": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stops by itself after"
+          }
+        }
+      }
+    },
+    "Nooit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never"
+          }
+        }
+      }
+    },
+    "Stopt om %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stops at %@"
+          }
+        }
+      }
+    },
+    "Achtergrondgeluid": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background sound"
+          }
+        }
+      }
+    },
+    "Achtergrondgeluid speelt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background sound playing"
+          }
+        }
+      }
+    },
+    "Diep en zacht, als een waterval. Fijn om te focussen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deep and soft, like a waterfall. Great for focus."
+          }
+        }
+      }
+    },
+    "Als regen op het dak. Fijn om in slaap te vallen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Like rain on the roof. Great for falling asleep."
+          }
+        }
+      }
+    },
+    "Als een ventilator. Dekt geluiden van buiten af.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Like a fan. Masks noise from outside."
+          }
+        }
+      }
+    },
+    "Lopen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walk"
+          }
+        }
+      }
+    },
+    "Fiets": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bike"
+          }
+        }
+      }
+    },
+    "OV": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transit"
+          }
+        }
+      }
+    },
+    "Auto": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Car"
+          }
+        }
+      }
+    },
+    "Vervoer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transport"
+          }
+        }
+      }
+    },
+    "Ik ben er rond %@.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll be there around %@."
+          }
+        }
+      }
+    },
+    "Naar %@, over %lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To %@, in %lld min"
+          }
+        }
+      }
+    },
+    "Stuur dit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send this"
+          }
+        }
+      }
+    },
+    "Waar ga je heen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where are you going?"
+          }
+        }
+      }
+    },
+    "Zoek een adres of plek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search an address or place"
+          }
+        }
+      }
+    },
+    "Ik ben er om…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll be there at…"
+          }
+        }
+      }
+    },
+    "Niets gevonden. Probeer het met een plaatsnaam erbij.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing found. Try adding a town name."
+          }
+        }
+      }
+    },
+    "Geen OV-tijden voor deze route. Probeer lopen of fiets.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No transit times for this route. Try walking or cycling."
+          }
+        }
+      }
+    },
+    "Kon de route niet berekenen. Staat locatie aan?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't calculate the route. Is location on?"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

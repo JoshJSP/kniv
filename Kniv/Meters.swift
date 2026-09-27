@@ -298,12 +298,17 @@ struct LoepView: View {
 }
 
 final class LoepCamera {
-    let sessie = AVCaptureSession()
+    let sessie: AVCaptureSession
     let laag: AVCaptureVideoPreviewLayer
     private let wachtrij = DispatchQueue(label: "kniv.loep")
     private let toestel = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
 
-    init() { laag = AVCaptureVideoPreviewLayer(session: sessie); laag.videoGravity = .resizeAspectFill }
+    init() {
+        let s = AVCaptureSession()
+        sessie = s
+        laag = AVCaptureVideoPreviewLayer(session: s)
+        laag.videoGravity = .resizeAspectFill
+    }
 
     var maxZoom: Double { min(Double(toestel?.maxAvailableVideoZoomFactor ?? 1), 10) }
 

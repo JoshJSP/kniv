@@ -160,4 +160,9 @@ check(Scores.totalen([[10, 5], [3, 20]], spelers: 3) == [13, 25, 0], "score: tot
 check(Scores.stand([13, 25, 0], laagsteWint: false) == [1, 0, 2], "score: hoogste wint")
 check(Scores.stand([13, 25, 13], laagsteWint: true) == [0, 2, 1], "score: laagste wint, gelijk op volgorde")
 
+check(Omzetter.reken("15:00 in tokyo")?.hasSuffix("in Tokyo") == true, "tijdzone: 15:00 in tokyo")
+check(Omzetter.reken("hoe laat is het in new york?")?.hasPrefix("In New York is het nu") == true, "tijdzone: hoe laat in new york")
+check(Omzetter.reken("15:00 in atlantis") == nil, "tijdzone: onbekende stad")
+check(Omzetter.klokTekst(Date(timeIntervalSince1970: 0), TimeZone(identifier: "Asia/Tokyo")!) == "9:00", "tijdzone: klok in tokyo")
+
 print("Alle Kniv-checks geslaagd")
