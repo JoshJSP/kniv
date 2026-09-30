@@ -62,7 +62,8 @@ Alles wordt op het toestel bepaald, niets staat vast in de code:
 
 ### Edge Function `taal` (supabase/functions/taal)
 Zelfde opzet als `spraak`: ingelogd, gedeelde daglimiet in `ai_gebruik` (50/dag), Groq-sleutel alleen
-op de server. Het model staat in een env-variabele `GROQ_TEKSTMODEL`. Er zijn twee soorten vragen: `stukje`
+op de server. Aanbieder is een detail van deze functie: de app weet alleen van `taal`. Claude (eigen
+API-tegoed) kan later hier worden ingezet zonder app-wijziging. Het BUas Enterprise-plan mag hier niet voor. Het model staat in een env-variabele `GROQ_TEKSTMODEL`. Er zijn twee soorten vragen: `stukje`
 (taal, niveau, onderwerp) en `woord` (taal, woord, zin).
 
 ### Opslag
