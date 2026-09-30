@@ -6611,16 +6611,6 @@
         }
       }
     },
-    "Zes mesjes in één app: vastleggen, timers, splitten, kiezen, scanner en meten. Houd een tegel ingedrukt voor snelkoppelingen.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Six blades in one app: capture, timers, split, choose, scanner and measure. Press and hold a tile for shortcuts."
-          }
-        }
-      }
-    },
     "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri. 'Morgen om 3 tandarts' wordt vanzelf een herinnering.": {
       "localizations": {
         "en": {
@@ -6667,6 +6657,476 @@
           "stringUnit": {
             "state": "translated",
             "value": "Share lists, track shared pots with friends, pick together where to eat, and see it all on your laptop too."
+          }
+        }
+      }
+    },
+    "Bewaar in Mijn woorden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save to My words"
+          }
+        }
+      }
+    },
+    "Bijna niks: losse woordjes en korte zinnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almost nothing: single words and short sentences"
+          }
+        }
+      }
+    },
+    "Dat lukte even niet. Probeer het nog eens.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That didn't work. Please try again."
+          }
+        }
+      }
+    },
+    "Deze taal heeft internet nodig. Je eerdere stukjes kun je gewoon lezen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This language needs internet. You can still read your earlier pieces."
+          }
+        }
+      }
+    },
+    "Een beetje: simpele zinnen over dagelijkse dingen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little: simple sentences about everyday things"
+          }
+        }
+      }
+    },
+    "Eerder gelezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read before"
+          }
+        }
+      }
+    },
+    "Eigen onderwerp, bv. Minecraft": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your own topic, e.g. Minecraft"
+          }
+        }
+      }
+    },
+    "Games": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Games"
+          }
+        }
+      }
+    },
+    "Geen stem voor deze taal: alleen lezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No voice for this language: reading only"
+          }
+        }
+      }
+    },
+    "Goed: series met ondertitels in die taal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good: shows with subtitles in that language"
+          }
+        }
+      }
+    },
+    "Heel goed: bijna alles, ook snelle gesprekken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very good: almost everything, even fast conversations"
+          }
+        }
+      }
+    },
+    "Het volgende stukje wordt iets makkelijker.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The next piece will be a little easier."
+          }
+        }
+      }
+    },
+    "Het volgende stukje wordt iets moeilijker.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The next piece will be a little harder."
+          }
+        }
+      }
+    },
+    "Hoe goed ken je %@ al?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How well do you know %@?"
+          }
+        }
+      }
+    },
+    "Hoe was dit stukje?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How was this piece?"
+          }
+        }
+      }
+    },
+    "Internet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internet"
+          }
+        }
+      }
+    },
+    "Je iPhone kan voorlezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your iPhone can read aloud"
+          }
+        }
+      }
+    },
+    "Je stukjes blijven bewaard.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pieces are kept."
+          }
+        }
+      }
+    },
+    "Kies er één of meer. De eerste wordt je hoofdtaal.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick one or more. The first becomes your main language."
+          }
+        }
+      }
+    },
+    "Kies talen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose languages"
+          }
+        }
+      }
+    },
+    "Langzaam": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow"
+          }
+        }
+      }
+    },
+    "Log in bij Instellingen om deze taal te gebruiken.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in under Settings to use this language."
+          }
+        }
+      }
+    },
+    "Muziek": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Music"
+          }
+        }
+      }
+    },
+    "Nieuw stukje": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New piece"
+          }
+        }
+      }
+    },
+    "Niveau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "Precies goed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Just right"
+          }
+        }
+      }
+    },
+    "Redelijk: een rustig verhaal volgen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fair: following a calm story"
+          }
+        }
+      }
+    },
+    "Reizen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travel"
+          }
+        }
+      }
+    },
+    "Series": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows"
+          }
+        }
+      }
+    },
+    "Stukje schrijven…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Writing a piece…"
+          }
+        }
+      }
+    },
+    "Stukjes komen via internet en tellen mee voor de daglimiet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pieces come via the internet and count toward the daily limit"
+          }
+        }
+      }
+    },
+    "Stukjes maakt je iPhone zelf, ook offline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your iPhone writes pieces itself, even offline"
+          }
+        }
+      }
+    },
+    "Talen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Languages"
+          }
+        }
+      }
+    },
+    "Te makkelijk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too easy"
+          }
+        }
+      }
+    },
+    "Te moeilijk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too hard"
+          }
+        }
+      }
+    },
+    "Tik op een woord voor de betekenis.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap a word for its meaning."
+          }
+        }
+      }
+    },
+    "Tip: met Apple Intelligence aan maakt je iPhone voor veel talen zelf stukjes.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip: with Apple Intelligence on, your iPhone writes pieces itself for many languages."
+          }
+        }
+      }
+    },
+    "Top, zo blijft het.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great, it stays like this."
+          }
+        }
+      }
+    },
+    "Twijfel je? Kies lager. Na elk stukje schuift je niveau mee.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sure? Pick lower. Your level adjusts after every piece."
+          }
+        }
+      }
+    },
+    "Uitspreken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pronounce"
+          }
+        }
+      }
+    },
+    "Vandaag zijn de online stukjes op. Morgen weer, en talen die je iPhone zelf kent gaan gewoon door.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's online pieces are used up. More tomorrow, and languages your iPhone knows keep working."
+          }
+        }
+      }
+    },
+    "Vertalen lukte niet op je iPhone.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Translating didn't work on your iPhone."
+          }
+        }
+      }
+    },
+    "Verwijder %@ uit je talen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@ from your languages?"
+          }
+        }
+      }
+    },
+    "Voorlezen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read aloud"
+          }
+        }
+      }
+    },
+    "Welke taal wil je leren?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which language do you want to learn?"
+          }
+        }
+      }
+    },
+    "Zeven mesjes in één app: vastleggen, timers, splitten, kiezen, scanner, meten en talen. Houd een tegel ingedrukt voor snelkoppelingen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seven blades in one app: capture, timers, split, choose, scanner, measure and languages. Press and hold a tile for shortcuts."
+          }
+        }
+      }
+    },
+    "Zoek een taal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search a language"
           }
         }
       }

@@ -1,9 +1,9 @@
 {
-  "versie": "0.39.0",
-  "mesnaam": "Laguiole",
+  "versie": "0.40.0",
+  "mesnaam": "Kiridashi",
   "nieuw": [
-    "Typ in Vastleggen en het antwoord staat er meteen onder: '10 km in mijl', '15:00 in tokyo', '2,49 voor 500g of 3,99 voor 1kg'. Tik om te kopiëren",
-    "'20 min pasta' in Vastleggen: één tik en de timer loopt",
-    "Nieuwe rondleiding voor wie Kniv voor het eerst opent, en terug te kijken in Instellingen"
+    "Nieuw mesje Talen: korte stukjes in elke taal op jouw niveau, over games, reizen, series of je eigen onderwerp",
+    "Laat het voorlezen en tik op een woord voor de betekenis, uitspraak en (bij Japans) de lezing",
+    "Na elk stukje zeg je of het te makkelijk of te moeilijk was, en je niveau schuift mee"
   ]
 }
