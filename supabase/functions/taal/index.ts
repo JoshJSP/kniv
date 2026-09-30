@@ -77,9 +77,8 @@ Deno.serve(async (req) => {
     systeem = stukjePrompt(naam, niveau);
     vraag = `Onderwerp: ${onderwerp}`;
   } else if (invoer.soort === "woord") {
-    const woord = tekst(invoer.woord).trim(), zin = tekst(invoer.zin).trim();
+    const woord = tekst(invoer.woord).trim(), zin = tekst(invoer.zin).trim().slice(0, 400);
     if (!woord || woord.length > 60) return fout("Geen of te lang woord", 400);
-    if (zin.length > 400) return fout("Zin te lang", 400);
     systeem = woordPrompt(naam);
     vraag = `Woord: ${woord}\nZin: ${zin}`;
   } else {
@@ -90,12 +89,15 @@ Deno.serve(async (req) => {
   const { data: gebruik } = await supa.from("ai_gebruik").select("aantal").eq("gebruiker", user.id).eq("dag", dag).maybeSingle();
   const aantal = gebruik?.aantal ?? 0;
   if (aantal >= LIMIET) return fout("Daglimiet bereikt", 429);
-  await supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
+  // Alleen een geslaagd antwoord telt mee voor de daglimiet.
+  const tel = () => supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
 
   const antwoord = await vraagGroq(systeem, vraag);
   if (invoer.soort === "woord") {
     const betekenis = tekst(antwoord?.betekenis).trim();
-    return betekenis ? Response.json({ betekenis }) : fout("Betekenis opzoeken lukte niet", 502);
+    if (!betekenis) return fout("Betekenis opzoeken lukte niet", 502);
+    await tel();
+    return Response.json({ betekenis });
   }
   const titel = tekst(antwoord?.titel).trim(), stuk = tekst(antwoord?.tekst).trim();
   if (!titel || !stuk) return fout("Stukje schrijven lukte niet", 502);
@@ -104,5 +106,6 @@ Deno.serve(async (req) => {
   if (lijst && typeof lijst === "object") {
     for (const [w, b] of Object.entries(lijst)) if (typeof b === "string" && w.trim()) woorden[w.trim().toLowerCase()] = b.trim();
   }
+  await tel();
   return Response.json({ titel, tekst: stuk, woorden });
 });

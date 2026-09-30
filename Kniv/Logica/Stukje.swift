@@ -48,11 +48,12 @@ struct Stukje: Equatable {
     }
 
     /// Onwaar als het stukje met meer dan 80% zekerheid Nederlands of Engels is (en dat niet de doeltaal is).
+    /// Afrikaans, Fries en Limburgs lijken voor de herkenner op Nederlands; daar geen Nederlands-check.
     func isIn(_ code: String) -> Bool {
         let herkenner = NLLanguageRecognizer()
         herkenner.processString(titel + "\n" + tekst)
         for (taal, kans) in herkenner.languageHypotheses(withMaximum: 3)
-        where kans > 0.8 && (taal == .dutch || taal == .english) && taal.rawValue != code {
+        where kans > 0.8 && (taal == .english || (taal == .dutch && !["af", "fy", "li"].contains(code))) && taal.rawValue != code {
             return false
         }
         return true

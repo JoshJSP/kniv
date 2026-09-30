@@ -152,7 +152,9 @@ struct TaalPagina: View {
         Task {
             defer { bezig = false }
             do {
-                let s = try await TaalDienst.nieuwStukje(taal: code, niveau: niveau, onderwerp: schoon, vermogen: vermogen ?? .niets)
+                var v = vermogen
+                if v == nil { v = await TaalDienst.vermogen(code) }
+                let s = try await TaalDienst.nieuwStukje(taal: code, niveau: niveau, onderwerp: schoon, vermogen: v ?? .niets)
                 let stuk = Leesstuk(taal: code, titel: s.titel, tekst: s.tekst, onderwerp: schoon, niveau: niveau, woorden: s.woorden)
                 ctx.insert(stuk)
                 eigen = ""

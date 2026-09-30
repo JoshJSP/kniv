@@ -2,6 +2,7 @@ import Foundation
 
 /// Checks voor de logica van het mesje Talen (Kniv/Logica/Taal*.swift, Stukje.swift, Woorden.swift).
 func talenChecks() {
+    check(Stukje(titel: "Bus", tekst: "Ek ry elke oggend met die bus skool toe. Meestal luister ek na musiek en kyk ek by die venster uit.").isIn("af"), "Afrikaans niet afgewezen als Nederlands")
     check(Taalniveau.code(0) == "A1" && Taalniveau.code(8) == "C1" && Taalniveau.code(99) == "C1" && Taalniveau.code(-3) == "A1", "niveaucodes binnen grenzen")
     check(Taalniveau.na(.teMakkelijk, stap: 4) == 5 && Taalniveau.na(.teMoeilijk, stap: 4) == 3 && Taalniveau.na(.precies, stap: 4) == 4, "niveau schuift een halve stap")
     check(Taalniveau.na(.teMakkelijk, stap: 8) == 8 && Taalniveau.na(.teMoeilijk, stap: 0) == 0, "niveau blijft binnen A1…C1")

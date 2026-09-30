@@ -49,6 +49,8 @@ import Observation
         bezig = false
         gesproken = nil
         zin = nil
+        // Muziek van andere apps mag weer verder.
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {

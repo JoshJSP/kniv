@@ -80,7 +80,7 @@ struct LeesView: View {
     }
 
     private func tik(_ url: URL, _ woorden: [Woord]) {
-        guard let i = Int(url.absoluteString.replacingOccurrences(of: "kniv-woord://", with: "")),
+        guard vermogen != nil, let i = Int(url.absoluteString.replacingOccurrences(of: "kniv-woord://", with: "")),
               woorden.indices.contains(i) else { return }
         lezer.stop()
         ikLees = false
@@ -213,7 +213,7 @@ struct WoordKaart: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .disabled(bewaard)
+            .disabled(bewaard || (betekenis == nil && fout == nil))
         }
         .padding(24)
         .presentationDetents([.medium, .large])
