@@ -1,4 +1,4 @@
-// Snelle check van de logica, zonder simulator: swiftc Kniv/Logica/*.swift Tests/main.swift
+// Snelle check van de logica, zonder simulator: swiftc Kniv/Logica/*.swift Tests/*.swift
 import Foundation
 
 func check(_ ok: Bool, _ wat: String) {
@@ -173,5 +173,7 @@ check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1kg")?.hasPrefix("De tweede is
 check(Omzetter.reken("1,50 voor 330ml of 2,19 voor 1,5l")?.hasPrefix("De tweede is 68% goedkoper") == true, "goedkoper: per liter")
 check(Omzetter.reken("3 voor 2 stuks of 5 voor 4 stuks")?.hasPrefix("De tweede is 17% goedkoper") == true, "goedkoper: per stuk")
 check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1l") == nil, "goedkoper: kilo tegen liter kan niet")
+
+talenChecks()
 
 print("Alle Kniv-checks geslaagd")

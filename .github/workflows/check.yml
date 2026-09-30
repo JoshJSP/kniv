@@ -1,0 +1,35 @@
+name: Kniv check (tak)
+
+# Op elke tak behalve main: logica-checks en de app bouwen, zonder release.
+# Zo kan er op Windows (zonder Swift) toch veilig gewerkt worden.
+
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['Kniv/**', 'KnivWidgets/**', 'Tests/**', 'project.yml', '.github/workflows/check.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: macos-26
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Logica-checks (zonder simulator)
+        run: |
+          swiftc Kniv/Logica/*.swift Tests/*.swift -o "$RUNNER_TEMP/kniv-check"
+          "$RUNNER_TEMP/kniv-check"
+      - name: App bouwen (zonder release)
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -quiet -project Kniv.xcodeproj -scheme Kniv -configuration Debug             -sdk iphoneos -destination 'generic/platform=iOS'             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build

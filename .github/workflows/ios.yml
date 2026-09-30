@@ -37,7 +37,7 @@ jobs:
 
       - name: Logica-checks (zonder simulator)
         run: |
-          swiftc Kniv/Logica/*.swift Tests/main.swift -o "$RUNNER_TEMP/kniv-check"
+          swiftc Kniv/Logica/*.swift Tests/*.swift -o "$RUNNER_TEMP/kniv-check"
           "$RUNNER_TEMP/kniv-check"
 
       - name: Versie lezen
