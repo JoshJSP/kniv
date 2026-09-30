@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 
 enum Mes: String, CaseIterable, Identifiable, Hashable {
-    case vastleggen, timers, splitten, kiezen, scanner, meten
+    case vastleggen, timers, splitten, kiezen, scanner, meten, talen
 
     var id: String { rawValue }
     var klaar: Bool { true }
@@ -15,6 +15,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
         case .kiezen: "Kiezen"
         case .scanner: "Scanner"
         case .meten: "Meten"
+        case .talen: "Talen"
         }
     }
 
@@ -26,6 +27,7 @@ enum Mes: String, CaseIterable, Identifiable, Hashable {
         case .kiezen: "dice"
         case .scanner: "qrcode.viewfinder"
         case .meten: "ruler"
+        case .talen: "character.bubble"
         }
     }
 }
@@ -57,7 +59,7 @@ struct ThuisView: View {
                 }
                 .padding([.horizontal, .top])
                 LazyVGrid(columns: kolommen, spacing: 12) {
-                    ForEach(Mes.allCases) { mes in
+                    ForEach(Mes.allCases.filter { $0 != .talen }) { mes in
                         Button { open(mes) } label: {
                             Tegel(mes: mes, uitgeklapt: uitklappend == mes, info: info(voor: mes))
                         }
@@ -67,6 +69,13 @@ struct ThuisView: View {
                         .matchedTransitionSource(id: mes, in: ns)
                     }
                 }
+                .padding([.horizontal, .top])
+                Button { open(.talen) } label: {
+                    BredeTegel(mes: .talen, uitgeklapt: uitklappend == .talen)
+                }
+                .buttonStyle(.plain)
+                .contextMenu { snelleActies(.talen) }
+                .matchedTransitionSource(id: Mes.talen, in: ns)
                 .padding()
             }
             .background(KnivAchtergrond())
@@ -85,6 +94,7 @@ struct ThuisView: View {
                     case .kiezen: KiezenView()
                     case .scanner: ScannerView()
                     case .meten: MetenView()
+                    case .talen: TalenView()
                     }
                 }
                 .navigationTransition(.zoom(sourceID: mes, in: ns))
@@ -196,6 +206,33 @@ struct Tegel: View {
     }
 }
 
+/// Brede tegel onder het raster, voor een mesje dat de hele breedte krijgt.
+struct BredeTegel: View {
+    let mes: Mes
+    let uitgeklapt: Bool
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Image(systemName: mes.symbool)
+                .font(.system(size: 26, weight: .medium))
+                .foregroundStyle(Color.accentColor)
+                .rotationEffect(.degrees(uitgeklapt ? -38 : 0), anchor: .bottomLeading)
+                .accessibilityHidden(true)
+            Text(mes.naam).font(.headline)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .padding(18)
+        .contentShape(Rectangle())
+        .glas(26)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opent het mesje")
+    }
+}
+
 struct NieuwView: View {
     let info: VersieInfo
     @Environment(\.dismiss) private var dismiss
@@ -226,7 +263,7 @@ struct IntroView: View {
     @State private var pagina = 0
 
     private let paginas: [(symbool: String, titel: LocalizedStringKey, uitleg: LocalizedStringKey)] = [
-        ("square.grid.2x2", "Eén zakmes", "Zes mesjes in één app: vastleggen, timers, splitten, kiezen, scanner en meten. Houd een tegel ingedrukt voor snelkoppelingen."),
+        ("square.grid.2x2", "Eén zakmes", "Zeven mesjes in één app: vastleggen, timers, splitten, kiezen, scanner, meten en talen. Houd een tegel ingedrukt voor snelkoppelingen."),
         ("square.and.pencil", "Leg alles vast", "Typ, spreek in of maak een foto. Ook met de Actieknop of Siri. 'Morgen om 3 tandarts' wordt vanzelf een herinnering."),
         ("sparkles", "Kniv ruimt op", "Alles belandt vanzelf in het juiste bakje. Twijfelt Kniv, dan vraagt hij het even."),
         ("equal.circle", "Typ en het rekent", "'12*3+4', '10 km in mijl', '15:00 in tokyo' of '20 min pasta': het antwoord staat er meteen onder."),

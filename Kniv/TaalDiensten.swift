@@ -73,6 +73,7 @@ enum TaalDienst {
         catch { throw Fout.mislukt }
         switch (antwoord as? HTTPURLResponse)?.statusCode {
         case 200: return data
+        case 401: throw Fout.nietIngelogd
         case 429: throw Fout.daglimiet
         default: throw Fout.mislukt
         }
