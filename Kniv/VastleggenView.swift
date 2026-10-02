@@ -341,7 +341,7 @@ struct NotitieKaart: View {
                 Text("Opent \(notitie.verzegeldTot!.formatted(date: .abbreviated, time: .omitted))").font(.caption).foregroundStyle(.secondary)
             } else if notitie.isLijst {
                 if !notitie.tekst.isEmpty { Text(notitie.titel).font(.subheadline.bold()).lineLimit(1) }
-                ForEach(notitie.gesorteerdeItems.prefix(notitie.fotoBestand == nil ? 4 : 1)) { item in
+                ForEach(notitie.lijstVolgorde.prefix(notitie.fotoBestand == nil ? 4 : 1)) { item in
                     Label(item.tekst, systemImage: "circle").font(.caption).lineLimit(1)
                 }
             } else {

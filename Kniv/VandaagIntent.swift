@@ -19,7 +19,7 @@ struct WatStaatErVandaagIntent: AppIntent {
         }
         if !vandaag.isEmpty { zinnen.append(String(localized: "Vandaag: \(vandaag.prefix(4).joined(separator: ", ")).")) }
 
-        let boodschappen = notities.filter { $0.bakjeNaam == "Boodschappen" }.flatMap { $0.isLijst ? $0.gesorteerdeItems.map(\.tekst) : [$0.titel] }
+        let boodschappen = Gangpad.volgorde(notities.filter { $0.bakjeNaam == "Boodschappen" }.flatMap { $0.isLijst ? $0.gesorteerdeItems.map(\.tekst) : [$0.titel] }) { $0 }
         if !boodschappen.isEmpty {
             zinnen.append(String(localized: "\(boodschappen.count) boodschappen open, zoals \(boodschappen.prefix(3).joined(separator: ", ")).")) }
 

@@ -100,6 +100,9 @@ enum Gangpad: Int, CaseIterable {
         return beste?.0 ?? .overig
     }
 
+    /// Plat in looproute-volgorde (voor meldingen, delen en exporteren).
+    static func volgorde<T>(_ items: [T], tekst: (T) -> String) -> [T] { route(items, tekst: tekst).flatMap(\.1) }
+
     /// Groepeert in looproute-volgorde; binnen een gangpad blijft jouw volgorde staan.
     static func route<T>(_ items: [T], tekst: (T) -> String) -> [(Gangpad, [T])] {
         let groepen = Dictionary(grouping: items) { van(tekst($0)) }

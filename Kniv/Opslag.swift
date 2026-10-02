@@ -55,6 +55,8 @@ enum Bron: String {
 
     var isLijst: Bool { !items.isEmpty }
     var gesorteerdeItems: [LijstItem] { items.sorted { $0.volgorde < $1.volgorde } }
+    /// Boodschappen in looproute-volgorde, de rest in jouw volgorde. Alleen om te tonen; sync blijft jouw volgorde gebruiken.
+    var lijstVolgorde: [LijstItem] { bakjeNaam == "Boodschappen" ? Gangpad.volgorde(gesorteerdeItems) { $0.tekst } : gesorteerdeItems }
     var zoekTekst: String { ([tekst, fotoTekst] + items.map(\.tekst)).joined(separator: "\n") }
     var isVerzegeld: Bool { verzegeldTot.map { $0 > Date() } ?? false }
 
@@ -214,6 +216,8 @@ enum Fotos {
     var kiesOpties: [String]?
     var kiesTab = "Rad"
     var inDobbelmesje = false
+    /// Een leesstukje dat geopend moet worden (uit een notitie of gedeelde tekst).
+    var leesstuk: Leesstuk?
 }
 
 struct VersieInfo: Decodable {

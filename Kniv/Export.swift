@@ -16,7 +16,7 @@ enum Export {
             for n in lijst {
                 md += "\n### \(n.titel)\n_\(n.gemaakt.formatted(datum))_\n\n"
                 if !n.tekst.isEmpty { md += n.tekst + "\n" }
-                for item in n.gesorteerdeItems { md += "- [ ] \(item.tekst)\n" }
+                for item in n.lijstVolgorde { md += "- [ ] \(item.tekst)\n" }
                 if !n.fotoTekst.isEmpty { md += "\n> " + n.fotoTekst.replacingOccurrences(of: "\n", with: "\n> ") + "\n" }
             }
         }

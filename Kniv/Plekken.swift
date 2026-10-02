@@ -175,7 +175,7 @@ final class PlekWachter: NSObject, CLLocationManagerDelegate {
         if id.hasPrefix("super.") {
             groep = "super"
             titel = String(localized: "Je bent bij de supermarkt")
-            regels = open("Boodschappen")
+            regels = Gangpad.volgorde(open("Boodschappen")) { $0 }
         } else if let plek = ((try? ctx.fetch(FetchDescriptor<Plek>())) ?? []).first(where: { "plek.\($0.id)" == id }) {
             switch plek.soort {
             case "thuis": titel = String(localized: "Welkom thuis"); regels = open("To-do")

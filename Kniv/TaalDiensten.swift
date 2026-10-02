@@ -90,6 +90,21 @@ enum TaalDienst {
         return uit
     }
 
+    /// Kniv's volgende beurt in het gesprekje. Elke beurt online telt mee voor de daglimiet.
+    static func gesprek(_ beurten: [Gesprek.Beurt], onderwerp: String, taal code: String, niveau: String, vermogen: TaalVermogen) async throws -> Gesprek.Antwoord {
+        let data: Data?
+        switch vermogen.tekstBron {
+        case .toestel:
+            let instructies = Gesprek.instructies(taalNaam: Talen.naam(code, in: Locale(identifier: "nl")), niveau: niveau, onderwerp: onderwerp)
+            data = await Denker.vraag(instructies, Gesprek.verloop(beurten)).map { Data($0.utf8) }
+        case .online:
+            data = try await vraag(["soort": "gesprek", "taal": code, "niveau": niveau, "onderwerp": String(onderwerp.prefix(80)),
+                                    "berichten": Gesprek.alsJSON(beurten)])
+        }
+        guard let data, let uit = Gesprek.ontleed(data) else { throw Fout.mislukt }
+        return uit
+    }
+
     /// POST naar de Edge Function `taal`, net als Spraak.verbeter().
     private static func vraag(_ body: [String: String]) async throws -> Data {
         guard let sessie = try? await KnivCloud.client.auth.session else { throw Fout.nietIngelogd }

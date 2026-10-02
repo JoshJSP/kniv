@@ -38,6 +38,12 @@ struct TalenView: View {
         }
         .sheet(isPresented: $kiezen) { TalenKiezer() }
         .navigationDestination(item: $open) { LeesView(stuk: $0) }
+        .onChange(of: AppStatus.shared.leesstuk, initial: true) { _, stuk in
+            guard let stuk else { return }
+            if talen.contains(where: { $0.code == stuk.taal }) { huidig = stuk.taal }
+            open = stuk
+            AppStatus.shared.leesstuk = nil
+        }
         .onChange(of: talen.map(\.code), initial: true) { _, codes in
             if !codes.contains(huidig), let eerste = codes.first { huidig = eerste }
         }
@@ -54,6 +60,7 @@ struct TaalPagina: View {
     @Binding var open: Leesstuk?
     @Environment(\.modelContext) private var ctx
     @Query private var stukken: [Leesstuk]
+    @Query private var woorden: [BewaardWoord]
     @State private var vermogen: TaalVermogen?
     @State private var eigen = ""
     @State private var bezig = false
@@ -117,6 +124,22 @@ struct TaalPagina: View {
                 Text("Nieuw stukje")
             } footer: {
                 if let fout { Text(fout) }
+            }
+
+            Section("Oefenen") {
+                NavigationLink { MijnWoordenView(taal: taal.code) } label: {
+                    LabeledContent {
+                        Text(verbatim: "\(woorden.filter { $0.taal == taal.code }.count)")
+                    } label: {
+                        Label("Mijn woorden", systemImage: "text.book.closed")
+                    }
+                }
+                NavigationLink { GesprekView(taal: taal.code, niveau: Taalniveau.code(taal.stap)) } label: {
+                    Label("Gesprekje", systemImage: "bubble.left.and.text.bubble.right")
+                }
+                if taal.code == "ja" {
+                    NavigationLink { KanaView() } label: { Label("Kana leren", systemImage: "character.ja") }
+                }
             }
 
             if !stukken.isEmpty {

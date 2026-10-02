@@ -41,6 +41,15 @@ function verbeterPrompt(naam: string, niveau: string) {
     `"uitleg": in het Nederlands, maximaal 2 korte zinnen over wat er anders moet en waarom, of een kort compliment als het goed was}`;
 }
 
+function gesprekPrompt(naam: string, niveau: string, onderwerp: string) {
+  return `Je bent een vriendelijke gesprekspartner voor een Nederlandstalige die ${naam} leert op ERK-niveau ${niveau}. ` +
+    `Het gesprek gaat over: ${onderwerp}. Praat alleen in het ${naam}, nooit moeilijker dan niveau ${niveau}, ` +
+    `in 1 of 2 korte zinnen, en stel meestal een vraag terug zodat het gesprek doorgaat. ` +
+    `Is er nog niets gezegd, begin dan zelf met een korte begroeting en een vraag. ` +
+    `Zit er in het laatste bericht van de leerling een duidelijke fout, zet dan in "tip" in het Nederlands kort hoe het wel moet; anders laat je "tip" leeg. ` +
+    `Antwoord alleen met JSON: {"antwoord": "...", "tip": "..."}`;
+}
+
 async function vraagGroq(systeem: string, vraag: string): Promise<Record<string, unknown> | null> {
   const body: Record<string, unknown> = {
     model: MODEL,
@@ -108,6 +117,20 @@ Deno.serve(async (req) => {
     if (!zin) return fout("Geen zin", 400);
     systeem = verbeterPrompt(naam, niveau);
     vraag = `Onderwerp: ${onderwerp}\nZin: ${zin}`;
+  } else if (invoer.soort === "gesprek") {
+    const niveau = tekst(invoer.niveau);
+    const onderwerp = tekst(invoer.onderwerp).replace(/\s+/g, " ").trim().slice(0, 80) || "iets uit je dag";
+    if (!NIVEAUS.includes(niveau)) return fout("Onbekend niveau", 400);
+    let beurten: { rol?: unknown; tekst?: unknown }[] = [];
+    try {
+      const b = JSON.parse(tekst(invoer.berichten) || "[]");
+      if (Array.isArray(b)) beurten = b.slice(-12);
+    } catch {
+      return fout("Berichten onleesbaar", 400);
+    }
+    systeem = gesprekPrompt(naam, niveau, onderwerp);
+    vraag = beurten.length === 0 ? "(Nog niets gezegd.)" : beurten
+      .map((b) => `${b.rol === "ik" ? "Leerling" : "Jij"}: ${tekst(b.tekst).slice(0, 300)}`).join("\n");
   } else {
     return fout("Onbekende soort", 400);
   }
@@ -132,6 +155,12 @@ Deno.serve(async (req) => {
     if (!Array.isArray(vragen) || vragen.length === 0) return fout("Vragen maken lukte niet", 502);
     await tel();
     return Response.json({ vragen });
+  }
+  if (invoer.soort === "gesprek") {
+    const zin = tekst(antwoord?.antwoord).trim();
+    if (!zin) return fout("Antwoorden lukte niet", 502);
+    await tel();
+    return Response.json({ antwoord: zin, tip: tekst(antwoord?.tip).trim() });
   }
   if (invoer.soort === "verbeter") {
     const verbeterd = tekst(antwoord?.verbeterd).trim(), uitleg = tekst(antwoord?.uitleg).trim();

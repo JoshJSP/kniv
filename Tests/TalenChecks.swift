@@ -54,6 +54,19 @@ func talenChecks() {
 
 /// Checks voor Kniv/Logica/Oefenen.swift: vragen, nakijken en naspreken.
 func oefenChecks() {
+    leestaalChecks()
+    gesprekEnKanaChecks()
+    var stapel = Stapel([1, 2, 3, 4, 5, 6])
+    stapel.nogEens(naAantal: 4)
+    check(stapel.rij == [2, 3, 4, 5, 1, 6], "kaartjes: nog eens komt na 4 andere terug")
+    stapel.wist()
+    check(stapel.boven == 3 && stapel.over == 5, "kaartjes: wist ik haalt hem uit het rondje")
+    var klein = Stapel(["a", "b"])
+    klein.nogEens()
+    check(klein.rij == ["b", "a"], "kaartjes: kleine stapel, achteraan")
+    klein.wist(); klein.wist(); klein.wist()
+    check(klein.klaar && klein.boven == nil, "kaartjes: rondje klaar, wist op lege stapel kan geen kwaad")
+
     let vragenJSON = """
     Hier zijn ze: ```json
     {"vragen": [
@@ -85,4 +98,50 @@ func oefenChecks() {
 
     let zinnen = Oefenen.zinnen(uit: "Hallo! Ich fahre jeden Morgen mit dem Bus zur Schule. Dann höre ich Musik und schaue aus dem Fenster.", taal: "de")
     check(zinnen == ["Ich fahre jeden Morgen mit dem Bus zur Schule.", "Dann höre ich Musik und schaue aus dem Fenster."], "naspreken: zinnen van 3 tot 14 woorden, \(zinnen)")
+}
+
+/// Checks voor Gesprek.swift en Kana.swift.
+func gesprekEnKanaChecks() {
+    let beurten = [Gesprek.Beurt(rol: .kniv, tekst: "Hallo! Wie geht's?"), Gesprek.Beurt(rol: .ik, tekst: "Gut, danke")]
+    check(Gesprek.verloop(beurten) == "Jij: Hallo! Wie geht's?\nLeerling: Gut, danke", "gesprek: verloop voor het model")
+    check(Gesprek.verloop([]) == "(Nog niets gezegd.)", "gesprek: leeg begin")
+    let lang = (0..<20).map { Gesprek.Beurt(rol: $0 % 2 == 0 ? .kniv : .ik, tekst: String(repeating: "a", count: 500)) }
+    let json = Gesprek.alsJSON(lang)
+    let terug = (try? JSONDecoder().decode([Gesprek.Beurt].self, from: Data(json.utf8))) ?? []
+    check(terug.count == Gesprek.maxBeurten && terug.allSatisfy { $0.tekst.count == Gesprek.maxTekst }, "gesprek: ingekort naar 12 beurten van 300 tekens")
+    check(Gesprek.ontleed(Data(#"{"antwoord": "Schön! Und du?", "tip": ""}"#.utf8)) == Gesprek.Antwoord(antwoord: "Schön! Und du?", tip: ""), "gesprek: antwoord gelezen")
+    check(Gesprek.ontleed(Data(#"{"tip": "x"}"#.utf8)) == nil, "gesprek: zonder antwoord onbruikbaar")
+
+    check(Kana.rijen.flatMap(\.tekens).count == 71, "kana: 46 basis + 25 met tekentjes")
+    check(Kana.rijen.allSatisfy { r in r.tekens.count == (["ya", "wa"].contains(r.naam) ? 3 : 5) }, "kana: elke rij compleet")
+    let ka = Kana.Teken(kana: "か", romaji: "ka")
+    check(Kana.inSchrift(ka, .katakana) == Kana.Teken(kana: "カ", romaji: "ka") && Kana.inSchrift(ka, .hiragana) == ka, "kana: katakana uit hiragana")
+    check(Kana.inSchrift(Kana.Teken(kana: "ん", romaji: "n"), .katakana).kana == "ン", "kana: ook de n")
+    check(Kana.tekens(rijen: ["a", "ka"], schrift: .hiragana).map(\.romaji) == ["a", "i", "u", "e", "o", "ka", "ki", "ku", "ke", "ko"], "kana: gekozen rijen")
+    var rng = SystemRandomNumberGenerator()
+    let pool = Kana.tekens(rijen: ["a"], schrift: .hiragana)
+    for _ in 0..<20 {
+        let o = Kana.opties(voor: pool[1], pool: pool, rng: &rng)
+        check(o.count == 4 && Set(o).count == 4 && o.contains("i"), "kana: 4 verschillende antwoorden met het goede erbij: \(o)")
+    }
+}
+
+/// Checks voor Leestaal.swift: gedeelde tekst of een webpagina als leesstukje.
+func leestaalChecks() {
+    let duits = "Lena fährt jeden Morgen mit dem Bus zur Schule. Im Bus hört sie Musik und schaut aus dem Fenster. Heute regnet es, und der Bus ist sehr voll. Neben ihr sitzt ein alter Mann mit einem Hund."
+    let nederlands = "Lena gaat elke ochtend met de bus naar school. In de bus luistert ze muziek en kijkt ze uit het raam. Vandaag regent het en de bus is heel vol. Naast haar zit een oude man met een hond."
+    check(Leestaal.vreemd(duits) == "de", "leestaal: Duits herkend")
+    check(Leestaal.vreemd(nederlands) == nil, "leestaal: Nederlands is niet vreemd")
+    check(Leestaal.vreemd("Guten Morgen, wie geht es dir?") == nil, "leestaal: te kort om iets te zeggen")
+    let html = """
+    <html><head><title>Bus</title><style>p { color: red }</style><script>var p = "<p>nee</p>";</script></head>
+    <body><nav><p>Menu menu menu menu menu menu menu menu menu menu</p></nav>
+    <p>Lena f&auml;hrt jeden Morgen mit dem Bus zur Schule. Im Bus h&#246;rt sie Musik und schaut aus dem Fenster hinaus.</p>
+    <p>Heute regnet es, und der Bus ist sehr voll. Neben ihr sitzt ein alter Mann mit einem Hund, der Max hei&#xDF;t.</p>
+    <p>Kort.</p><footer>© 2026</footer></body></html>
+    """
+    let plat = Leestaal.platteTekst(html)
+    check(plat.contains("Lena fährt") && plat.contains("hört sie Musik") && plat.contains("Max heißt"), "leestaal: numerieke tekens omgezet: \(plat)")
+    check(!plat.contains("Menu") && !plat.contains("color") && !plat.contains("nee") && !plat.contains("2026"), "leestaal: menu, stijl en script eruit")
+    check(plat.contains("\n\n"), "leestaal: alinea's blijven alinea's")
 }

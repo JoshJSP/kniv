@@ -112,6 +112,9 @@ struct ThuisView: View {
         .onChange(of: AppStatus.shared.openKiezen) { _, nu in
             if nu { pad = NavigationPath([Mes.kiezen]); AppStatus.shared.openKiezen = false }
         }
+        .onChange(of: AppStatus.shared.leesstuk) { _, nu in
+            if nu != nil { pad = NavigationPath([Mes.talen]) }
+        }
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .task(id: fase) {
             guard fase == .active else { return }

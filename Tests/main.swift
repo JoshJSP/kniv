@@ -89,6 +89,7 @@ for (item, pad) in [("rucola", Gangpad.groente), ("sperziebonen", .groente), ("k
     check(Gangpad.van(item) == pad, "gangpad: \(item) hoort bij \(pad.naam), kreeg \(Gangpad.van(item).naam)")
 }
 check((0..<20).allSatisfy { _ in Gangpad.van("pasta brood") == Gangpad.van("pasta brood") }, "gangpad is elke keer hetzelfde")
+check(Gangpad.volgorde(["cola", "melk", "appels", "brood"]) { $0 } == ["appels", "brood", "melk", "cola"], "gangpad: looproute plat")
 let route = Gangpad.route(["cola", "melk", "appels", "brood"]) { $0 }
 check(route.map(\.0) == [.groente, .brood, .zuivel, .drinken], "looproute-volgorde")
 

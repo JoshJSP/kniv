@@ -83,6 +83,8 @@ struct NotitieView: View {
 
             SlimmeKnoppen(notitie: notitie)
 
+            LeesInTalenKnop(notitie: notitie)
+
             DenktMeeSectie(notitie: notitie)
 
             VerjaardagKnop(notitie: notitie)
@@ -257,7 +259,7 @@ struct NotitieView: View {
     }
 
     private var deelTekst: String {
-        ([notitie.tekst] + notitie.gesorteerdeItems.map { "- \($0.tekst)" } + [notitie.fotoTekst])
+        ([notitie.tekst] + notitie.lijstVolgorde.map { "- \($0.tekst)" } + [notitie.fotoTekst])
             .filter { !$0.isEmpty }
             .joined(separator: "\n")
     }

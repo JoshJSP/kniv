@@ -33,6 +33,9 @@ struct BewaarInKnivIntent: AppIntent {
             return .result(dialog: "Er viel niks te bewaren.")
         }
         await Vastlegger.sorteer(n, in: ctx)
+        if let tekst, Leestaal.vreemd(tekst) != nil {
+            return .result(dialog: "Bewaard. Open de notitie in Kniv om hem als leesstukje in Talen te lezen.")
+        }
         return .result(dialog: n.bakjeNaam.map { "Bewaard in \($0)." } ?? "Bewaard in Kniv.")
     }
 }
