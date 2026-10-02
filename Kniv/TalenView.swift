@@ -77,7 +77,7 @@ struct TaalPagina: View {
     var body: some View {
         List {
             Section {
-                Picker("Niveau", selection: $taal.stap) {
+                Picker("Niveau", selection: Binding(get: { taal.stap }, set: { taal.stap = $0; taal.gewijzigd = Date() })) {
                     ForEach(Taalniveau.codes.indices, id: \.self) { i in
                         Text(verbatim: Taalniveau.codes[i]).tag(i)
                     }
@@ -132,7 +132,7 @@ struct TaalPagina: View {
                         }
                     }
                     .onDelete { plekken in
-                        for i in plekken { ctx.delete(stukken[i]) }
+                        for i in plekken { Sync.shared.markeerVerwijderd(stukken[i]); ctx.delete(stukken[i]) }
                     }
                 }
             }
@@ -157,6 +157,7 @@ struct TaalPagina: View {
                 let s = try await TaalDienst.nieuwStukje(taal: code, niveau: niveau, onderwerp: schoon, vermogen: v ?? .niets)
                 let stuk = Leesstuk(taal: code, titel: s.titel, tekst: s.tekst, onderwerp: schoon, niveau: niveau, woorden: s.woorden)
                 ctx.insert(stuk)
+                try? ctx.save()
                 eigen = ""
                 open = stuk
             } catch let f as TaalDienst.Fout {
@@ -247,7 +248,7 @@ struct TalenKiezer: View {
                 titleVisibility: .visible,
                 presenting: weg
             ) { taal in
-                Button("Verwijder", role: .destructive) { ctx.delete(taal) }
+                Button("Verwijder", role: .destructive) { Sync.shared.markeerVerwijderd(taal); ctx.delete(taal) }
             } message: { _ in
                 Text("Je stukjes blijven bewaard.")
             }
@@ -259,6 +260,7 @@ struct TalenKiezer: View {
     private func voegToe(_ code: String, stap: Int) {
         guard !talen.contains(where: { $0.code == code }) else { return }
         ctx.insert(GekozenTaal(code: code, stap: stap, volgorde: (talen.map(\.volgorde).max() ?? -1) + 1))
+        try? ctx.save()
         huidig = code
     }
 }

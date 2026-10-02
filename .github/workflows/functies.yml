@@ -1,0 +1,22 @@
+# Zet de Supabase-functies live zodra er iets in supabase/functions op main verandert,
+# zodat dat niet meer van de laptop afhangt.
+name: Kniv functies
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/functions/**"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Functies live zetten
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          for f in supabase/functions/*/; do
+            naam=$(basename "$f")
+            npx -y supabase@latest functions deploy "$naam" --project-ref ykptlgckqppgxirtndch --use-api
+          done

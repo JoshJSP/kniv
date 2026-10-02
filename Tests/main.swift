@@ -185,4 +185,19 @@ check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1l") == nil, "goedkoper: kilo 
 
 talenChecks()
 
+// Tijdslimiet: hangend werk mag het sorteren niet ophouden; snel werk komt gewoon door.
+final class Uitkomst: @unchecked Sendable { var traag: Int?? = .none; var snel: Int? = nil; var duur = 0.0 }
+let tijdUit = Uitkomst()
+let klaarSein = DispatchSemaphore(value: 0)
+Task.detached {
+    let begin = Date()
+    tijdUit.traag = .some(await Tijdslimiet.binnen(0.2) { try? await Task.sleep(nanoseconds: 5_000_000_000); return 1 })
+    tijdUit.duur = Date().timeIntervalSince(begin)
+    tijdUit.snel = await Tijdslimiet.binnen(2) { 7 }
+    klaarSein.signal()
+}
+klaarSein.wait()
+check(tijdUit.traag == .some(nil) && tijdUit.duur < 1, "tijdslimiet: hangend werk geeft na 0,2 s nil (duurde \(tijdUit.duur) s)")
+check(tijdUit.snel == 7, "tijdslimiet: snel werk komt door")
+
 print("Alle Kniv-checks geslaagd")

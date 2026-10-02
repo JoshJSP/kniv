@@ -68,6 +68,8 @@ func oefenChecks() {
     check(vragen.count == 2 && vragen[0].vraag == "Wo ist Lena?" && vragen[0].goed == 0, "vragen: goede vraag blijft, kapotte valt weg")
     check(vragen.count == 2 && vragen[1].goed == 1, "vragen: goed-index als tekst wordt ook gelezen")
     check(Oefenen.ontleedVragen(Data("geen json".utf8)).isEmpty, "vragen: onzin geeft niets")
+    check(Oefenen.bewaardeVragen(Oefenen.bewaar(vragen)) == vragen, "vragen: bewaren en teruglezen")
+    check(Oefenen.bewaardeVragen("").isEmpty, "vragen: niets bewaard")
 
     let v = Oefenen.ontleedVerbetering(Data(#"{"goed": false, "verbeterd": "Ich gehe ins Kino.", "uitleg": "Kino is onzijdig: ins."}"#.utf8))
     check(v == Oefenen.Verbetering(goed: false, verbeterd: "Ich gehe ins Kino.", uitleg: "Kino is onzijdig: ins."), "nakijken: verbetering gelezen")

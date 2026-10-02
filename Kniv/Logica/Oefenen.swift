@@ -4,7 +4,7 @@ import NaturalLanguage
 /// Oefenen na een leesstukje: vragen over de tekst, zelf schrijven en naspreken.
 enum Oefenen {
     /// Meerkeuzevraag over de tekst, in de doeltaal.
-    struct Vraag: Equatable {
+    struct Vraag: Equatable, Codable {
         var vraag: String
         var opties: [String]
         var goed: Int
@@ -48,6 +48,14 @@ enum Oefenen {
         }
         return Array(vragen.prefix(5))
     }
+
+    /// Vragen bewaren bij het stukje (als JSON-tekst), zodat ze bij teruglezen niet opnieuw gemaakt hoeven.
+    static func bewaar(_ vragen: [Vraag]) -> String {
+        struct Omhulsel: Encodable { let vragen: [Vraag] }
+        return (try? JSONEncoder().encode(Omhulsel(vragen: vragen))).flatMap { String(data: $0, encoding: .utf8) } ?? ""
+    }
+
+    static func bewaardeVragen(_ json: String) -> [Vraag] { json.isEmpty ? [] : ontleedVragen(Data(json.utf8)) }
 
     // MARK: schrijven
 

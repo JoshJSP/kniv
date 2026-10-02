@@ -151,6 +151,7 @@ struct LeesView: View {
         Button(titel) {
             withAnimation(.snappy) {
                 taal.stap = Taalniveau.na(o, stap: taal.stap)
+                taal.gewijzigd = Date()
                 oordeel = o
             }
         }
@@ -209,6 +210,7 @@ struct WoordKaart: View {
             Spacer(minLength: 0)
             Button {
                 ctx.insert(BewaardWoord(taal: taal, woord: woord, betekenis: betekenis ?? "", zin: zin))
+                try? ctx.save()
                 bewaard = true
             } label: {
                 if bewaard {

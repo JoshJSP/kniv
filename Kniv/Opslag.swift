@@ -100,6 +100,16 @@ enum KnivOpslag {
         for t in (try? ctx.fetch(FetchDescriptor<KnivTimer>())) ?? [] {
             if !gezien.insert(t.id).inserted { t.id = UUID(); t.gesynct = nil }
         }
+        // Talen kreeg pas in 0.42 een uid: na de migratie hebben bestaande rijen allemaal dezelfde.
+        for x in (try? ctx.fetch(FetchDescriptor<GekozenTaal>())) ?? [] {
+            if !gezien.insert(x.uid).inserted { x.uid = UUID(); x.gesynct = nil }
+        }
+        for x in (try? ctx.fetch(FetchDescriptor<Leesstuk>())) ?? [] {
+            if !gezien.insert(x.uid).inserted { x.uid = UUID(); x.gesynct = nil }
+        }
+        for x in (try? ctx.fetch(FetchDescriptor<BewaardWoord>())) ?? [] {
+            if !gezien.insert(x.uid).inserted { x.uid = UUID(); x.gesynct = nil }
+        }
         try? ctx.save()
     }
 

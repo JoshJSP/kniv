@@ -18,7 +18,7 @@ Alleen Google, via Supabase Auth.
 | `id` uuid | stabiele id van het ding, op elk apparaat hetzelfde |
 | `eigenaar` uuid | wie het maakte (`auth.uid()`) |
 | `groep` uuid? | gedeelde groep, anders null (= alleen eigen apparaten) |
-| `soort` | `notitie` (later: `timer`, `pot`, `uitgave`, `stemming`) |
+| `soort` | `notitie`, `timer`, `pot`, `uitgave`, `prik`, `prikstem`, `taal`, `leesstuk`, `woord` |
 | `data` jsonb | inhoud, zie hieronder |
 | `gewijzigd` timestamptz | tijd van de laatste wijziging, ISO-8601 met fracties, UTC |
 | `gewijzigd_door` uuid | wie de laatste wijziging deed (voor het profielbolletje) |
@@ -55,6 +55,15 @@ Uitgaven zijn aparte records, zodat twee mensen tegelijk iets kunnen toevoegen. 
 { "naam": "Etentje", "opties": ["2026-10-03T17:00:00Z", "2026-10-04T17:00:00Z"], "gemaakt": "…" }
 { "prik": "<uuid van de prik>", "naam": "Josh", "wie": "<auth uid>", "ja": ["2026-10-03T17:00:00Z"] }
 ```
+### data voor `soort = taal`, `soort = leesstuk` en `soort = woord` (Talen; alleen iPhone)
+```json
+{ "taal": "es", "stap": 3, "volgorde": 0, "gemaakt": "2026-10-03T10:00:00.000Z" }
+{ "taal": "es", "titel": "En el bus", "tekst": "…", "onderwerp": "Reizen", "niveau": "A2", "woorden": { "autobús": "bus" }, "vragen": "{\"vragen\":[…]}", "gemaakt": "…" }
+{ "taal": "es", "woord": "autobús", "betekenis": "bus", "zin": "Voy en autobús.", "gemaakt": "…" }
+```
+Altijd `groep = null` (niet deelbaar). Eén `taal`-record per taalcode; dubbele codes ruimt de iPhone op (nieuwste `gewijzigd` blijft).
+`vragen` is de JSON-tekst van de begripsvragen (Oefenen.bewaar), leeg als ze nog niet gemaakt zijn.
+
 Windows haalt alleen `soort=notitie` op en negeert de rest.
 
 ## Ophalen

@@ -49,6 +49,7 @@ struct VragenBlok: View {
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .glas(22)
+        .onAppear { if vragen.isEmpty { vragen = Oefenen.bewaardeVragen(stuk.vragenJSON) } }
     }
 
     private func maak() async {
@@ -58,6 +59,8 @@ struct VragenBlok: View {
         do {
             vragen = try await TaalDienst.vragen(bij: stuk.tekst, taal: stuk.taal, niveau: stuk.niveau, vermogen: vermogen)
             gekozen = [:]
+            stuk.vragenJSON = Oefenen.bewaar(vragen)   // telt dan maar één keer mee voor de daglimiet
+            stuk.gewijzigd = Date()
         } catch {
             fout = (error as? TaalDienst.Fout ?? .mislukt).melding
         }

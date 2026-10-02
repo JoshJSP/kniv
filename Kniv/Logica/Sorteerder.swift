@@ -30,7 +30,8 @@ enum Sorteerder {
         let klein = tekst.lowercased()
         if let genoemd = namen.first(where: { klein.contains($0.lowercased()) }) { return [genoemd] }
         if let geleerd = uitGeleerd(klein, namen: namen) { return [geleerd] }
-        if let model = await vraagModel(tekst, namen: namen) { return model }
+        // Hangt het model, dan niet eeuwig wachten: na 4 seconden de trefwoorden.
+        if let model = await Tijdslimiet.binnen(4, { await vraagModel(tekst, namen: namen) }) { return model }
         return opTrefwoorden(tekst, namen: namen)
     }
 

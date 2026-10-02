@@ -1,0 +1,43 @@
+# Wachter voor de Supabase-beheersleutel (SUPABASE_ACCESS_TOKEN): die verloopt, en zonder kan
+# niemand de functies bijwerken. Elke maandag kijken of hij nog werkt; een week voor de
+# vervaldatum (repo-variabele SLEUTEL_VERLOOPT) of als hij al stuk is: Telegram naar Josh.
+# Vernieuwen: python scripts/vernieuw_sleutel.py (zet hier ook de nieuwe datum).
+name: Kniv sleutelwachter
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  kijk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Werkt de sleutel nog, en hoe lang nog
+        env:
+          SLEUTEL: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          VERLOOPT: ${{ vars.SLEUTEL_VERLOOPT }}
+          TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $SLEUTEL" \
+            https://api.supabase.com/v1/projects/ykptlgckqppgxirtndch)
+          echo "Supabase antwoordt $code"
+          tekst=""
+          if [ "$code" != "200" ]; then
+            tekst="De Supabase-beheersleutel werkt niet meer (antwoord $code). Zolang dat zo is kunnen de online functies van Kniv niet bijgewerkt worden; de app zelf werkt gewoon door."
+          elif [ -n "$VERLOOPT" ]; then
+            dagen=$(( ( $(date -d "$VERLOOPT" +%s) - $(date +%s) ) / 86400 ))
+            echo "Nog $dagen dagen"
+            if [ "$dagen" -le 7 ]; then
+              tekst="De Supabase-beheersleutel verloopt over $dagen dagen ($VERLOOPT)."
+            fi
+          fi
+          if [ -n "$tekst" ]; then
+            tekst="$tekst
+
+          Nieuwe maken: https://supabase.com/dashboard/account/tokens (org Kniv, Full access).
+          Daarna op de laptop: python scripts/vernieuw_sleutel.py en plak hem. Of vraag het aan Claude."
+            curl -s -o /dev/null --data-urlencode "chat_id=$TG_CHAT" --data-urlencode "text=🔪 Kniv
+          $tekst" "https://api.telegram.org/bot$TG_TOKEN/sendMessage"
+            echo "Melding gestuurd"
+          fi

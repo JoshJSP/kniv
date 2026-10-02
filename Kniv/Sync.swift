@@ -63,6 +63,18 @@ struct RijData: Codable {
     // notitie (extra)
     var verzegeldTot: Date?
     var garantieTot: Date?
+    // talen (taal, leesstuk, woord)
+    var taal: String?
+    var stap: Int?
+    var volgorde: Int?
+    var titel: String?
+    var onderwerp: String?
+    var niveau: String?
+    var woorden: [String: String]?
+    var vragen: String?
+    var woord: String?
+    var betekenis: String?
+    var zin: String?
 }
 
 struct RijItem: Codable {
@@ -156,6 +168,7 @@ struct Profiel: Codable {
             }
         }
         kopie(Notitie.self); kopie(KnivTimer.self); kopie(Pot.self); kopie(Uitgave.self); kopie(Prik.self); kopie(PrikStem.self)
+        kopie(GekozenTaal.self); kopie(Leesstuk.self); kopie(BewaardWoord.self)
         for u in (try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? [] { u.potUID = u.pot?.uid }
         for s in (try? ctx.fetch(FetchDescriptor<PrikStem>())) ?? [] { s.wie = nil }
         teVerwijderen = [:]
@@ -180,6 +193,9 @@ struct Profiel: Codable {
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<Prik>())) ?? []).forEach { $0.gesynct = nil }
         ((try? ctx.fetch(FetchDescriptor<PrikStem>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<GekozenTaal>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<Leesstuk>())) ?? []).forEach { $0.gesynct = nil }
+        ((try? ctx.fetch(FetchDescriptor<BewaardWoord>())) ?? []).forEach { $0.gesynct = nil }
         try? ctx.save()
     }
 
@@ -199,6 +215,9 @@ struct Profiel: Codable {
         try? ctx.delete(model: Uitgave.self)
         try? ctx.delete(model: Prik.self)
         try? ctx.delete(model: PrikStem.self)
+        try? ctx.delete(model: GekozenTaal.self)
+        try? ctx.delete(model: Leesstuk.self)
+        try? ctx.delete(model: BewaardWoord.self)
         try? ctx.delete(model: Plek.self)
         try? FileManager.default.removeItem(at: Fotos.map)
         try? FileManager.default.removeItem(at: Opnames.map)
@@ -258,9 +277,12 @@ struct Profiel: Codable {
         let notities = vies(Notitie.self, ctx), timers = vies(KnivTimer.self, ctx)
         let potten = vies(Pot.self, ctx), uitgaven = vies(Uitgave.self, ctx)
         let prikken = vies(Prik.self, ctx), prikstemmen = vies(PrikStem.self, ctx)
+        let talen = vies(GekozenTaal.self, ctx), leesstukken = vies(Leesstuk.self, ctx), woorden = vies(BewaardWoord.self, ctx)
         var rijen = notities.map { rij($0, ik: ik) } + timers.map { rij($0, ik: ik) }
         rijen += potten.map { rij($0, ik: ik) } + uitgaven.map { rij($0, ik: ik) }
         rijen += prikken.map { rij($0, ik: ik) } + prikstemmen.map { rij($0, ik: ik) }
+        rijen += talen.map { rij($0, ik: ik) } + leesstukken.map { rij($0, ik: ik) }
+        rijen += woorden.map { rij($0, ik: ik) }
         let weg = teVerwijderen
         for (sleutel, info) in weg {
             let delen = sleutel.split(separator: ":").map(String.init)
@@ -290,11 +312,25 @@ struct Profiel: Codable {
             uitgaven.forEach { $0.gesynct = $0.gewijzigd }
             prikken.forEach { $0.gesynct = $0.gewijzigd }
             prikstemmen.forEach { $0.gesynct = $0.gewijzigd }
+            talen.forEach { $0.gesynct = $0.gewijzigd }
+            leesstukken.forEach { $0.gesynct = $0.gewijzigd }
+            woorden.forEach { $0.gesynct = $0.gewijzigd }
             teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
             eigenOpslag = Date()
             try? ctx.save()
         } catch {
             fout = error.localizedDescription
+        }
+    }
+
+    /// Twee apparaten die offline dezelfde taal toevoegen geven twee records; de nieuwste blijft.
+    private func ontdubbelTalen(_ ctx: ModelContext) {
+        let talen = (try? ctx.fetch(FetchDescriptor<GekozenTaal>())) ?? []
+        for (_, groep) in Dictionary(grouping: talen, by: \.code) where groep.count > 1 {
+            for oud in groep.sorted(by: { $0.gewijzigd > $1.gewijzigd }).dropFirst() {
+                markeerVerwijderd(oud)
+                ctx.delete(oud)
+            }
         }
     }
 
@@ -323,6 +359,10 @@ struct Profiel: Codable {
         pasToe(rijen, Uitgave.self, ctx, ik: ik)
         pasToe(rijen, Prik.self, ctx, ik: ik)
         pasToe(rijen, PrikStem.self, ctx, ik: ik)
+        pasToe(rijen, GekozenTaal.self, ctx, ik: ik)
+        pasToe(rijen, Leesstuk.self, ctx, ik: ik)
+        pasToe(rijen, BewaardWoord.self, ctx, ik: ik)
+        ontdubbelTalen(ctx)
         ((try? ctx.fetch(FetchDescriptor<Uitgave>())) ?? []).forEach { $0.koppel(in: ctx) }
         let vorige = laatstOpgehaald
         laatstOpgehaald = max(laatste.ontvangen ?? laatste.gewijzigd, vorige)
