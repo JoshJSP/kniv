@@ -177,6 +177,8 @@ struct OnderwegView: View {
     @State private var zoek = ""
     @State private var doelNaam: String?
     @State private var aankomst: Date?
+    @State private var vertrek: Date?
+    @State private var doel: MKMapItem?
     @State private var bezig = false
     @State private var fout: String?
     @State private var lm = CLLocationManager()
@@ -202,8 +204,12 @@ struct OnderwegView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(verbatim: bericht).font(.title2.weight(.semibold))
                             Text("Naar \(doelNaam), over \(max(Int(aankomst.timeIntervalSinceNow / 60), 1)) min").font(.subheadline).foregroundStyle(.secondary)
+                            if vervoer == .ov, let vertrek {
+                                Text("Vertrek om \(vertrek.formatted(date: .omitted, time: .shortened))").font(.subheadline).foregroundStyle(.secondary)
+                            }
                         }
                         ShareLink(item: bericht) { Label("Stuur dit", systemImage: "paperplane.fill") }
+                        routeKnop
                     }
                 }
 
@@ -221,7 +227,11 @@ struct OnderwegView: View {
                 }
 
                 if bezig { ProgressView().frame(maxWidth: .infinity) }
-                if let fout { Text(verbatim: fout).foregroundStyle(.secondary) }
+                if let fout {
+                    Text(verbatim: fout).foregroundStyle(.secondary)
+                    // Kaarten vindt vaak wel een OV-route waar de reistijd-vraag niets oplevert
+                    if aankomst == nil { routeKnop }
+                }
             }
             .scrollContentBackground(.hidden)
             .background(KnivAchtergrond())
@@ -229,7 +239,25 @@ struct OnderwegView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Klaar") { dismiss() } }
             .onAppear { if lm.authorizationStatus == .notDetermined { lm.requestWhenInUseAuthorization() } }
-            .onChange(of: vervoer) { aankomst = nil }
+            .onChange(of: vervoer) { aankomst = nil; vertrek = nil }
+        }
+    }
+
+    // ponytail: MapKit geeft voor OV alleen een reistijd, geen lijnen of overstappen.
+    // De echte routeplanner (lijn, perron, overstap) zit in Kaarten.
+    @ViewBuilder private var routeKnop: some View {
+        if let doel {
+            Button {
+                let modus = switch vervoer {
+                case .lopen: MKLaunchOptionsDirectionsModeWalking
+                case .fiets: MKLaunchOptionsDirectionsModeCycling
+                case .ov: MKLaunchOptionsDirectionsModeTransit
+                case .auto: MKLaunchOptionsDirectionsModeDriving
+                }
+                doel.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: modus])
+            } label: {
+                Label("Bekijk de route in Kaarten", systemImage: "map.fill")
+            }
         }
     }
 
@@ -238,6 +266,7 @@ struct OnderwegView: View {
         vraag.naturalLanguageQuery = zoek
         guard let item = try? await MKLocalSearch(request: vraag).start().mapItems.first else {
             fout = String(localized: "Niets gevonden. Probeer het met een plaatsnaam erbij.")
+            doel = nil
             return
         }
         await bereken(item.name ?? zoek, item)
@@ -246,6 +275,8 @@ struct OnderwegView: View {
     private func bereken(_ naam: String, _ doel: MKMapItem) async {
         bezig = true
         fout = nil
+        self.doel = doel
+        vertrek = nil
         defer { bezig = false }
         let vraag = MKDirections.Request()
         vraag.source = .forCurrentLocation()
@@ -259,7 +290,9 @@ struct OnderwegView: View {
             let eta = try await MKDirections(request: vraag).calculateETA()
             // ponytail: Kaarten kent geen fiets-ETA; 16 km/u over de looproute ligt dicht bij de werkelijkheid in Nederland.
             let reistijd = vervoer == .fiets ? eta.distance / (16 / 3.6) : eta.expectedTravelTime
-            aankomst = Date().addingTimeInterval(reistijd)
+            // bij OV telt Kaarten het wachten op de eerste rit mee in expectedArrivalDate
+            aankomst = vervoer == .ov ? eta.expectedArrivalDate : Date().addingTimeInterval(reistijd)
+            vertrek = vervoer == .ov ? eta.expectedDepartureDate : nil
             doelNaam = naam
         } catch {
             aankomst = nil

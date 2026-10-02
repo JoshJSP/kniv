@@ -218,6 +218,7 @@ struct DobbelView: View {
     @State private var tafel = Dobbeltafel()
     @State private var aantal = 2
     @State private var uitkomst: [Int] = []
+    @State private var rolt = false
     @State private var schudder = Schudder()
     @AppStorage("haptiek") private var haptiek = true
 
@@ -238,6 +239,7 @@ struct DobbelView: View {
                 .foregroundStyle(uitkomst.isEmpty ? Color.secondary : Color.accentColor)
             Stepper("\(aantal) \(aantal == 1 ? "steen" : "stenen")", value: $aantal, in: 1...6)
                 .padding(.horizontal, 24)
+                .disabled(rolt)
                 .onChange(of: aantal) { tafel.zet(aantal) }
             Spacer()
         }
@@ -255,8 +257,14 @@ struct DobbelView: View {
     }
 
     private func gooi() {
+        // een tweede worp tijdens het rollen gaf een half uitgelezen uitkomst
+        guard !rolt else { return }
+        rolt = true
         uitkomst = []
-        Task { uitkomst = await tafel.gooi() }
+        Task {
+            uitkomst = await tafel.gooi()
+            rolt = false
+        }
     }
 }
 
@@ -291,7 +299,7 @@ final class Dobbeltafel {
         let camera = SCNNode()
         camera.camera = SCNCamera()
         camera.camera?.fieldOfView = 42
-        camera.position = SCNVector3(0, 9, 5.5)
+        camera.position = SCNVector3(0, 10, 3.5)   // meer van boven: je leest het vlak dat telt
         camera.look(at: SCNVector3(0, 0, 0))
         scene.rootNode.addChildNode(camera)
 
@@ -312,14 +320,20 @@ final class Dobbeltafel {
         vloer.geometry?.firstMaterial?.colorBufferWriteMask = []   // onzichtbaar, maar vangt schaduw en stenen
         vloer.physicsBody = .static()
         scene.rootNode.addChildNode(vloer)
-        for (x, z, ry) in [(0.0, -4.2, 0.0), (0.0, 4.2, 0.0), (-3.2, 0.0, Double.pi / 2), (3.2, 0.0, Double.pi / 2)] {
-            let muur = SCNNode(geometry: SCNBox(width: 10, height: 6, length: 0.2, chamferRadius: 0))
+        // binnenkant van de muren: x ±3,1, z -3,7…2,9; zo ligt elke plek in beeld van de camera
+        for (x, z, ry) in [(0.0, -4.2, 0.0), (0.0, 3.4, 0.0), (-3.6, 0.0, Double.pi / 2), (3.6, 0.0, Double.pi / 2)] {
+            let muur = SCNNode(geometry: SCNBox(width: 10, height: 8, length: 1, chamferRadius: 0))
             muur.opacity = 0
-            muur.position = SCNVector3(x, 3, z)
+            muur.position = SCNVector3(x, 4, z)
             muur.eulerAngles.y = Float(ry)
             muur.physicsBody = .static()
             scene.rootNode.addChildNode(muur)
         }
+        let plafond = SCNNode(geometry: SCNBox(width: 10, height: 1, length: 10, chamferRadius: 0))
+        plafond.opacity = 0
+        plafond.position = SCNVector3(0, 8, 0)
+        plafond.physicsBody = .static()
+        scene.rootNode.addChildNode(plafond)
         scene.physicsWorld.gravity = SCNVector3(0, -25, 0)
     }
 
@@ -335,6 +349,7 @@ final class Dobbeltafel {
             lichaam.restitution = 0.35
             lichaam.friction = 0.6
             lichaam.rollingFriction = 0.1
+            lichaam.continuousCollisionDetectionThreshold = 0.5   // niet meer door de muur heen
             steen.physicsBody = lichaam
             scene.rootNode.addChildNode(steen)
             return steen
@@ -342,37 +357,58 @@ final class Dobbeltafel {
     }
 
     /// Gooit alle stenen en wacht tot ze stil liggen; geeft de ogen die boven liggen.
+    /// Gooit alle stenen en wacht tot ze stil en plat op tafel liggen; geeft de ogen die boven liggen,
+    /// van links naar rechts. Ligt er een scheef of buiten de tafel, dan gooit hij die opnieuw.
     @MainActor func gooi() async -> [Int] {
-        for (i, s) in stenen.enumerated() {
-            s.physicsBody?.velocity = SCNVector3Zero
-            s.position = SCNVector3(Float(i) * 0.5 - 1, 3 + Float(i) * 0.3, 2.5)
-            s.physicsBody?.resetTransform()
-            s.physicsBody?.applyForce(SCNVector3(Float.random(in: -2...2), 1.5, Float.random(in: -9 ... -6)), asImpulse: true)
-            s.physicsBody?.applyTorque(SCNVector4(Float.random(in: -1...1), Float.random(in: -1...1), Float.random(in: -1...1), Float.random(in: 2...5)), asImpulse: true)
-        }
-        try? await Task.sleep(for: .milliseconds(500))
-        for _ in 0..<40 {
-            let stil = stenen.allSatisfy {
-                guard let b = $0.physicsBody else { return true }
-                return b.velocity.lengte < 0.05 && SCNVector3(b.angularVelocity.x, b.angularVelocity.y, b.angularVelocity.z).lengte * abs(b.angularVelocity.w) < 0.05
+        var teGooien = Array(stenen.indices)
+        for _ in 0..<3 {
+            for (n, i) in teGooien.enumerated() {
+                let s = stenen[i]
+                s.physicsBody?.velocity = SCNVector3Zero
+                s.physicsBody?.angularVelocity = SCNVector4Zero
+                // naast elkaar beginnen: in elkaar beginnen schoot ze alle kanten op
+                s.position = SCNVector3(Float(n % 3) * 1.3 - 1.3, 2.5 + Float(n / 3) * 1.3, 2.2)
+                s.physicsBody?.resetTransform()
+                s.physicsBody?.applyForce(SCNVector3(Float.random(in: -0.4...0.4), 0.3, Float.random(in: -1.8 ... -1.2)), asImpulse: true)
+                s.physicsBody?.applyTorque(SCNVector4(Float.random(in: -1...1), Float.random(in: -1...1), Float.random(in: -1...1), Float.random(in: 0.05...0.15)), asImpulse: true)
             }
-            if stil { break }
-            try? await Task.sleep(for: .milliseconds(150))
+            try? await Task.sleep(for: .milliseconds(500))
+            for _ in 0..<60 {
+                if stenen.allSatisfy(ligtStil) { break }
+                try? await Task.sleep(for: .milliseconds(150))
+            }
+            teGooien = stenen.indices.filter { !ligtGoed(stenen[$0]) }
+            if teGooien.isEmpty { break }
         }
-        return stenen.map(bovenkant)
+        return stenen.sorted { $0.presentation.position.x < $1.presentation.position.x }.map(bovenkant)
+    }
+
+    private func ligtStil(_ steen: SCNNode) -> Bool {
+        guard let b = steen.physicsBody else { return true }
+        return b.velocity.lengte < 0.05 && SCNVector3(b.angularVelocity.x, b.angularVelocity.y, b.angularVelocity.z).lengte * abs(b.angularVelocity.w) < 0.05
+    }
+
+    /// Plat (bovenvlak bijna recht omhoog), stil en binnen de muren.
+    private func ligtGoed(_ steen: SCNNode) -> Bool {
+        let p = steen.presentation.position
+        return ligtStil(steen) && omhoog(steen).max() ?? 0 > 0.95 && abs(p.x) < 3.1 && p.z > -3.7 && p.z < 2.9 && p.y < 1
+    }
+
+    private func omhoog(_ steen: SCNNode) -> [Float] {
+        let normalen = [SCNVector3(0, 0, 1), SCNVector3(1, 0, 0), SCNVector3(0, 0, -1), SCNVector3(-1, 0, 0), SCNVector3(0, 1, 0), SCNVector3(0, -1, 0)]
+        return normalen.map { steen.presentation.convertVector($0, to: nil).y }
     }
 
     private func bovenkant(_ steen: SCNNode) -> Int {
-        let normalen = [SCNVector3(0, 0, 1), SCNVector3(1, 0, 0), SCNVector3(0, 0, -1), SCNVector3(-1, 0, 0), SCNVector3(0, 1, 0), SCNVector3(0, -1, 0)]
-        let omhoog = normalen.map { steen.presentation.convertVector($0, to: nil).y }
-        return waarden[omhoog.indices.max { omhoog[$0] < omhoog[$1] } ?? 4]
+        let o = omhoog(steen)
+        return waarden[o.indices.max { o[$0] < o[$1] } ?? 4]
     }
 
     /// Een glazen vlak met ogen erop.
     private static func vlak(_ ogen: Int) -> SCNMaterial {
         let maat: CGFloat = 256
         let beeld = UIGraphicsImageRenderer(size: CGSize(width: maat, height: maat)).image { ctx in
-            UIColor(white: 1, alpha: 0.22).setFill()
+            UIColor(white: 1, alpha: 0.6).setFill()   // minder doorzichtig: ogen van andere vlakken schemerden erdoor
             ctx.fill(CGRect(x: 0, y: 0, width: maat, height: maat))
             let plekken: [Int: [(CGFloat, CGFloat)]] = [
                 1: [(0.5, 0.5)], 2: [(0.27, 0.27), (0.73, 0.73)], 3: [(0.27, 0.27), (0.5, 0.5), (0.73, 0.73)],

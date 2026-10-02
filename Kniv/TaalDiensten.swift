@@ -58,6 +58,38 @@ enum TaalDienst {
         return betekenis
     }
 
+    /// Drie meerkeuzevragen over de tekst, in de doeltaal. Op de iPhone zelf als die de taal kent.
+    static func vragen(bij stuk: String, taal code: String, niveau: String, vermogen: TaalVermogen) async throws -> [Oefenen.Vraag] {
+        let tekst = String(stuk.prefix(Oefenen.maxTekst))
+        for _ in 0..<2 {
+            let vragen: [Oefenen.Vraag]
+            switch vermogen.tekstBron {
+            case .toestel:
+                let instructies = Oefenen.vragenInstructies(taalNaam: Talen.naam(code, in: Locale(identifier: "nl")), niveau: niveau)
+                vragen = await Denker.vraag(instructies, "Tekst:\n" + tekst).map { Oefenen.ontleedVragen(Data($0.utf8)) } ?? []
+            case .online:
+                vragen = Oefenen.ontleedVragen(try await vraag(["soort": "vragen", "taal": code, "niveau": niveau, "tekst": tekst]))
+            }
+            if !vragen.isEmpty { return vragen }
+        }
+        throw Fout.mislukt
+    }
+
+    /// Een zelfgeschreven zin nakijken; de uitleg is Nederlands.
+    static func verbeter(_ zin: String, onderwerp: String, taal code: String, niveau: String, vermogen: TaalVermogen) async throws -> Oefenen.Verbetering {
+        let zin = String(zin.trimmingCharacters(in: .whitespacesAndNewlines).prefix(Oefenen.maxZin))
+        let data: Data?
+        switch vermogen.tekstBron {
+        case .toestel:
+            let instructies = Oefenen.verbeterInstructies(taalNaam: Talen.naam(code, in: Locale(identifier: "nl")), niveau: niveau)
+            data = await Denker.vraag(instructies, Oefenen.verbeterVraag(zin: zin, onderwerp: onderwerp)).map { Data($0.utf8) }
+        case .online:
+            data = try await vraag(["soort": "verbeter", "taal": code, "niveau": niveau, "zin": zin, "onderwerp": String(onderwerp.prefix(200))])
+        }
+        guard let data, let uit = Oefenen.ontleedVerbetering(data) else { throw Fout.mislukt }
+        return uit
+    }
+
     /// POST naar de Edge Function `taal`, net als Spraak.verbeter().
     private static func vraag(_ body: [String: String]) async throws -> Data {
         guard let sessie = try? await KnivCloud.client.auth.session else { throw Fout.nietIngelogd }

@@ -234,24 +234,36 @@ struct VastleggenView: View {
                 Text("Even checken").font(.headline)
                 ForEach(open) { n in
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(n.titel).lineLimit(2)
-                        if n.twijfelOpties.isEmpty {
-                            ProgressView().controlSize(.small)
-                        } else {
-                            HStack {
-                                ForEach(n.twijfelOpties, id: \.self) { optie in
-                                    Button(optie) { kies(optie, n) }.buttonStyle(.bordered)
-                                }
-                                Menu("Ander") {
-                                    ForEach(bakjes) { b in Button(b.naam) { kies(b.naam, n) } }
-                                }
+                        HStack(alignment: .top) {
+                            Text(n.titel).lineLimit(2)
+                            Spacer()
+                            Button { withAnimation { Prullenbak.gooi(n) } } label: {
+                                Image(systemName: "xmark").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
                             }
-                            .font(.subheadline)
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Naar prullenbak")
                         }
+                        // Nog geen voorstel (sorteren afgebroken of nooit gestart)? Dan de
+                        // trefwoorden, die geven altijd iets. Geen eindeloze spinner meer.
+                        let opties = n.twijfelOpties.isEmpty ? Sorteerder.opTrefwoorden(n.zoekTekst, namen: bakjes.map(\.naam)) : n.twijfelOpties
+                        HStack {
+                            ForEach(opties, id: \.self) { optie in
+                                Button(optie) { kies(optie, n) }.buttonStyle(.bordered)
+                            }
+                            Menu("Ander") {
+                                ForEach(bakjes) { b in Button(b.naam) { kies(b.naam, n) } }
+                            }
+                        }
+                        .font(.subheadline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
                     .glas(18)
+                    .contextMenu {
+                        Button(role: .destructive) { withAnimation { Prullenbak.gooi(n) } } label: {
+                            Label("Naar prullenbak", systemImage: "trash")
+                        }
+                    }
                 }
             }
         }

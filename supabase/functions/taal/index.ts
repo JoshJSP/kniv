@@ -1,4 +1,4 @@
-// Leesstukjes en woordbetekenissen voor het mesje Talen, via een tekstmodel bij Groq.
+// Leesstukjes, woordbetekenissen, begripsvragen en nakijken voor het mesje Talen, via een tekstmodel bij Groq.
 // Alleen voor ingelogde gebruikers, gedeelde daglimiet met spraak (tabel ai_gebruik). De Groq-sleutel blijft hier.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -25,6 +25,20 @@ function woordPrompt(naam: string) {
   return `Je helpt een Nederlandstalige die ${naam} leert. Geef de betekenis van het woord zoals het in de zin gebruikt wordt, ` +
     `in het Nederlands: een korte vertaling, eventueel met een halve zin uitleg (grondvorm, naamval of tijd als dat helpt). ` +
     `Maximaal 20 woorden. Antwoord alleen met JSON: {"betekenis": "..."}`;
+}
+
+function vragenPrompt(naam: string, niveau: string) {
+  return `Je maakt begripsvragen bij een korte tekst voor een Nederlandstalige die ${naam} leert op ERK-niveau ${niveau}. ` +
+    `Maak 3 meerkeuzevragen over de inhoud, in het ${naam} en niet moeilijker dan niveau ${niveau}. ` +
+    `Elke vraag heeft 3 korte antwoorden waarvan er precies één klopt volgens de tekst; zet het goede antwoord niet steeds op dezelfde plek. ` +
+    `Antwoord alleen met JSON: {"vragen": [{"vraag": "...", "opties": ["...", "...", "..."], "goed": index van het goede antwoord, vanaf 0}]}`;
+}
+
+function verbeterPrompt(naam: string, niveau: string) {
+  return `Je kijkt een zin na van een Nederlandstalige die ${naam} leert op ERK-niveau ${niveau}. ` +
+    `Verbeter alleen echte fouten (spelling, grammatica, woordkeus) en laat de rest zoals het is. ` +
+    `Antwoord alleen met JSON: {"goed": true als er niets te verbeteren viel, "verbeterd": de zin in goed ${naam}, ` +
+    `"uitleg": in het Nederlands, maximaal 2 korte zinnen over wat er anders moet en waarom, of een kort compliment als het goed was}`;
 }
 
 async function vraagGroq(systeem: string, vraag: string): Promise<Record<string, unknown> | null> {
@@ -81,6 +95,19 @@ Deno.serve(async (req) => {
     if (!woord || woord.length > 60) return fout("Geen of te lang woord", 400);
     systeem = woordPrompt(naam);
     vraag = `Woord: ${woord}\nZin: ${zin}`;
+  } else if (invoer.soort === "vragen") {
+    const niveau = tekst(invoer.niveau), stuk = tekst(invoer.tekst).trim().slice(0, 2000);
+    if (!NIVEAUS.includes(niveau)) return fout("Onbekend niveau", 400);
+    if (!stuk) return fout("Geen tekst", 400);
+    systeem = vragenPrompt(naam, niveau);
+    vraag = `Tekst:\n${stuk}`;
+  } else if (invoer.soort === "verbeter") {
+    const niveau = tekst(invoer.niveau), zin = tekst(invoer.zin).trim().slice(0, 300);
+    const onderwerp = tekst(invoer.onderwerp).replace(/\s+/g, " ").trim().slice(0, 200);
+    if (!NIVEAUS.includes(niveau)) return fout("Onbekend niveau", 400);
+    if (!zin) return fout("Geen zin", 400);
+    systeem = verbeterPrompt(naam, niveau);
+    vraag = `Onderwerp: ${onderwerp}\nZin: ${zin}`;
   } else {
     return fout("Onbekende soort", 400);
   }
@@ -98,6 +125,20 @@ Deno.serve(async (req) => {
     if (!betekenis) return fout("Betekenis opzoeken lukte niet", 502);
     await tel();
     return Response.json({ betekenis });
+  }
+  if (invoer.soort === "vragen") {
+    // de app controleert elke vraag zelf nog; hier alleen weigeren als er niets bruikbaars is
+    const vragen = antwoord?.vragen;
+    if (!Array.isArray(vragen) || vragen.length === 0) return fout("Vragen maken lukte niet", 502);
+    await tel();
+    return Response.json({ vragen });
+  }
+  if (invoer.soort === "verbeter") {
+    const verbeterd = tekst(antwoord?.verbeterd).trim(), uitleg = tekst(antwoord?.uitleg).trim();
+    const goed = antwoord?.goed === true || antwoord?.goed === "true";
+    if (!verbeterd && !goed) return fout("Nakijken lukte niet", 502);
+    await tel();
+    return Response.json({ goed, verbeterd, uitleg });
   }
   const titel = tekst(antwoord?.titel).trim(), stuk = tekst(antwoord?.tekst).trim();
   if (!titel || !stuk) return fout("Stukje schrijven lukte niet", 502);

@@ -18,11 +18,19 @@ import Observation
         spreker.delegate = self
     }
 
-    /// Beste kwaliteit stem waarvan de taal gelijk is aan de code of begint met "code-".
+    /// Beste stem voor de taal: hoogste kwaliteit (premium > verbeterd > standaard), geen grapstemmen,
+    /// en bij gelijke kwaliteit de standaardregio (de-DE boven de-CH).
     nonisolated static func stem(voor code: String) -> AVSpeechSynthesisVoice? {
-        AVSpeechSynthesisVoice.speechVoices()
-            .filter { $0.language == code || $0.language.hasPrefix(code + "-") }
-            .max { $0.quality.rawValue < $1.quality.rawValue }
+        let regio = AVSpeechSynthesisVoice(language: code)?.language
+        func score(_ s: AVSpeechSynthesisVoice) -> Int { s.quality.rawValue * 10 + (s.language == regio ? 1 : 0) }
+        return AVSpeechSynthesisVoice.speechVoices()
+            .filter { ($0.language == code || $0.language.hasPrefix(code + "-")) && !$0.voiceTraits.contains(.isNoveltyVoice) }
+            .max { score($0) < score($1) }
+    }
+
+    /// Alleen de compacte (robot)stem staat erop: dan is downloaden in Instellingen de moeite waard.
+    nonisolated static func alleenBasisStem(voor code: String) -> Bool {
+        stem(voor: code).map { $0.quality == .default } ?? false
     }
 
     func lees(_ tekst: String, taal code: String, snelheid: Float = 1) {

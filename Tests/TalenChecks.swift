@@ -2,6 +2,7 @@ import Foundation
 
 /// Checks voor de logica van het mesje Talen (Kniv/Logica/Taal*.swift, Stukje.swift, Woorden.swift).
 func talenChecks() {
+    oefenChecks()
     check(Stukje(titel: "Bus", tekst: "Ek ry elke oggend met die bus skool toe. Meestal luister ek na musiek en kyk ek by die venster uit.").isIn("af"), "Afrikaans niet afgewezen als Nederlands")
     check(Taalniveau.code(0) == "A1" && Taalniveau.code(8) == "C1" && Taalniveau.code(99) == "C1" && Taalniveau.code(-3) == "A1", "niveaucodes binnen grenzen")
     check(Taalniveau.na(.teMakkelijk, stap: 4) == 5 && Taalniveau.na(.teMoeilijk, stap: 4) == 3 && Taalniveau.na(.precies, stap: 4) == 4, "niveau schuift een halve stap")
@@ -49,4 +50,37 @@ func talenChecks() {
     let twee = "Ich bin müde. Der Bus kommt zu spät."
     check(Woorden.zin(om: twee.range(of: "Bus")!, in: twee) == "Der Bus kommt zu spät.", "zin rond een woord")
     check(Woorden.zin(om: twee.range(of: "müde")!, in: twee) == "Ich bin müde.", "eerste zin")
+}
+
+/// Checks voor Kniv/Logica/Oefenen.swift: vragen, nakijken en naspreken.
+func oefenChecks() {
+    let vragenJSON = """
+    Hier zijn ze: ```json
+    {"vragen": [
+      {"vraag": "Wo ist Lena?", "opties": ["Im Bus", "Zu Hause", "In der Schule"], "goed": 0},
+      {"vraag": "Kapot", "opties": ["a", "b"], "goed": 5},
+      {"vraag": "Dubbel", "opties": ["ja", "ja", "nee"], "goed": 2},
+      {"vraag": "Was hört sie?", "opties": ["Musik", "Radio", "Nichts"], "goed": "1"}
+    ]}
+    ```
+    """
+    let vragen = Oefenen.ontleedVragen(Data(vragenJSON.utf8))
+    check(vragen.count == 2 && vragen[0].vraag == "Wo ist Lena?" && vragen[0].goed == 0, "vragen: goede vraag blijft, kapotte valt weg")
+    check(vragen.count == 2 && vragen[1].goed == 1, "vragen: goed-index als tekst wordt ook gelezen")
+    check(Oefenen.ontleedVragen(Data("geen json".utf8)).isEmpty, "vragen: onzin geeft niets")
+
+    let v = Oefenen.ontleedVerbetering(Data(#"{"goed": false, "verbeterd": "Ich gehe ins Kino.", "uitleg": "Kino is onzijdig: ins."}"#.utf8))
+    check(v == Oefenen.Verbetering(goed: false, verbeterd: "Ich gehe ins Kino.", uitleg: "Kino is onzijdig: ins."), "nakijken: verbetering gelezen")
+    check(Oefenen.ontleedVerbetering(Data(#"{"goed": true, "verbeterd": "", "uitleg": "Mooi!"}"#.utf8))?.goed == true, "nakijken: goed zonder verbetering mag")
+    check(Oefenen.ontleedVerbetering(Data(#"{"goed": false, "verbeterd": ""}"#.utf8)) == nil, "nakijken: fout zonder verbetering is onbruikbaar")
+
+    let na = Oefenen.vergelijk(doel: "Ich gehe heute ins Kino.", gehoord: "ich gehe heute Kino", taal: "de")
+    check(na.map(\.goed) == [true, true, true, false, true] && na.last?.woord == "Kino", "naspreken: gemist woord is oranje, rest groen")
+    check(Oefenen.vergelijk(doel: "Hola, ¿qué tal?", gehoord: "hola que tal", taal: "es").allSatisfy(\.goed) == false, "naspreken: accent telt (qué ≠ que)")
+    check(Oefenen.vergelijk(doel: "Hola, ¿qué tal?", gehoord: "Hola qué tal", taal: "es").allSatisfy(\.goed), "naspreken: leestekens en hoofdletters tellen niet")
+    check(Oefenen.vergelijk(doel: "eins zwei drei", gehoord: "drei zwei eins", taal: "de").filter(\.goed).count == 1, "naspreken: volgorde telt")
+    check(Oefenen.vergelijk(doel: "", gehoord: "iets", taal: "de").isEmpty, "naspreken: lege zin")
+
+    let zinnen = Oefenen.zinnen(uit: "Hallo! Ich fahre jeden Morgen mit dem Bus zur Schule. Dann höre ich Musik und schaue aus dem Fenster.", taal: "de")
+    check(zinnen == ["Ich fahre jeden Morgen mit dem Bus zur Schule.", "Dann höre ich Musik und schaue aus dem Fenster."], "naspreken: zinnen van 3 tot 14 woorden, \(zinnen)")
 }

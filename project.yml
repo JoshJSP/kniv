@@ -46,7 +46,7 @@ targets:
           - CFBundleURLName: com.joshjsp.kniv
             CFBundleURLSchemes: [kniv]
         NSMicrophoneUsageDescription: Kniv luistert alleen terwijl je inspreekt.
-        NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit, op je iPhone zelf.
+        NSSpeechRecognitionUsageDescription: Kniv schrijft je ingesproken notities uit en luistert als je een taal oefent, op je iPhone zelf.
         NSCameraUsageDescription: Kniv maakt foto's van papiertjes, whiteboards en bonnetjes.
         NSMotionUsageDescription: Kniv leest de barometer om te laten zien hoeveel verdiepingen je omhoog bent gegaan.
         NSLocationWhenInUseUsageDescription: Kniv bewaart een plek, zodat hij je daar kan herinneren.

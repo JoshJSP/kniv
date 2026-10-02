@@ -137,6 +137,8 @@ struct KentekenView: View {
                 Button {
                     guard let n = Vastlegger.bewaar("APK \(Kenteken.mooi(k)) (\(v.merk?.capitalized ?? "")) verloopt \(apk.formatted(date: .numeric, time: .omitted))",
                                                     bron: .tekst, in: ctx) else { return }
+                    // zonder sorteren bleef hij eeuwig op "Even checken" draaien
+                    Task { await Vastlegger.sorteer(n, in: ctx) }
                     let maandEerder = Calendar.current.date(byAdding: .day, value: -30, to: apk) ?? apk
                     Task { _ = await Herinneraar.plan(n.titel, Herinnering.Voorstel(dag: max(maandEerder, Date().addingTimeInterval(3600)), heeftTijd: false), id: n.uid) }
                     herinnerd = true

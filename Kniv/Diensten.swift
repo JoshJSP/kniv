@@ -23,7 +23,8 @@ import VisionKit
 
     private var startend = false
 
-    func start() async throws {
+    /// `taal`: luisteren in een andere taal dan die van de iPhone (naspreken bij Talen). Nil = taal van de iPhone.
+    func start(taal: String? = nil) async throws {
         guard !startend, !bezig else { return }
         startend = true
         defer { startend = false }
@@ -32,8 +33,9 @@ import VisionKit
         }
         let micOK = await AVAudioApplication.requestRecordPermission()
         guard spraakOK, micOK else { throw Fout.geenToestemming }
-        guard let herkenner = SFSpeechRecognizer(locale: Locale.current) ?? SFSpeechRecognizer(locale: Locale(identifier: "nl-NL")),
-              herkenner.isAvailable else { throw Fout.geenHerkenner }
+        let gekozen = taal.map { SFSpeechRecognizer(locale: Locale(identifier: $0)) }
+            ?? (SFSpeechRecognizer(locale: Locale.current) ?? SFSpeechRecognizer(locale: Locale(identifier: "nl-NL")))
+        guard let herkenner = gekozen, herkenner.isAvailable else { throw Fout.geenHerkenner }
 
         let sessie = AVAudioSession.sharedInstance()
         try sessie.setCategory(.record, mode: .measurement, options: .duckOthers)

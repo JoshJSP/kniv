@@ -6661,6 +6661,216 @@
         }
       }
     },
+    "Vragen over de tekst": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questions about the text"
+          }
+        }
+      }
+    },
+    "Stel me een paar vragen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask me a few questions"
+          }
+        }
+      }
+    },
+    "Schrijf zelf iets": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write something yourself"
+          }
+        }
+      }
+    },
+    "Schrijf een zin in het %@ over dit stukje. Kniv kijkt hem na.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write a sentence in %@ about this piece. Kniv checks it."
+          }
+        }
+      }
+    },
+    "Jouw zin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sentence"
+          }
+        }
+      }
+    },
+    "Goed zo, daar klopt alles aan.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well done, that's all correct."
+          }
+        }
+      }
+    },
+    "Nog een zin": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another sentence"
+          }
+        }
+      }
+    },
+    "Even kijken…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking…"
+          }
+        }
+      }
+    },
+    "Kijk na": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check"
+          }
+        }
+      }
+    },
+    "Zeg het na": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say it after me"
+          }
+        }
+      }
+    },
+    "Luister": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen"
+          }
+        }
+      }
+    },
+    "Zeg het": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Say it"
+          }
+        }
+      }
+    },
+    "Kniv mag de microfoon of spraakherkenning nog niet gebruiken. Zet het aan bij Instellingen › Kniv.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniv isn't allowed to use the microphone or speech recognition yet. Turn it on in Settings › Kniv."
+          }
+        }
+      }
+    },
+    "Je iPhone kan deze taal (nog) niet verstaan. Luisteren en hardop meelezen kan wel.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your iPhone can't understand this language (yet). You can still listen and read along out loud."
+          }
+        }
+      }
+    },
+    "De microfoon starten lukte niet. Probeer het nog eens.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't start the microphone. Please try again."
+          }
+        }
+      }
+    },
+    "Helemaal verstaan.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Understood every word."
+          }
+        }
+      }
+    },
+    "Bijna. De oranje woorden nog eens.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almost. Try the orange words again."
+          }
+        }
+      }
+    },
+    "Luister nog eens en probeer het rustig opnieuw.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen again and try it slowly."
+          }
+        }
+      }
+    },
+    "Klinkt de stem als een robot? Download gratis een betere: Instellingen › Toegankelijkheid › Gesproken materiaal › Stemmen › %@. Kies er een met (Verbeterd) of (Premium).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Does the voice sound like a robot? Download a better one for free: Settings › Accessibility › Spoken Content › Voices › %@. Pick one marked (Enhanced) or (Premium)."
+          }
+        }
+      }
+    },
+    "Vertrek om %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave at %@"
+          }
+        }
+      }
+    },
+    "Bekijk de route in Kaarten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See the route in Maps"
+          }
+        }
+      }
+    },
     "Bewaar in Mijn woorden": {
       "localizations": {
         "en": {

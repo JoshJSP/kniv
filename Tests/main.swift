@@ -80,6 +80,15 @@ check(Gangpad.van("Melk") == .zuivel && Gangpad.van("2 appels") == .groente && G
 check(Gangpad.van("pindakaas") == .kaas, "pindakaas is beleg, niet kaas-woord of zuivel")
 check(Gangpad.van("volkorenbrood") == .brood, "samenstelling eindigt op brood")
 check(Gangpad.van("iets raars") == .overig, "onbekend = overig")
+for (item, pad) in [("rucola", Gangpad.groente), ("sperziebonen", .groente), ("koffiebonen", .ontbijt), ("ijsthee", .drinken),
+                   ("frisdrank", .drinken), ("appeltjes", .groente), ("tomaatjes", .groente), ("broodje", .brood), ("citroenen", .groente),
+                   ("chocoladevla", .zuivel), ("roomijs", .diepvries), ("appelsap", .drinken), ("maïs", .voorraad), ("Maïs", .voorraad),
+                   ("diepvriesgroente", .diepvries), ("chocopasta", .kaas), ("mondwater", .verzorging), ("wc papier", .huishouden),
+                   ("2 pakken melk", .zuivel), ("kipfilets", .vlees), ("soepkip", .vlees), ("pinda's", .snoep), ("ijsbergsla", .groente),
+                   ("crème fraîche", .zuivel), ("lente-ui", .groente), ("snoepjes", .snoep)] {
+    check(Gangpad.van(item) == pad, "gangpad: \(item) hoort bij \(pad.naam), kreeg \(Gangpad.van(item).naam)")
+}
+check((0..<20).allSatisfy { _ in Gangpad.van("pasta brood") == Gangpad.van("pasta brood") }, "gangpad is elke keer hetzelfde")
 let route = Gangpad.route(["cola", "melk", "appels", "brood"]) { $0 }
 check(route.map(\.0) == [.groente, .brood, .zuivel, .drinken], "looproute-volgorde")
 

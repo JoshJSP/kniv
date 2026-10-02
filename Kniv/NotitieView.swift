@@ -45,7 +45,7 @@ struct NotitieView: View {
             }
 
             if notitie.isLijst || lijstAan {
-                if notitie.bakjeNaam == "Boodschappen" && notitie.items.count > 2 {
+                if notitie.bakjeNaam == "Boodschappen" && notitie.items.count > 1 {
                     // In de volgorde van een rondje door de supermarkt.
                     ForEach(Gangpad.route(notitie.gesorteerdeItems) { $0.tekst }, id: \.0) { groep in
                         Section(LocalizedStringKey(groep.0.naam)) { ForEach(groep.1) { itemRij($0) } }

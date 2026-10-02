@@ -48,6 +48,12 @@ struct LeesView: View {
                 Text("Tik op een woord voor de betekenis.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                if vermogen?.stem == true { StemTip(taal: stuk.taal) }
+                if let vermogen {
+                    VragenBlok(stuk: stuk, vermogen: vermogen).padding(.top, 12)
+                    SchrijfBlok(stuk: stuk, vermogen: vermogen)
+                    SpreekBlok(stuk: stuk)
+                }
                 if let taal = talen.first { oordeelBlok(taal).padding(.top, 12) }
             }
             .padding(24)
