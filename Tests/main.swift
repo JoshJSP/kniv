@@ -186,6 +186,16 @@ check(Omzetter.reken("2,49 voor 500g of 3,99 voor 1l") == nil, "goedkoper: kilo 
 
 talenChecks()
 
+// NS-link: zelfde vorm als in de browser getest; "Station …" eraf, anders herkent NS het niet
+check(NSLink.stationsnaam("Station Tilburg") == "Tilburg" && NSLink.stationsnaam("Breda station") == "Breda", "ns: stationsnaam kaal")
+check(NSLink.stationsnaam("Amsterdam Centraal") == "Amsterdam Centraal" && NSLink.stationsnaam("Treinstation 's-Hertogenbosch") == "'s-Hertogenbosch", "ns: echte namen blijven")
+var nsDatum = DateComponents(); nsDatum.year = 2026; nsDatum.month = 10; nsDatum.day = 5; nsDatum.hour = 9
+nsDatum.timeZone = TimeZone(identifier: "Europe/Amsterdam")
+let nsUrl = NSLink.url(van: "Station Tilburg", naar: "Breda", vertrek: Calendar(identifier: .gregorian).date(from: nsDatum)!)?.absoluteString
+check(nsUrl == "https://www.ns.nl/reisplanner/#/?vertrek=Tilburg&vertrektype=treinstation&aankomst=Breda&aankomsttype=treinstation&type=vertrek&tijd=2026-10-05T09:00", "ns: url \(nsUrl ?? "nil")")
+check(NSLink.url(van: "Amsterdam Centraal", naar: "Den Haag HS", vertrek: Date())?.absoluteString.contains("vertrek=Amsterdam%20Centraal") == true, "ns: spatie gecodeerd")
+check(NSLink.url(van: "Breda", naar: "Station Breda", vertrek: Date()) == nil, "ns: zelfde station heeft geen zin")
+
 // Tijdslimiet: hangend werk mag het sorteren niet ophouden; snel werk komt gewoon door.
 final class Uitkomst: @unchecked Sendable { var traag: Int?? = .none; var snel: Int? = nil; var duur = 0.0 }
 let tijdUit = Uitkomst()

@@ -79,6 +79,16 @@ public class KnivData
     public Dictionary<Guid, DateTime> Weg { get; set; } = new();
     public DateTime? OpgehaaldTot { get; set; }
     public Guid? SyncVan { get; set; }         // van welke gebruiker de sync-gegevens hierboven zijn (blijft staan na een verlopen sessie)
+    public List<Woord> Woorden { get; set; } = new();   // Mijn woorden uit Talen op de iPhone (alleen lezen), voor offline
+}
+
+/// Een bewaard woord uit het mesje Talen (soort "woord" in records).
+public class Woord
+{
+    public string Taal { get; set; } = "";
+    public string Tekst { get; set; } = "";
+    public string Betekenis { get; set; } = "";
+    public string Zin { get; set; } = "";
 }
 
 public static class Opslag

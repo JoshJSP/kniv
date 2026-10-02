@@ -274,6 +274,21 @@ public static class Sync
         finally { _bezig = false; }
     }
 
+    /// Alle (niet verwijderde) records van één soort van jezelf; null als je niet ingelogd of offline bent.
+    /// Voor Mijn woorden: alleen lezen, los van de notitie-sync en zijn ophaalcursor.
+    public static async Task<List<Rij>?> HaalSoort(string soort)
+    {
+        if (await Token() is not { } token) return null;
+        try
+        {
+            var r = await Http.SendAsync(Verzoek(HttpMethod.Get,
+                $"/rest/v1/records?select=*&soort=eq.{Uri.EscapeDataString(soort)}&verwijderd=eq.false&order=gewijzigd.desc&limit=2000", token));
+            return r.IsSuccessStatusCode ? await r.Content.ReadFromJsonAsync<List<Rij>>() : null;
+        }
+        catch (HttpRequestException) { return null; }
+        catch (TaskCanceledException) { return null; }
+    }
+
     static async Task Ronde()
     {
         if (await Token() is not { } token) return;

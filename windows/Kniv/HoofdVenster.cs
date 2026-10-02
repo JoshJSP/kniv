@@ -131,6 +131,7 @@ public sealed class HoofdVenster : Window
             ["Timers"] = () => new TimersPagina(),
             ["Splitten"] = () => new SplittenPagina(),
             ["Kiezen"] = () => new KiezenPagina(),
+            ["Woorden"] = () => new WoordenPagina(),
             ["Instellingen"] = () => new InstellingenPagina(),
         };
         _nav = new NavigationView
@@ -142,6 +143,7 @@ public sealed class HoofdVenster : Window
         };
         foreach (var (naam, glyph) in new[] { ("Vastleggen", ""), ("Timers", ""), ("Splitten", ""), ("Kiezen", "") })
             _nav.MenuItems.Add(new NavigationViewItem { Content = naam, Tag = naam, Icon = new FontIcon { Glyph = glyph } });
+        _nav.MenuItems.Add(new NavigationViewItem { Content = "Mijn woorden", Tag = "Woorden", Icon = new FontIcon { Glyph = "\uE8D2" } });
         _nav.MenuItems.Insert(0, new NavigationViewItem { Content = "Vandaag", Tag = "Vandaag", Icon = new FontIcon { Glyph = "" } });
         if (Beheer.Beschikbaar)
             _nav.FooterMenuItems.Add(new NavigationViewItem { Content = "Beheer", Tag = "Beheer", Icon = new FontIcon { Glyph = "" } });

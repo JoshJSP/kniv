@@ -1,13 +1,11 @@
 {
-  "versie": "0.42.0",
-  "mesnaam": "Puukko",
+  "versie": "0.43.0",
+  "mesnaam": "Ulu",
   "nieuw": [
-    "Talen: Mijn woorden, met kaartjes om je bewaarde woorden te oefenen",
-    "Talen: een gesprekje met Kniv in je taal, typen of inspreken, met tips in het Nederlands",
-    "Talen: hiragana en katakana leren bij Japans",
-    "Talen: tekst of een webpagina in een andere taal lees je vanuit de notitie als leesstukje",
-    "Talen gaat nu mee naar je andere iPhone: talen, stukjes, vragen en woorden",
-    "Boodschappen staan overal op looproute: de supermarktmelding, delen, Siri, Windows en de deelpagina",
-    "Sorteren blijft niet meer hangen als het taalmodel niet antwoordt"
+    "Talen: kanji oefenen met de woorden uit je eigen Japanse stukjes",
+    "Talen en Gesprekje laten zien hoeveel online vragen je vandaag nog hebt",
+    "Ik ben er om: bij OV plan je de trein in één tik bij NS",
+    "Spraak uitschrijven telt alleen nog mee als het gelukt is",
+    "Windows: je bewaarde woorden uit Talen, met kaartjes om te oefenen"
   ]
 }

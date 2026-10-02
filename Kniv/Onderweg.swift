@@ -179,6 +179,8 @@ struct OnderwegView: View {
     @State private var aankomst: Date?
     @State private var vertrek: Date?
     @State private var doel: MKMapItem?
+    @State private var nsBezig = false
+    @Environment(\.openURL) private var openURL
     @State private var bezig = false
     @State private var fout: String?
     @State private var lm = CLLocationManager()
@@ -258,7 +260,44 @@ struct OnderwegView: View {
             } label: {
                 Label("Bekijk de route in Kaarten", systemImage: "map.fill")
             }
+            if vervoer == .ov {
+                Button { Task { await openNS(doel) } } label: {
+                    if nsBezig { Label("Stations zoeken…", systemImage: "tram.fill") }
+                    else { Label("Plan de trein bij NS", systemImage: "tram.fill") }
+                }
+                .disabled(nsBezig)
+            }
         }
+    }
+
+    /// Dichtstbijzijnde treinstation bij jou en bij je bestemming, dan de NS-reisplanner met die twee.
+    private func openNS(_ doel: MKMapItem) async {
+        guard let hier = lm.location?.coordinate else {
+            fout = String(localized: "Kniv weet niet waar je bent. Staat locatie aan?")
+            return
+        }
+        nsBezig = true
+        defer { nsBezig = false }
+        async let van = station(bij: hier)
+        async let naar = station(bij: doel.placemark.coordinate)
+        guard let van = await van, let naar = await naar,
+              let url = NSLink.url(van: van, naar: naar, vertrek: vertrek ?? Date()) else {
+            fout = String(localized: "Geen treinstation gevonden. Bekijk de route in Kaarten.")
+            return
+        }
+        openURL(url)
+    }
+
+    private func station(bij plek: CLLocationCoordinate2D) async -> String? {
+        let vraag = MKLocalSearch.Request()
+        vraag.naturalLanguageQuery = "treinstation"
+        vraag.region = MKCoordinateRegion(center: plek, latitudinalMeters: 8000, longitudinalMeters: 8000)
+        let midden = CLLocation(latitude: plek.latitude, longitude: plek.longitude)
+        let gevonden = (try? await MKLocalSearch(request: vraag).start().mapItems) ?? []
+        return gevonden
+            .filter { $0.pointOfInterestCategory == .publicTransport || ($0.name ?? "").lowercased().contains("station") }
+            .min { ($0.placemark.location?.distance(from: midden) ?? .infinity) < ($1.placemark.location?.distance(from: midden) ?? .infinity) }?
+            .name
     }
 
     private func zoekAdres() async {
