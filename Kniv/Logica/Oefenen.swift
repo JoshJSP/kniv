@@ -90,7 +90,7 @@ enum Oefenen {
     /// (langste gemeenschappelijke reeks). Hoofdletters en leestekens tellen niet, accenten wel.
     static func vergelijk(doel: String, gehoord: String, taal code: String) -> [Nagezegd] {
         let d = Woorden.knip(doel, taal: code).map(\.tekst)
-        let g = Woorden.knip(gehoord, taal: code).map { sleutel($0) }
+        let g = Woorden.knip(gehoord, taal: code).map { sleutel($0.tekst) }
         let ds = d.map { sleutel($0) }
         guard !d.isEmpty else { return [] }
         // LCS-tabel; zinnen zijn kort, dus O(n·m) is prima
