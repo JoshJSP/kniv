@@ -329,6 +329,20 @@ static class Zelftest
         Is(Sync.Verwerk(rij, null) && !Opslag.Data.Notities.Any(n => n.Id == id), "sync zacht verwijderd");
         Is(Sync.Iso(new DateTime(2026, 9, 27, 10, 0, 0, 5, DateTimeKind.Utc)) == "2026-09-27T10:00:00.005Z", "iso");
 
+        // Gangpad: dezelfde gevallen als Tests/main.swift
+        string G(string t) => Gangpad.Namen[Gangpad.Van(t)];
+        foreach (var (item, pad) in new[] {
+            ("Melk", "Zuivel & eieren"), ("2 appels", "Groente & fruit"), ("wc-papier", "Huishouden"), ("pindakaas", "Kaas & beleg"),
+            ("volkorenbrood", "Brood"), ("iets raars", "Overig"), ("rucola", "Groente & fruit"), ("sperziebonen", "Groente & fruit"),
+            ("koffiebonen", "Ontbijt & koffie"), ("ijsthee", "Drinken"), ("frisdrank", "Drinken"), ("appeltjes", "Groente & fruit"),
+            ("tomaatjes", "Groente & fruit"), ("broodje", "Brood"), ("citroenen", "Groente & fruit"), ("chocoladevla", "Zuivel & eieren"),
+            ("roomijs", "Diepvries"), ("appelsap", "Drinken"), ("maïs", "Pasta, rijst & blik"), ("diepvriesgroente", "Diepvries"),
+            ("chocopasta", "Kaas & beleg"), ("mondwater", "Verzorging"), ("wc papier", "Huishouden"), ("2 pakken melk", "Zuivel & eieren"),
+            ("kipfilets", "Vlees & vis"), ("soepkip", "Vlees & vis"), ("pinda's", "Koek, snoep & chips"), ("ijsbergsla", "Groente & fruit"),
+            ("crème fraîche", "Zuivel & eieren"), ("lente-ui", "Groente & fruit"), ("snoepjes", "Koek, snoep & chips") })
+            Is(G(item) == pad, $"gangpad {item}: {G(item)}");
+        Is(string.Join(",", Gangpad.Volgorde(new[] { "cola", "melk", "appels", "brood" }, t => t)) == "appels,brood,melk,cola", "gangpad looproute");
+
         var tekst = fouten.Count == 0 ? "OK" : "FOUT " + string.Join("; ", fouten);
         if (uit != null) File.WriteAllText(uit, tekst);
         return fouten.Count == 0 ? 0 : 1;

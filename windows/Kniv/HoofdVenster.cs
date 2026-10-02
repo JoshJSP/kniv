@@ -407,7 +407,8 @@ public sealed class VastleggenPagina : UserControl
             sp.Children.Add(new TextBlock { Text = n.Tekst, TextWrapping = TextWrapping.Wrap, MaxLines = 6, TextTrimming = TextTrimming.CharacterEllipsis, IsTextSelectionEnabled = true });
         if (Invoer.EersteLink(n.Tekst) is { } link)
             sp.Children.Add(new HyperlinkButton { Content = link.Host, NavigateUri = link, Padding = new Thickness(0) });
-        foreach (var item in n.Items)
+        // Boodschappen in looproute-volgorde, alleen om te tonen: n.Items zelf blijft in jouw volgorde (die gaat mee in de sync).
+        foreach (var item in n.Bakje == "Boodschappen" ? Gangpad.Volgorde(n.Items, i => i.Tekst) : n.Items)
         {
             var tb = new TextBlock { Text = item.Tekst, TextWrapping = TextWrapping.Wrap };
             var vink = new CheckBox { Content = tb, IsChecked = Doorgestreept.Contains(item.Id), MinWidth = 0 };

@@ -50,7 +50,7 @@ public sealed class VandaagPagina : UserControl
 
         // Openstaande boodschappen.
         var boodschappen = Opslag.Data.Notities.Where(n => n.Bakje == "Boodschappen").OrderByDescending(n => n.Gewijzigd).ToList();
-        var items = boodschappen.SelectMany(n => n.Items.Count > 0 ? n.Items.Select(i => i.Tekst) : new[] { n.Titel }).ToList();
+        var items = Gangpad.Volgorde(boodschappen.SelectMany(n => n.Items.Count > 0 ? n.Items.Select(i => i.Tekst) : new[] { n.Titel }), t => t);
         if (items.Count > 0)
         {
             var lijst = new StackPanel { Spacing = 2 };
