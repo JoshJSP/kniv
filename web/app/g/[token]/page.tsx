@@ -3,6 +3,7 @@ import { dagenTot, doelVan, haalDeel, samenvatting, type Deel, type KnivRecord }
 import Ververs from "./Ververs";
 import Potje from "./Potje";
 import Prikje from "./Prikje";
+import { route } from "../../gangpad";
 
 type Props = { params: Promise<{ token: string }> };
 
@@ -33,17 +34,22 @@ function Record({ r, mensen }: { r: KnivRecord; mensen: Deel["mensen"] }) {
   const items = [...(r.data?.items ?? [])].sort((a, b) => (a.volgorde ?? 0) - (b.volgorde ?? 0));
   const tekst = typeof r.data?.tekst === "string" ? r.data.tekst.trim() : "";
   if (!tekst && !items.length) return null;
+  // boodschappen in de volgorde waarin je door de winkel loopt, net als in de app
+  const groepen: [string, typeof items][] = r.data?.bakje === "Boodschappen" && items.length > 1 ? route(items, (i) => i.tekst) : [["", items]];
   return (
     <section className="glas">
       {tekst && <p className="notitie-tekst">{tekst}</p>}
       {items.length > 0 && (
         <ul className="lijst" style={tekst ? { marginTop: 12 } : undefined}>
-          {items.map((it, i) => (
-            <li key={i}>
-              <span>{it.tekst}</span>
-              {it.door && mensen?.[it.door] ? <Bol naam={mensen[it.door].naam} avatar={mensen[it.door].avatar} /> : <Bol naam={r.door} avatar={r.avatar} />}
-            </li>
-          ))}
+          {groepen.flatMap(([gangpad, lijst]) => [
+            ...(gangpad ? [<li key={"g" + gangpad} className="gangpad">{gangpad}</li>] : []),
+            ...lijst.map((it) => (
+              <li key={items.indexOf(it)}>
+                <span>{it.tekst}</span>
+                {it.door && mensen?.[it.door] ? <Bol naam={mensen[it.door].naam} avatar={mensen[it.door].avatar} /> : <Bol naam={r.door} avatar={r.avatar} />}
+              </li>
+            )),
+          ])}
         </ul>
       )}
     </section>

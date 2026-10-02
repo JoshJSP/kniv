@@ -12,7 +12,7 @@ export type KnivRecord = {
   soort: string;
   door: string | null;
   avatar: string | null;
-  data: { tekst?: string; items?: Item[]; doel?: string; titel?: string; [k: string]: unknown };
+  data: { tekst?: string; items?: Item[]; doel?: string; titel?: string; bakje?: string; [k: string]: unknown };
 };
 export type Deel = {
   titel: string;
