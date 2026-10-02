@@ -1,0 +1,36 @@
+name: Kniv check web (tak)
+
+# Op elke tak behalve main: de site bouwen (dat is ook de typecontrole), de gangpad-test draaien,
+# en controleren dat de woordenlijsten voor Windows en web nog gelijk zijn aan Gangpad.swift.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['web/**', 'Kniv/Logica/Gangpad.swift', 'scripts/gangpad_poort.py', 'windows/Kniv/GangpadWoorden.cs', '.github/workflows/check-web.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: check-web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Woordenlijsten gelijk aan Gangpad.swift
+        run: |
+          python3 scripts/gangpad_poort.py
+          git diff --exit-code windows/Kniv/GangpadWoorden.cs web/app/gangpadWoorden.ts \
+            || { echo "Draai python scripts/gangpad_poort.py en commit de uitkomst"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Bouwen en testen
+        working-directory: web
+        run: |
+          npm ci
+          npx -y tsx toetsen/gangpad.ts
+          npm run build

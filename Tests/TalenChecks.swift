@@ -54,6 +54,7 @@ func talenChecks() {
 
 /// Checks voor Kniv/Logica/Oefenen.swift: vragen, nakijken en naspreken.
 func oefenChecks() {
+    kanjiChecks()
     leestaalChecks()
     gesprekEnKanaChecks()
     var stapel = Stapel([1, 2, 3, 4, 5, 6])
@@ -144,4 +145,21 @@ func leestaalChecks() {
     check(plat.contains("Lena fährt") && plat.contains("hört sie Musik") && plat.contains("Max heißt"), "leestaal: numerieke tekens omgezet: \(plat)")
     check(!plat.contains("Menu") && !plat.contains("color") && !plat.contains("nee") && !plat.contains("2026"), "leestaal: menu, stijl en script eruit")
     check(plat.contains("\n\n"), "leestaal: alinea's blijven alinea's")
+}
+
+/// Checks voor Kanji.swift.
+func kanjiChecks() {
+    check(Kanji.heeftKanji("学校") && Kanji.heeftKanji("行きます") && !Kanji.heeftKanji("がっこう") && !Kanji.heeftKanji("カタカナ"), "kanji: herkennen")
+    let k = Kanji.kaarten(uit: "私は毎日学校に行きます。学校は大きいです。", betekenissen: ["学校": "school"])
+    let school = k.first { $0.woord == "学校" }
+    check(school != nil && school?.betekenis == "school", "kanji: woord uit de tekst met betekenis: \(k)")
+    check(k.filter { $0.woord == "学校" }.count == 1, "kanji: elk woord maar één keer")
+    check(k.allSatisfy { !$0.lezing.isEmpty && !Kanji.heeftKanji($0.lezing) }, "kanji: lezing zonder kanji: \(k.map(\.lezing))")
+    let stapel = [("学校", "がっこう"), ("毎日", "まいにち"), ("大きい", "おおきい"), ("私", "わたし"), ("行く", "いく")]
+        .map { Kanji.Kaart(woord: $0.0, lezing: $0.1, betekenis: "") }
+    var rng = SystemRandomNumberGenerator()
+    for _ in 0..<10 {
+        let o = Kanji.opties(voor: stapel[0], uit: stapel, rng: &rng)
+        check(o.count == 4 && Set(o).count == 4 && o.contains("がっこう"), "kanji: 4 lezingen met de goede erbij: \(o)")
+    }
 }

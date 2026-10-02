@@ -105,6 +105,13 @@ enum TaalDienst {
         return uit
     }
 
+    /// Hoeveel online vragen er vandaag nog over zijn; nil als dat niet te zien is (offline, niet ingelogd).
+    static func overVandaag() async -> Int? {
+        guard let data = try? await vraag(["soort": "teller"]) else { return nil }
+        struct Antwoord: Decodable { let over: Int }
+        return (try? JSONDecoder().decode(Antwoord.self, from: data))?.over
+    }
+
     /// POST naar de Edge Function `taal`, net als Spraak.verbeter().
     private static func vraag(_ body: [String: String]) async throws -> Data {
         guard let sessie = try? await KnivCloud.client.auth.session else { throw Fout.nietIngelogd }

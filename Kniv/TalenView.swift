@@ -139,6 +139,7 @@ struct TaalPagina: View {
                 }
                 if taal.code == "ja" {
                     NavigationLink { KanaView() } label: { Label("Kana leren", systemImage: "character.ja") }
+                    NavigationLink { KanjiView() } label: { Label("Kanji uit je stukjes", systemImage: "character.textbox.ja") }
                 }
             }
 
@@ -195,6 +196,7 @@ struct TaalPagina: View {
 /// Wat deze taal op deze iPhone kan, in gewone woorden.
 struct VermogenRij: View {
     let vermogen: TaalVermogen
+    @State private var over: Int?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -202,6 +204,7 @@ struct VermogenRij: View {
                 Label("Stukjes maakt je iPhone zelf, ook offline", systemImage: "iphone")
             } else {
                 Label("Stukjes komen via internet en tellen mee voor de daglimiet", systemImage: "network")
+                if let over { Label("Vandaag nog \(over) online", systemImage: "gauge.with.dots.needle.33percent") }
             }
             if vermogen.stem {
                 Label("Je iPhone kan voorlezen", systemImage: "speaker.wave.2")
@@ -215,6 +218,7 @@ struct VermogenRij: View {
         .font(.subheadline)
         .foregroundStyle(.secondary)
         .padding(.vertical, 2)
+        .task(id: vermogen) { if vermogen.tekstBron == .online { over = await TaalDienst.overVandaag() } }
     }
 }
 

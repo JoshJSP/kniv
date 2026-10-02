@@ -82,6 +82,12 @@ Deno.serve(async (req) => {
   // Invoer eerst controleren, pas daarna telt de vraag mee voor de daglimiet.
   const invoer = await req.json().catch(() => null);
   if (!invoer || typeof invoer !== "object") return fout("Geen geldige JSON", 400);
+  if (invoer.soort === "teller") {
+    // Hoeveel online vragen er vandaag nog over zijn (gedeeld met spraak). Telt zelf niet mee.
+    const vandaag = new Date().toISOString().slice(0, 10);
+    const { data } = await supa.from("ai_gebruik").select("aantal").eq("gebruiker", user.id).eq("dag", vandaag).maybeSingle();
+    return Response.json({ over: Math.max(0, LIMIET - (data?.aantal ?? 0)), limiet: LIMIET });
+  }
   const taal = tekst(invoer.taal);
   if (!/^[a-z]{2,3}$/.test(taal)) return fout("Onbekende taal", 400);
   let naam: string;

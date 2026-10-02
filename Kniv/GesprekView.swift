@@ -14,6 +14,7 @@ struct GesprekView: View {
     @State private var bezig = false
     @State private var fout: String?
     @State private var vermogen: TaalVermogen?
+    @State private var over: Int?   // online vragen vandaag nog over; nil bij talen die de iPhone zelf kent
 
     private let voorstellen = ["Je dag", "Eten", "Reizen", "Games", "Muziek", "Het weer", "Je weekend"]
 
@@ -88,7 +89,12 @@ struct GesprekView: View {
                 .padding(16)
             }
             .onChange(of: beurten.count) { withAnimation { lezer.scrollTo(beurten.count - 1, anchor: .bottom) } }
-            .safeAreaInset(edge: .bottom) { invoerBalk }
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 4) {
+                    if let over { Text("Vandaag nog \(over) online").font(.caption).foregroundStyle(.secondary) }
+                    invoerBalk
+                }
+            }
         }
     }
 
@@ -173,5 +179,6 @@ struct GesprekView: View {
         } catch {
             fout = (error as? TaalDienst.Fout ?? .mislukt).melding
         }
+        if vermogen.tekstBron == .online { over = await TaalDienst.overVandaag() }
     }
 }

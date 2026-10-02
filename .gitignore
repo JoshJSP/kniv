@@ -5,3 +5,5 @@ dd/
 .DS_Store
 KnivWidgets/Info.plist
 .claude/
+__pycache__/
+web/node_modules/

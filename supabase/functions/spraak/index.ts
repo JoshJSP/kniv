@@ -16,8 +16,8 @@ Deno.serve(async (req) => {
   const { data: gebruik } = await supa.from("ai_gebruik").select("aantal").eq("gebruiker", user.id).eq("dag", dag).maybeSingle();
   const aantal = gebruik?.aantal ?? 0;
   if (aantal >= LIMIET) return Response.json({ fout: "Daglimiet bereikt" }, { status: 429 });
-  await supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
 
+  // Opname eerst controleren; alleen een geslaagd antwoord telt mee voor de daglimiet (net als bij taal).
   const audio = await req.arrayBuffer();
   if (audio.byteLength === 0 || audio.byteLength > 24 * 1024 * 1024) return Response.json({ fout: "Geen of te grote opname" }, { status: 400 });
 
@@ -35,5 +35,6 @@ Deno.serve(async (req) => {
   });
   if (!groq.ok) return Response.json({ fout: "Uitschrijven lukte niet" }, { status: 502 });
   const { text } = await groq.json();
+  await supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
   return Response.json({ tekst: (text ?? "").trim() });
 });

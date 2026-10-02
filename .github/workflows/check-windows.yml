@@ -1,0 +1,32 @@
+name: Kniv check Windows (tak)
+
+# Op elke tak behalve main: het Windows-programma bouwen en de zelftest draaien, zonder installer of release.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['windows/**', '.github/workflows/check-windows.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: check-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Bouwen
+        run: dotnet publish windows/Kniv/Kniv.csproj -c Release -r win-x64 --self-contained -o publish
+      - name: Zelftest
+        run: |
+          $p = Start-Process publish/Kniv.exe -ArgumentList '--selftest', "$env:RUNNER_TEMP\zelftest.txt" -Wait -PassThru
+          Get-Content "$env:RUNNER_TEMP\zelftest.txt"
+          if ($p.ExitCode -ne 0) { exit 1 }
