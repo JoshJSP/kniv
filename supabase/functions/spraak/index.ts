@@ -12,14 +12,15 @@ Deno.serve(async (req) => {
   const { data: { user } } = await supa.auth.getUser(token);
   if (!user) return Response.json({ fout: "Log eerst in" }, { status: 401 });
 
-  const dag = new Date().toISOString().slice(0, 10);
-  const { data: gebruik } = await supa.from("ai_gebruik").select("aantal").eq("gebruiker", user.id).eq("dag", dag).maybeSingle();
-  const aantal = gebruik?.aantal ?? 0;
-  if (aantal >= LIMIET) return Response.json({ fout: "Daglimiet bereikt" }, { status: 429 });
-
   // Opname eerst controleren; alleen een geslaagd antwoord telt mee voor de daglimiet (net als bij taal).
   const audio = await req.arrayBuffer();
   if (audio.byteLength === 0 || audio.byteLength > 24 * 1024 * 1024) return Response.json({ fout: "Geen of te grote opname" }, { status: 400 });
+
+  // Plek nemen in één keer (ook bij veel verzoeken tegelijk); mislukt het uitschrijven, dan gaat hij terug.
+  const dag = new Date().toISOString().slice(0, 10);
+  const { data: plek, error } = await supa.rpc("ai_neem", { g: user.id, d: dag, max: LIMIET });
+  if (error) return Response.json({ fout: "Even niet beschikbaar" }, { status: 503 });
+  if (plek !== true) return Response.json({ fout: "Daglimiet bereikt" }, { status: 429 });
 
   const form = new FormData();
   form.append("file", new Blob([audio], { type: req.headers.get("Content-Type") ?? "audio/m4a" }), "spraak.m4a");
@@ -28,13 +29,18 @@ Deno.serve(async (req) => {
   const taal = new URL(req.url).searchParams.get("taal");
   if (taal) form.append("language", taal);
 
-  const groq = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${Deno.env.get("GROQ_API_KEY")}` },
-    body: form,
-  });
-  if (!groq.ok) return Response.json({ fout: "Uitschrijven lukte niet" }, { status: 502 });
-  const { text } = await groq.json();
-  await supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
-  return Response.json({ tekst: (text ?? "").trim() });
+  try {
+    const groq = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${Deno.env.get("GROQ_API_KEY")}` },
+      body: form,
+      signal: AbortSignal.timeout(45_000),
+    });
+    if (!groq.ok) throw new Error(`groq ${groq.status}`);
+    const { text } = await groq.json();
+    return Response.json({ tekst: (text ?? "").trim() });
+  } catch {
+    await supa.rpc("ai_terug", { g: user.id, d: dag });
+    return Response.json({ fout: "Uitschrijven lukte niet" }, { status: 502 });
+  }
 });

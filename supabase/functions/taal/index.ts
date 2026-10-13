@@ -62,6 +62,7 @@ async function vraagGroq(systeem: string, vraag: string): Promise<Record<string,
       method: "POST",
       headers: { Authorization: `Bearer ${Deno.env.get("GROQ_API_KEY")}`, "Content-Type": "application/json" },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(30_000),   // liever een nette fout dan hangen tot het platform afkapt
     });
     if (!r.ok) return null;
     const j = await r.json();
@@ -141,38 +142,37 @@ Deno.serve(async (req) => {
     return fout("Onbekende soort", 400);
   }
 
+  // Plek nemen in één keer (ook bij veel verzoeken tegelijk); alleen een geslaagd antwoord telt mee, dus anders terug.
   const dag = new Date().toISOString().slice(0, 10);
-  const { data: gebruik } = await supa.from("ai_gebruik").select("aantal").eq("gebruiker", user.id).eq("dag", dag).maybeSingle();
-  const aantal = gebruik?.aantal ?? 0;
-  if (aantal >= LIMIET) return fout("Daglimiet bereikt", 429);
-  // Alleen een geslaagd antwoord telt mee voor de daglimiet.
-  const tel = () => supa.from("ai_gebruik").upsert({ gebruiker: user.id, dag, aantal: aantal + 1 });
+  const { data: plek, error } = await supa.rpc("ai_neem", { g: user.id, d: dag, max: LIMIET });
+  if (error) return fout("Even niet beschikbaar", 503);
+  if (plek !== true) return fout("Daglimiet bereikt", 429);
+  const res = maakAntwoord(invoer, await vraagGroq(systeem, vraag));
+  if (!res.ok) await supa.rpc("ai_terug", { g: user.id, d: dag });
+  return res;
+});
 
-  const antwoord = await vraagGroq(systeem, vraag);
+function maakAntwoord(invoer: { soort?: unknown }, antwoord: Record<string, unknown> | null): Response {
   if (invoer.soort === "woord") {
     const betekenis = tekst(antwoord?.betekenis).trim();
     if (!betekenis) return fout("Betekenis opzoeken lukte niet", 502);
-    await tel();
     return Response.json({ betekenis });
   }
   if (invoer.soort === "vragen") {
     // de app controleert elke vraag zelf nog; hier alleen weigeren als er niets bruikbaars is
     const vragen = antwoord?.vragen;
     if (!Array.isArray(vragen) || vragen.length === 0) return fout("Vragen maken lukte niet", 502);
-    await tel();
     return Response.json({ vragen });
   }
   if (invoer.soort === "gesprek") {
     const zin = tekst(antwoord?.antwoord).trim();
     if (!zin) return fout("Antwoorden lukte niet", 502);
-    await tel();
     return Response.json({ antwoord: zin, tip: tekst(antwoord?.tip).trim() });
   }
   if (invoer.soort === "verbeter") {
     const verbeterd = tekst(antwoord?.verbeterd).trim(), uitleg = tekst(antwoord?.uitleg).trim();
     const goed = antwoord?.goed === true || antwoord?.goed === "true";
     if (!verbeterd && !goed) return fout("Nakijken lukte niet", 502);
-    await tel();
     return Response.json({ goed, verbeterd, uitleg });
   }
   const titel = tekst(antwoord?.titel).trim(), stuk = tekst(antwoord?.tekst).trim();
@@ -182,6 +182,5 @@ Deno.serve(async (req) => {
   if (lijst && typeof lijst === "object") {
     for (const [w, b] of Object.entries(lijst)) if (typeof b === "string" && w.trim()) woorden[w.trim().toLowerCase()] = b.trim();
   }
-  await tel();
   return Response.json({ titel, tekst: stuk, woorden });
-});
+}

@@ -196,3 +196,22 @@ create or replace view beheer_cijfers as
            (select count(distinct eigenaar) from records where gewijzigd > now() - interval '1 day') as actief_vandaag,
            (select soort from records group by soort order by count(*) desc limit 1) as populairste_soort;
 revoke all on beheer_cijfers from anon, authenticated;
+
+-- Daglimiet AI: een plek nemen gebeurt in één keer (ook bij veel verzoeken tegelijk), en mislukt antwoord geeft hem terug.
+-- Alleen de Edge Functions (service role) mogen dit; anders zet iemand zijn eigen teller terug.
+create or replace function ai_neem(g uuid, d date, max int) returns boolean
+language sql security definer set search_path = public as $$
+    with n as (
+        insert into ai_gebruik (gebruiker, dag, aantal) values (g, d, 1)
+        on conflict (gebruiker, dag) do update set aantal = ai_gebruik.aantal + 1 where ai_gebruik.aantal < max
+        returning 1
+    ) select exists (select 1 from n)
+$$;
+create or replace function ai_terug(g uuid, d date) returns void
+language sql security definer set search_path = public as $$
+    update ai_gebruik set aantal = greatest(0, aantal - 1) where gebruiker = g and dag = d
+$$;
+revoke execute on function ai_neem(uuid, date, int) from public, anon, authenticated;
+revoke execute on function ai_terug(uuid, date) from public, anon, authenticated;
+grant execute on function ai_neem(uuid, date, int) to service_role;
+grant execute on function ai_terug(uuid, date) to service_role;
