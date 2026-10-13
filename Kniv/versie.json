@@ -2,11 +2,11 @@
   "versie": "0.44.0",
   "mesnaam": "Gyuto",
   "nieuw": [
-    "Timers snappen nu ook \"1,5 uur\" en herinneringen \"vanavond om 8\" en \"'s ochtends\"",
-    "\"Over 2 maanden\" wordt geen datum in maart meer, en \"elke morgen\" herhaalt elke dag",
-    "Bon scannen: pindakaas en spinazie vallen niet meer weg",
+    "Timers snappen nu \"1,5 uur\", herinneringen \"vanavond om 8\" en \"'s ochtends\", en \"over 2 maanden\" is geen datum in maart meer",
+    "Vastgepinde notities uit een bakje met slotje zie je pas na Face ID",
     "Sync: als iets niet doorkwam, probeert Kniv het opnieuw in plaats van het te vergeten",
-    "Een lijst opnieuw delen maakt de link weer 30 dagen geldig",
-    "Deelpagina: potjes tonen hun uitgaven goed, en een storing is geen verlopen link meer"
+    "Een afgelopen focusronde wordt ook afgerond als je niet in Timers zat",
+    "Talen: een woord dat je al bewaard had komt er niet nog eens bij",
+    "Bon scannen: pindakaas en spinazie vallen niet meer weg"
   ]
 }
