@@ -318,7 +318,7 @@ public static class Sync
             if (d.OpgehaaldTot == null || t > d.OpgehaaldTot) d.OpgehaaldTot = t;
         }
         // Vol pakket: nog een ronde, maar alleen als de cursor opschoof (anders haalt hij eindeloos dezelfde minuut op).
-        if (rijen.Count == 1000 && d.OpgehaaldTot > cursorVoor) _nogmaals = true;
+        if (rijen.Count == 1000 && (cursorVoor == null || d.OpgehaaldTot > cursorVoor)) _nogmaals = true;
 
         // 2. Versturen wat hier veranderd is (laatste wijziging wint, upsert op id).
         var vuil = d.Notities.Where(n => !d.Gesynct.TryGetValue(n.Id, out var t) || n.Gewijzigd > t).ToList();
