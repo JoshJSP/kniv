@@ -310,13 +310,15 @@ public static class Sync
         r.EnsureSuccessStatusCode();
         var rijen = await r.Content.ReadFromJsonAsync<List<Rij>>() ?? new();
         var anderen = new List<(Guid door, string titel)>();
+        var cursorVoor = d.OpgehaaldTot;
         foreach (var rij in rijen)
         {
             veranderd |= Verwerk(rij, eersteKeer ? null : anderen);
             var t = (rij.Ontvangen ?? rij.Gewijzigd).UtcDateTime;
             if (d.OpgehaaldTot == null || t > d.OpgehaaldTot) d.OpgehaaldTot = t;
         }
-        if (rijen.Count == 1000) _nogmaals = true;
+        // Vol pakket: nog een ronde, maar alleen als de cursor opschoof (anders haalt hij eindeloos dezelfde minuut op).
+        if (rijen.Count == 1000 && d.OpgehaaldTot > cursorVoor) _nogmaals = true;
 
         // 2. Versturen wat hier veranderd is (laatste wijziging wint, upsert op id).
         var vuil = d.Notities.Where(n => !d.Gesynct.TryGetValue(n.Id, out var t) || n.Gewijzigd > t).ToList();
