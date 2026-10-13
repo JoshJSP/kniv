@@ -52,7 +52,7 @@ struct LeesInTalenKnop: View {
             melding = String(localized: "De pagina laden lukte niet.")
             return
         }
-        let html = Leestaal.tekst(data.prefix(1_000_000), tekenset: antwoord.textEncodingName)
+        let html = Leestaal.tekst(data, tekenset: antwoord.textEncodingName)
         let tekst = Leestaal.platteTekst(html)
         guard let code = Leestaal.vreemd(tekst) else {
             melding = String(localized: "Deze pagina is Nederlands of te kort om te lezen.")

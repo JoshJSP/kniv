@@ -19,15 +19,17 @@ enum Leestaal {
 
     /// HTML naar platte tekst. Eerst de alinea's (<p>), dat is meestal het artikel; anders alles zonder menu's en scripts.
     // ponytail: regex in plaats van een echte HTML-lezer; pakt bij rommelige sites ook wat menu mee. Upgrade: <article> eerst.
-    /// Bytes van een webpagina als tekst. Volgt de tekenset uit de header (Shift_JIS, windows-1251…);
+    /// Bytes van een webpagina als tekst, hoogstens `max` bytes. Volgt de tekenset uit de header (Shift_JIS, windows-1251…);
     /// anders UTF-8, ook als het afknippen midden in een teken viel. Latin-1 alleen als laatste redmiddel.
-    static func tekst(_ data: Data, tekenset: String?) -> String {
+    static func tekst(_ alles: Data, tekenset: String?, max: Int = 1_000_000) -> String {
+        let data = alles.prefix(max)
+        let afgeknipt = alles.count > max
         if let naam = tekenset?.lowercased(), naam != "utf-8", naam != "utf8" {
             let cf = CFStringConvertIANACharSetNameToEncoding(naam as CFString)
             if cf != kCFStringEncodingInvalidId,
                let s = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(cf))) { return s }
         }
-        for n in 0...3 where data.count > n {
+        for n in 0...(afgeknipt ? 3 : 0) where data.count > n {
             if let s = String(data: data.dropLast(n), encoding: .utf8) { return s }
         }
         return String(data: data, encoding: .isoLatin1) ?? ""
