@@ -46,6 +46,7 @@ struct ScoreblokView: View {
                 .onDelete { weg in
                     for i in weg.map({ stand[$0] }).sorted(by: >) {
                         spel.spelers.remove(at: i)
+                        if i < invoer.count { invoer.remove(at: i) }   // anders schoof de invoer naar de verkeerde speler
                         for r in spel.rondes.indices where i < spel.rondes[r].count { spel.rondes[r].remove(at: i) }
                     }
                 }

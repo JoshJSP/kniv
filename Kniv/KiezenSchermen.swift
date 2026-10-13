@@ -8,7 +8,8 @@ struct KiezenView: View {
     @AppStorage("kiesOpties") private var optiesTekst = "Pizza\nSushi\nThai\nBurgers"
 
     private var opties: Binding<[String]> {
-        Binding(get: { optiesTekst.split(separator: "\n").map(String.init) },
+        // dubbele namen gaven dubbele ForEach-id's (lijst uit een notitie, oude samen-worp)
+        Binding(get: { var gezien = Set<String>(); return optiesTekst.split(separator: "\n").map(String.init).filter { gezien.insert($0).inserted } },
                 set: { optiesTekst = $0.joined(separator: "\n") })
     }
 
@@ -240,7 +241,7 @@ struct DobbelView: View {
             Stepper("\(aantal) \(aantal == 1 ? "steen" : "stenen")", value: $aantal, in: 1...6)
                 .padding(.horizontal, 24)
                 .disabled(rolt)
-                .onChange(of: aantal) { tafel.zet(aantal) }
+                .onChange(of: aantal) { tafel.zet(aantal); uitkomst = [] }
             Spacer()
         }
         .padding(.top, 8)

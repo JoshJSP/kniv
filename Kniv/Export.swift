@@ -52,5 +52,6 @@ struct ExportKnop: View {
                 Button { url = Export.bestand() } label: { Label("Exporteer alles", systemImage: "doc.text") }
             }
         }
+        .onDisappear { url = nil }   // volgende keer een verse export, niet het oude bestand
     }
 }
