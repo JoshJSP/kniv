@@ -231,8 +231,15 @@ struct Profiel: Codable {
     /// Kort wachten zodat een reeks wijzigingen in één keer meegaat.
     func plan() {
         guard gebruiker != nil else { return }
-        // Een save die de sync zelf deed, is geen reden om opnieuw te synchroniseren.
-        if Date().timeIntervalSince(eigenOpslag) < 1 { return }
+        // Een save die de sync zelf deed, is geen reden om opnieuw te synchroniseren. Maar het kan ook een eigen
+        // bewerking vlak na een sync zijn: kijk zo nog even of er echt iets klaarstaat.
+        if Date().timeIntervalSince(eigenOpslag) < 1 {
+            Task {
+                try? await Task.sleep(for: .seconds(1.2))
+                if heeftVies() { plan() }
+            }
+            return
+        }
         if bezig { nogEens = true; return }
         gepland += 1
         let mijn = gepland
@@ -260,6 +267,14 @@ struct Profiel: Codable {
         var weg = teVerwijderen
         weg["\(type(of: x).soort):\(x.syncID.uuidString)"] = "\((x.eigenaarID ?? ik).uuidString),\(x.groepID?.uuidString ?? "")"
         teVerwijderen = weg
+    }
+
+    private func heeftVies() -> Bool {
+        let ctx = KnivOpslag.container.mainContext
+        return !teVerwijderen.isEmpty || !vies(Notitie.self, ctx).isEmpty || !vies(KnivTimer.self, ctx).isEmpty
+            || !vies(Pot.self, ctx).isEmpty || !vies(Uitgave.self, ctx).isEmpty || !vies(Prik.self, ctx).isEmpty
+            || !vies(PrikStem.self, ctx).isEmpty || !vies(GekozenTaal.self, ctx).isEmpty
+            || !vies(Leesstuk.self, ctx).isEmpty || !vies(BewaardWoord.self, ctx).isEmpty
     }
 
     private func vies<T: Synchroon>(_: T.Type, _ ctx: ModelContext) -> [T] {

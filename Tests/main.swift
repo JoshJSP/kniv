@@ -230,6 +230,7 @@ check(Kenteken.vind(in: "GZ-738-T") == "GZ738T", "kenteken: gewoon")
 check(Omzetter.mooi(0.001).contains("0,001"), "omzetten: klein getal \(Omzetter.mooi(0.001))")
 check(Omzetter.mooi(3.14159) == "3,14", "omzetten: gewoon getal \(Omzetter.mooi(3.14159))")
 check(Omzetter.reken("10:00 + 50 u")?.hasSuffix("(+2 dagen)") == true, "tijd: meer dan een dag \(Omzetter.reken("10:00 + 50 u") ?? "nil")")
+for _ in 0..<5 { check(kal.component(.weekday, from: Herinnering.vind(in: "dinsdag of anders donderdag sporten", nu: zaterdag)!.dag) == 3, "twee dagen: de eerste telt") }
 check(Omzetter.reken("23:00 + 2 u")?.hasSuffix("(volgende dag)") == true, "tijd: volgende dag")
 
 print("Alle Kniv-checks geslaagd")

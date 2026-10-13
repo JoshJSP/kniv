@@ -49,7 +49,8 @@ enum Herinnering {
             dag = kal.date(byAdding: .day, value: 1, to: vandaag)
         } else if !woorden.isDisjoint(with: ["vandaag", "vanavond", "today", "tonight"]) {
             dag = vandaag
-        } else if let wd = dagen.first(where: { woorden.contains($0.key) })?.value {
+        } else if let wd = dagen.filter({ woorden.contains($0.key) })   // bij twee dagen: de eerste in de tekst
+                    .min(by: { (klein.range(of: $0.key)?.lowerBound ?? klein.endIndex) < (klein.range(of: $1.key)?.lowerBound ?? klein.endIndex) })?.value {
             dag = kal.nextDate(after: vandaag, matching: DateComponents(weekday: wd), matchingPolicy: .nextTime)
         } else if let m = eersteMatch(#"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)(?:uari|uary|ruari|ruary|rt|ch|il|i|e|y|ustus|ust|tember|t|ober|ember)?\b"#, in: klein),
                   let d = Int(m[1]), let maand = maanden[m[2]] {
