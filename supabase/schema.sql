@@ -185,6 +185,9 @@ begin
             update records set eigenaar = opvolger where groep = g.id and eigenaar = auth.uid();
         end if;
     end loop;
+    -- Wat je in andermans groep zette (uitgaven in een potje) blijft staan, op naam van de groepseigenaar.
+    update records r set eigenaar = gr.eigenaar from groepen gr
+        where r.groep = gr.id and r.eigenaar = auth.uid() and gr.eigenaar <> auth.uid();
     delete from auth.users where id = auth.uid();
 end $$;
 grant execute on function verwijder_mij() to authenticated;
