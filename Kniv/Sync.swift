@@ -295,27 +295,27 @@ struct Profiel: Codable {
         }
         guard !rijen.isEmpty else { return }
         do {
+            var mislukt = Set<UUID>()
             do {
                 try await client.from("records").upsert(rijen).execute()
             } catch {
                 // Eén rij die de database weigert, mag de rest niet tegenhouden.
-                var geweigerd = 0
                 for r in rijen {
-                    do { try await client.from("records").upsert([r]).execute() } catch { geweigerd += 1 }
+                    do { try await client.from("records").upsert([r]).execute() } catch { mislukt.insert(r.id) }
                 }
-                if geweigerd == rijen.count { throw error }
-                fout = String(localized: "\(geweigerd) dingen konden niet synchroniseren.")
+                if mislukt.count == rijen.count { throw error }
+                fout = String(localized: "\(mislukt.count) dingen konden niet synchroniseren.")
             }
-            notities.forEach { $0.gesynct = $0.gewijzigd }
-            timers.forEach { $0.gesynct = $0.gewijzigd }
-            potten.forEach { $0.gesynct = $0.gewijzigd }
-            uitgaven.forEach { $0.gesynct = $0.gewijzigd }
-            prikken.forEach { $0.gesynct = $0.gewijzigd }
-            prikstemmen.forEach { $0.gesynct = $0.gewijzigd }
-            talen.forEach { $0.gesynct = $0.gewijzigd }
-            leesstukken.forEach { $0.gesynct = $0.gewijzigd }
-            woorden.forEach { $0.gesynct = $0.gewijzigd }
-            teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil }
+            // Gesynct = de versie die echt verstuurd is. Wie tijdens het uploaden iets aanpast, blijft vies en gaat de volgende keer mee.
+            // Geweigerde rijen blijven ook vies, zodat ze niet stil verdwijnen.
+            let verstuurd = Dictionary(rijen.filter { !$0.verwijderd }.map { ($0.id, $0.gewijzigd) }, uniquingKeysWith: { a, _ in a })
+            func markeer<T: Synchroon>(_ xs: [T]) {
+                for x in xs where !mislukt.contains(x.syncID) { x.gesynct = verstuurd[x.syncID] ?? x.gewijzigd }
+            }
+            markeer(notities); markeer(timers); markeer(potten); markeer(uitgaven); markeer(prikken)
+            markeer(prikstemmen); markeer(talen); markeer(leesstukken); markeer(woorden)
+            let mislukteWeg = Set(weg.keys.filter { k in UUID(uuidString: String(k.split(separator: ":").last ?? "")).map(mislukt.contains) ?? false })
+            teVerwijderen = teVerwijderen.filter { weg[$0.key] == nil || mislukteWeg.contains($0.key) }
             eigenOpslag = Date()
             try? ctx.save()
         } catch {
@@ -447,6 +447,11 @@ struct Profiel: Codable {
         guard let ik = gebruiker else { return nil }
         do {
             if let g = x.groepID {
+                // Opnieuw delen geeft de link weer 30 dagen; anders stuur je na een maand een dode link door.
+                if (x.eigenaarID ?? ik) == ik {
+                    let tot = ISO8601DateFormatter().string(from: Date().addingTimeInterval(30 * 86_400))
+                    _ = try? await client.from("groepen").update(["verloopt": tot]).eq("id", value: g.uuidString).execute()
+                }
                 let groep: Groep = try await client.from("groepen").select("id,deel_token").eq("id", value: g.uuidString)
                     .single().execute().value
                 return groep.deel_token
