@@ -48,8 +48,16 @@ import Observation
     }
 
     func stop() {
+        let sprak = spreker.isSpeaking
         spreker.stopSpeaking(at: .immediate)
-        klaar(nil)
+        bezig = false
+        gesproken = nil
+        zin = nil
+        // Na stopSpeaking loopt de audio nog heel even; meteen uitzetten mislukt dan ("busy") en de muziek blijft stil.
+        Task {
+            if sprak { try? await Task.sleep(for: .milliseconds(300)) }
+            if !bezig { try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation) }
+        }
     }
 
     private func klaar(_ id: ObjectIdentifier?) {
