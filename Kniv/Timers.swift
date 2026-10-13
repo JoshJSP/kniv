@@ -369,7 +369,7 @@ struct TimersView: View {
                                 Label("Deel met vrienden", systemImage: "person.2")
                             }
                         }
-                        Button(role: .destructive) { Meldingen.annuleer(t.id.uuidString); Sync.shared.markeerVerwijderd(t); ctx.delete(t) } label: {
+                        Button(role: .destructive) { t.herstel(); Sync.shared.markeerVerwijderd(t); ctx.delete(t) } label: {
                             Label("Verwijder", systemImage: "trash")
                         }
                     }

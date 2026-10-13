@@ -4,7 +4,10 @@ import SwiftUI
 /// Vastgepinde notities, bovenaan Vastleggen.
 struct VastgepindRij: View {
     @Query(filter: #Predicate<Notitie> { $0.vastgepind == true && $0.weggegooid == nil }, sort: \Notitie.gewijzigd, order: .reverse)
-    private var vast: [Notitie]
+    private var alleVast: [Notitie]
+    let dicht: Set<String>   // vergrendelde bakjes die nog niet open zijn
+    init(dicht: Set<String> = []) { self.dicht = dicht }
+    private var vast: [Notitie] { alleVast.filter { !($0.bakjeNaam.map(dicht.contains) ?? false) } }
 
     var body: some View {
         if !vast.isEmpty {

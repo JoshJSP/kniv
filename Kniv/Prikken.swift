@@ -65,6 +65,7 @@ extension PrikStem: Synchroon {
 struct PrikkenView: View {
     @Environment(\.modelContext) private var ctx
     @Query(sort: \Prik.gemaakt, order: .reverse) private var prikken: [Prik]
+    @Query private var stemmen: [PrikStem]
     @State private var nieuw = false
 
     var body: some View {
@@ -82,7 +83,13 @@ struct PrikkenView: View {
                     }
                 }
             }
-            .onDelete { for i in $0 { Sync.shared.markeerVerwijderd(prikken[i]); ctx.delete(prikken[i]) } }
+            .onDelete { rijen in
+                for i in rijen {
+                    // de stemmen gaan mee weg, anders blijven ze los in de cloud en bij de anderen staan
+                    for s in stemmen where s.prikUID == prikken[i].uid { Sync.shared.markeerVerwijderd(s); ctx.delete(s) }
+                    Sync.shared.markeerVerwijderd(prikken[i]); ctx.delete(prikken[i])
+                }
+            }
             Button { nieuw = true } label: { Label("Nieuwe prik", systemImage: "plus") }
         }
         .scrollContentBackground(.hidden)

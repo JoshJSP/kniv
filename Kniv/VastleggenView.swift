@@ -27,8 +27,10 @@ struct VastleggenView: View {
                 invoerKaart
                 if let voorstel { herinneringBalk(voorstel.notitie, voorstel.moment) }
                 twijfelSectie
-                VastgepindRij()
-                KluisRij()
+                // ook vastgepinde notities en bonnen uit een vergrendeld bakje pas na Face ID
+                let dicht = Set(bakjes.filter { $0.vergrendeld && !ontgrendeld.contains($0.naam) }.map(\.naam))
+                VastgepindRij(dicht: dicht)
+                KluisRij(dicht: dicht)
                 ForEach(Volgorde.slim(bakjes)) { bakje in
                     let lijst = notities(in: bakje)
                     if !lijst.isEmpty || (bakje.vergrendeld && zoek.isEmpty && heeftNotities(bakje)) {

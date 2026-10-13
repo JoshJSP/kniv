@@ -533,9 +533,10 @@ struct TeamsView: View {
                 OptieEditor(opties: $namen, placeholder: "Naam toevoegen")
                 Stepper("\(aantal) teams", value: $aantal, in: 2...max(2, namen.count))
                     .padding(.horizontal, 6)
+                    .onChange(of: namen.count) { _, n in aantal = min(aantal, max(2, n)) }
                 Button {
                     var rng = SystemRandomNumberGenerator()
-                    withAnimation(.spring(duration: 0.45, bounce: 0.3)) { teams = Teams.verdeel(namen, in: aantal, rng: &rng) }
+                    withAnimation(.spring(duration: 0.45, bounce: 0.3)) { teams = Teams.verdeel(namen, in: min(aantal, max(2, namen.count)), rng: &rng) }
                 } label: { Label("Verdeel", systemImage: "shuffle").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)

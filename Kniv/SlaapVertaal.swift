@@ -14,7 +14,8 @@ struct SlaapView: View {
                     DatePicker("Ik wil wakker worden om", selection: $wakker, displayedComponents: .hourAndMinute)
                     ForEach(Slaap.bedtijden(wakker: wakker), id: \.cycli) { b in
                         Button {
-                            gepland = b.tijd
+                            // het kwartier van tevoren is al voorbij: dan komt er geen melding, dus ook geen bel tonen
+                            gepland = b.tijd.addingTimeInterval(-15 * 60) > Date() ? b.tijd : nil
                             Meldingen.plan("slaap", String(localized: "Over een kwartier naar bed voor \(b.cycli) slaapcycli"),
                                            na: b.tijd.addingTimeInterval(-15 * 60).timeIntervalSinceNow)
                         } label: {

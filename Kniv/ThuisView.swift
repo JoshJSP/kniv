@@ -118,6 +118,7 @@ struct ThuisView: View {
         .onAppear { toonNieuw = VersieInfo.huidig.map { $0.versie != laatstGezien } ?? false }
         .task(id: fase) {
             guard fase == .active else { return }
+            Pomodoro.shared.controleer()   // anders blijft de tegel "Focus loopt" zeggen na een afgelopen ronde
             await Sync.shared.nu()
             await WeerDienst.ververs()
             let gevonden = await Updater.zoek()
@@ -144,6 +145,7 @@ struct ThuisView: View {
             Button { AppStatus.shared.actie = "lijst" } label: { Label("Afvinklijstje", systemImage: "checklist") }
         case .timers:
             Button {
+                Pomodoro.shared.controleer()
                 if !Pomodoro.shared.loopt { Pomodoro.shared.start() }
                 pad = NavigationPath([Mes.timers])
             } label: { Label("Start focus", systemImage: "timer") }
@@ -172,7 +174,7 @@ struct ThuisView: View {
 
     /// Het lemmet klapt kort uit de tegel, daarna zoomt het mesje open.
     private func open(_ mes: Mes) {
-        guard mes.klaar else { return }
+        guard mes.klaar, uitklappend == nil else { return }   // dubbele tik opent hem niet twee keer
         if minderBeweging { pad.append(mes); return }
         withAnimation(.spring(duration: 0.22, bounce: 0.35)) { uitklappend = mes }
         Task {

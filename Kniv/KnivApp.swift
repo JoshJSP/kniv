@@ -109,6 +109,7 @@ struct StartFocusIntent: AppIntent {
     static var openAppWhenRun = true
 
     @MainActor func perform() async throws -> some IntentResult {
+        Pomodoro.shared.controleer()   // een ronde die al afliep eerst afronden
         if !Pomodoro.shared.loopt { Pomodoro.shared.start() }
         AppStatus.shared.openTimers = true
         return .result()

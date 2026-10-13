@@ -38,7 +38,10 @@ struct GarantieSectie: View {
 
 /// In Vastleggen: alle bonnen in de kluis, met hoe lang de garantie nog loopt.
 struct KluisRij: View {
-    @Query(filter: #Predicate<Notitie> { $0.garantieTot != nil && $0.weggegooid == nil }, sort: \Notitie.gemaakt, order: .reverse) private var bonnen: [Notitie]
+    @Query(filter: #Predicate<Notitie> { $0.garantieTot != nil && $0.weggegooid == nil }, sort: \Notitie.gemaakt, order: .reverse) private var alleBonnen: [Notitie]
+    let dicht: Set<String>   // vergrendelde bakjes die nog niet open zijn
+    init(dicht: Set<String> = []) { self.dicht = dicht }
+    private var bonnen: [Notitie] { alleBonnen.filter { !($0.bakjeNaam.map(dicht.contains) ?? false) } }
 
     var body: some View {
         if !bonnen.isEmpty {
