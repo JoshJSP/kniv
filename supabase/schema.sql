@@ -62,6 +62,8 @@ create index if not exists records_ontvangen on records (ontvangen);
 create or replace function records_laatste_wint() returns trigger
 language plpgsql as $$
 begin
+    -- Een toestel met een klok die vooruit loopt mag niet uren lang elke andere wijziging blokkeren.
+    new.gewijzigd := least(new.gewijzigd, now() + interval '5 minutes');
     if tg_op = 'UPDATE' and new.gewijzigd < old.gewijzigd then
         return old;
     end if;
