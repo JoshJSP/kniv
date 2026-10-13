@@ -1,4 +1,4 @@
-import type { KnivRecord } from "../../lib";
+import { geldFormaat, zelfdeId, type KnivRecord } from "../../lib";
 
 type Uitgave = { omschrijving?: string; bedrag?: number; betaaldDoor?: string; voor?: string[]; datum?: string; pot?: string };
 
@@ -28,10 +28,9 @@ function afrekenen(uitgaven: Uitgave[]) {
 }
 
 export default function Potje({ pot, alle }: { pot: KnivRecord; alle: KnivRecord[] }) {
-  const valuta = typeof pot.data?.valuta === "string" ? pot.data.valuta : "EUR";
-  const geld = new Intl.NumberFormat("nl-NL", { style: "currency", currency: valuta });
+  const geld = geldFormaat(pot.data?.valuta);
   const uitgaven = alle
-    .filter((r) => r.soort === "uitgave" && (r.data as Uitgave).pot === pot.id)
+    .filter((r) => r.soort === "uitgave" && zelfdeId((r.data as Uitgave).pot, pot.id))
     .map((r) => r.data as Uitgave)
     .sort((a, b) => (b.datum ?? "").localeCompare(a.datum ?? ""));
   const totaal = uitgaven.reduce((s, u) => s + (u.bedrag ?? 0), 0);

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { dagenTot, doelVan, haalDeel, samenvatting, type Deel, type KnivRecord } from "../../lib";
+import { dagenTot, doelVan, haalDeel, samenvatting, verzegeld, type Deel, type KnivRecord } from "../../lib";
 import Ververs from "./Ververs";
 import Potje from "./Potje";
 import Prikje from "./Prikje";
@@ -72,8 +72,6 @@ export default async function Gedeeld({ params }: Props) {
   }
 
   const doel = deel.soort === "countdown" ? doelVan(deel) : null;
-  // Tijdcapsules blijven dicht tot hun datum.
-  const verzegeld = (r: KnivRecord) => typeof r.data?.verzegeldTot === "string" && Date.parse(r.data.verzegeldTot) > Date.now();
   const notities = deel.records.filter((r) => r.soort === "notitie" && !verzegeld(r));
   const potten = deel.records.filter((r) => r.soort === "pot");
   const prikken = deel.records.filter((r) => r.soort === "prik");
@@ -93,9 +91,9 @@ export default async function Gedeeld({ params }: Props) {
 
       {doel && (
         <section className="glas midden">
-          <div className="teller">{dagenTot(doel)}</div>
+          <div className="teller">{dagenTot(doel) === 0 ? "Vandaag" : dagenTot(doel)}</div>
           <p className="zacht" style={{ marginTop: 8 }}>
-            {dagenTot(doel) === 1 ? "dag" : "dagen"} tot{" "}
+            {dagenTot(doel) === 0 ? "" : dagenTot(doel) === 1 ? "dag tot " : "dagen tot "}
             {doel.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Amsterdam" })}
           </p>
         </section>

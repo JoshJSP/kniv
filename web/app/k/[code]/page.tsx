@@ -7,12 +7,23 @@ const schoon = (code: string) => code.toUpperCase().replace(/[^A-Z]/g, "").slice
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const code = schoon((await params).code);
   const titel = "Kies mee in Kniv";
-  const description = `Draai samen aan het rad of stem mee. Code ${code}`;
+  const description = code.length === 4 ? `Draai samen aan het rad of stem mee. Code ${code}` : "Draai samen aan het rad of stem mee.";
   return { title: `${titel} · Kniv`, description, robots: { index: false }, openGraph: { title: titel, description } };
 }
 
 export default async function SamenKiezen({ params }: Props) {
   const code = schoon((await params).code);
+  if (code.length !== 4) {
+    return (
+      <main className="wrap smal">
+        <section className="glas midden" style={{ marginTop: "12vh" }}>
+          <img src="/icon.png" alt="" width={64} height={64} style={{ borderRadius: 14 }} />
+          <h2 style={{ marginTop: 16 }}>Deze code klopt niet</h2>
+          <p className="zacht">Een code heeft vier letters. Vraag degene die hem stuurde om de link opnieuw te sturen.</p>
+        </section>
+      </main>
+    );
+  }
   return (
     <main className="wrap smal">
       <section className="glas midden" style={{ marginTop: "10vh", padding: "36px 24px" }}>

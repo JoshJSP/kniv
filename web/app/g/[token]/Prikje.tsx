@@ -1,10 +1,10 @@
-import type { KnivRecord } from "../../lib";
+import { zelfdeId, type KnivRecord } from "../../lib";
 
 type Stem = { prik?: string; naam?: string; ja?: string[] };
 
 export default function Prikje({ prik, alle }: { prik: KnivRecord; alle: KnivRecord[] }) {
   const opties = ((prik.data?.opties as string[] | undefined) ?? []).slice().sort();
-  const stemmen = alle.filter((r) => r.soort === "prikstem" && (r.data as Stem).prik === prik.id).map((r) => r.data as Stem);
+  const stemmen = alle.filter((r) => r.soort === "prikstem" && zelfdeId((r.data as Stem).prik, prik.id)).map((r) => r.data as Stem);
   const aantal = (d: string) => stemmen.filter((s) => s.ja?.includes(d)).length;
   const top = Math.max(0, ...opties.map(aantal));
   const tijd = (d: string) =>

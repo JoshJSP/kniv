@@ -23,22 +23,33 @@ export type Deel = {
   mensen?: Record<string, { naam: string; avatar: string | null }>;
 };
 
-/** Haalt een gedeelde groep op; null = onbekend of verlopen. */
+/** Haalt een gedeelde groep op; null = onbekend of verlopen. Een storing gooit een fout (error.tsx), zodat die niet als "verlopen" verschijnt. */
 export const haalDeel = cache(async (token: string): Promise<Deel | null> => {
   if (!/^[A-Za-z0-9_-]{1,100}$/.test(token)) return null;
-  try {
-    const res = await fetch(`${SUPABASE}/rest/v1/rpc/deelpagina`, {
-      method: "POST",
-      headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as Deel | null;
-  } catch {
-    return null;
-  }
+  const res = await fetch(`${SUPABASE}/rest/v1/rpc/deelpagina`, {
+    method: "POST",
+    headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`deelpagina ${res.status}`);
+  return (await res.json()) as Deel | null;
 });
+
+/** Tijdcapsules blijven dicht tot hun datum. */
+export const verzegeld = (r: KnivRecord) => typeof r.data?.verzegeldTot === "string" && Date.parse(r.data.verzegeldTot) > Date.now();
+
+/** Geldformaat; een onbekende valutacode valt terug op euro. */
+export function geldFormaat(valuta: unknown): Intl.NumberFormat {
+  try {
+    return new Intl.NumberFormat("nl-NL", { style: "currency", currency: typeof valuta === "string" ? valuta : "EUR" });
+  } catch {
+    return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" });
+  }
+}
+
+/** Zelfde id, ook als de app hem in hoofdletters opsloeg (Swift UUID) en Postgres kleine letters geeft. */
+export const zelfdeId = (a: unknown, b: string) => typeof a === "string" && a.toLowerCase() === b.toLowerCase();
 
 /** Datum van een countdown, als die er is. */
 export function doelVan(d: Deel): Date | null {
@@ -49,8 +60,10 @@ export function doelVan(d: Deel): Date | null {
   return null;
 }
 
-export function dagenTot(doel: Date): number {
-  return Math.max(0, Math.ceil((doel.getTime() - Date.now()) / 86_400_000));
+/** Kalenderdagen tot de datum in Nederlandse tijd, zoals de app; 0 = vandaag. */
+export function dagenTot(doel: Date, nu = new Date()): number {
+  const dag = (d: Date) => Date.parse(d.toLocaleDateString("en-CA", { timeZone: "Europe/Amsterdam" }));
+  return Math.max(0, Math.round((dag(doel) - dag(nu)) / 86_400_000));
 }
 
 /** Korte samenvatting voor previews: "nog 12 dagen" of "5 items". */
@@ -68,8 +81,9 @@ export function samenvatting(d: Deel): string {
   }
   if (d.soort === "pot") {
     const totaal = potUitgaven.reduce((s, r) => s + (Number(r.data?.bedrag) || 0), 0);
-    return `${potUitgaven.length} uitgaven · ${new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(totaal)}`;
+    const valuta = d.records.find((r) => r.soort === "pot")?.data?.valuta;
+    return `${potUitgaven.length === 1 ? "1 uitgave" : `${potUitgaven.length} uitgaven`} · ${geldFormaat(valuta).format(totaal)}`;
   }
-  const items = d.records.reduce((n, r) => n + (r.data?.items?.length || (r.data?.tekst ? 1 : 0)), 0);
+  const items = d.records.filter((r) => !verzegeld(r)).reduce((n, r) => n + (r.data?.items?.length || (r.data?.tekst ? 1 : 0)), 0);
   return items === 1 ? "1 item" : `${items} items`;
 }

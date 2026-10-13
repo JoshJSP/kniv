@@ -154,7 +154,9 @@ language sql stable security definer set search_path = public as $$
         'eigenaar', (select naam from profielen where id = g.eigenaar),
         'records', coalesce((select jsonb_agg(jsonb_build_object('id', r.id, 'soort', r.soort, 'data', r.data, 'door', p.naam, 'avatar', p.avatar) order by r.gewijzigd)
                              from records r left join profielen p on p.id = coalesce(r.gewijzigd_door, r.eigenaar)
-                             where r.groep = g.id and not r.verwijderd), '[]'::jsonb),
+                             where r.groep = g.id and not r.verwijderd
+                               -- tijdcapsules blijven ook hier dicht tot hun datum
+                               and not (case when r.data->>'verzegeldTot' ~ '^\d{4}-\d\d-\d\d' then (r.data->>'verzegeldTot')::timestamptz > now() else false end)), '[]'::jsonb),
         -- naam + foto van iedereen die een item toevoegde, voor het profielbolletje per item
         'mensen', coalesce((select jsonb_object_agg(p.id, jsonb_build_object('naam', p.naam, 'avatar', p.avatar))
                             from profielen p
