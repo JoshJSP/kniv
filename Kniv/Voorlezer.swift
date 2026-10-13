@@ -56,7 +56,11 @@ import Observation
         // Na stopSpeaking loopt de audio nog heel even; meteen uitzetten mislukt dan ("busy") en de muziek blijft stil.
         Task {
             if sprak { try? await Task.sleep(for: .milliseconds(300)) }
-            if !bezig { try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation) }
+            // alleen als de sessie nog van ons is: wie intussen begon op te nemen, houdt zijn microfoon
+            let sessie = AVAudioSession.sharedInstance()
+            if !bezig, sessie.category == .playback, sessie.mode == .spokenAudio {
+                try? sessie.setActive(false, options: .notifyOthersOnDeactivation)
+            }
         }
     }
 
