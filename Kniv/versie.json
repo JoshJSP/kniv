@@ -1,11 +1,12 @@
 {
-  "versie": "0.43.0",
-  "mesnaam": "Ulu",
+  "versie": "0.44.0",
+  "mesnaam": "Gyuto",
   "nieuw": [
-    "Talen: kanji oefenen met de woorden uit je eigen Japanse stukjes",
-    "Talen en Gesprekje laten zien hoeveel online vragen je vandaag nog hebt",
-    "Ik ben er om: bij OV plan je de trein in één tik bij NS",
-    "Spraak uitschrijven telt alleen nog mee als het gelukt is",
-    "Windows: je bewaarde woorden uit Talen, met kaartjes om te oefenen"
+    "Timers snappen nu ook \"1,5 uur\" en herinneringen \"vanavond om 8\" en \"'s ochtends\"",
+    "\"Over 2 maanden\" wordt geen datum in maart meer, en \"elke morgen\" herhaalt elke dag",
+    "Bon scannen: pindakaas en spinazie vallen niet meer weg",
+    "Sync: als iets niet doorkwam, probeert Kniv het opnieuw in plaats van het te vergeten",
+    "Een lijst opnieuw delen maakt de link weer 30 dagen geldig",
+    "Deelpagina: potjes tonen hun uitgaven goed, en een storing is geen verlopen link meer"
   ]
 }
