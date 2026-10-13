@@ -326,6 +326,7 @@ struct InstellingenView: View {
     @State private var vraagVerwijderen = false
     @Query private var plekken: [Plek]
     @State private var nieuwBakje = ""
+    @State private var plekFout = false
 
     var body: some View {
         Form {
@@ -363,11 +364,14 @@ struct InstellingenView: View {
             }
 
             Section {
-                Button { Task { await PlekWachter.shared.bewaarHier(naam: String(localized: "Thuis"), soort: "thuis") } } label: {
+                Button { Task { plekFout = !(await PlekWachter.shared.bewaarHier(naam: String(localized: "Thuis"), soort: "thuis")) } } label: {
                     LabeledContent("Huidige plek is Thuis", value: plekken.contains { $0.soort == "thuis" } ? "✓" : "")
                 }
-                Button { Task { await PlekWachter.shared.bewaarHier(naam: String(localized: "School"), soort: "school") } } label: {
+                Button { Task { plekFout = !(await PlekWachter.shared.bewaarHier(naam: String(localized: "School"), soort: "school")) } } label: {
                     LabeledContent("Huidige plek is School", value: plekken.contains { $0.soort == "school" } ? "✓" : "")
+                }
+                if plekFout {
+                    Text("Locatie niet gevonden").font(.footnote).foregroundStyle(.secondary)
                 }
                 Toggle("Melding bij de supermarkt", isOn: Binding(get: { supermarkt }, set: { supermarkt = $0; PlekWachter.shared.supermarktAan = $0 }))
                 ForEach(plekken.filter { $0.soort == "eigen" }) { Label($0.naam, systemImage: "mappin") }
