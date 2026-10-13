@@ -231,6 +231,10 @@ check(Omzetter.mooi(0.001).contains("0,001"), "omzetten: klein getal \(Omzetter.
 check(Omzetter.mooi(3.14159) == "3,14", "omzetten: gewoon getal \(Omzetter.mooi(3.14159))")
 check(Omzetter.reken("10:00 + 50 u")?.hasSuffix("(+2 dagen)") == true, "tijd: meer dan een dag \(Omzetter.reken("10:00 + 50 u") ?? "nil")")
 for _ in 0..<5 { check(kal.component(.weekday, from: Herinnering.vind(in: "dinsdag of anders donderdag sporten", nu: zaterdag)!.dag) == 3, "twee dagen: de eerste telt") }
+let japans = Data("日本語の文章".utf8)
+check(Leestaal.tekst(japans.prefix(japans.count - 1), tekenset: nil).hasPrefix("日本語の"), "pagina: afgeknipt UTF-8-teken")
+check(Leestaal.tekst(Data([0x63, 0x61, 0x66, 0xE9]), tekenset: "iso-8859-1") == "café", "pagina: tekenset uit de header")
+check(Leestaal.tekst(Data([0x63, 0x61, 0x66, 0xE9]), tekenset: nil) == "café", "pagina: latin-1 als laatste")
 check(Omzetter.reken("23:00 + 2 u")?.hasSuffix("(volgende dag)") == true, "tijd: volgende dag")
 
 print("Alle Kniv-checks geslaagd")

@@ -123,7 +123,9 @@ enum TaalDienst {
         vraag.httpBody = try JSONEncoder().encode(body)
         let data: Data, antwoord: URLResponse
         do { (data, antwoord) = try await URLSession.shared.data(for: vraag) }
-        catch is URLError { throw Fout.geenInternet }
+        // Alleen echt geen verbinding is "geen internet"; een time-out (traag antwoord) is gewoon mislukt.
+        catch let e as URLError where [.notConnectedToInternet, .networkConnectionLost, .dataNotAllowed,
+                                       .cannotFindHost, .cannotConnectToHost].contains(e.code) { throw Fout.geenInternet }
         catch { throw Fout.mislukt }
         switch (antwoord as? HTTPURLResponse)?.statusCode {
         case 200: return data

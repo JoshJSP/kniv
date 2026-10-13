@@ -12,6 +12,7 @@ struct GesprekView: View {
     @State private var tips: [Int: String] = [:]   // index van jouw beurt → tip
     @State private var invoer = ""
     @State private var bezig = false
+    @State private var weg = false   // scherm dicht: een laat antwoord niet meer voorlezen
     @State private var fout: String?
     @State private var vermogen: TaalVermogen?
     @State private var over: Int?   // online vragen vandaag nog over; nil bij talen die de iPhone zelf kent
@@ -30,7 +31,9 @@ struct GesprekView: View {
                 .accessibilityLabel("Antwoorden voorlezen")
         }
         .task(id: taal) { vermogen = await TaalDienst.vermogen(taal) }
+        .onAppear { weg = false }
         .onDisappear {
+            weg = true
             Voorlezer.shared.stop()
             Task { _ = await spraak.stop() }
         }
@@ -122,6 +125,7 @@ struct GesprekView: View {
                     .foregroundStyle(spraak.bezig ? Color.white : Color.primary)
             }
             .buttonStyle(.plain)
+            .disabled(bezig && !spraak.bezig)   // niet opnemen terwijl het antwoord nog komt; stoppen mag altijd
             .accessibilityLabel(spraak.bezig ? Text("Stop met inspreken") : Text("Inspreken"))
             TextField("Zeg iets…", text: spraak.bezig ? .constant(spraak.tekst) : $invoer, axis: .vertical)
                 .lineLimit(1...4)
@@ -175,7 +179,7 @@ struct GesprekView: View {
             let a = try await TaalDienst.gesprek(beurten, onderwerp: onderwerp, taal: taal, niveau: niveau, vermogen: vermogen)
             if !a.tip.isEmpty, let laatste = beurten.lastIndex(where: { $0.rol == .ik }) { tips[laatste] = a.tip }
             beurten.append(Gesprek.Beurt(rol: .kniv, tekst: a.antwoord))
-            if voorlezen { Voorlezer.shared.lees(a.antwoord, taal: taal) }
+            if voorlezen, !weg, !spraak.bezig { Voorlezer.shared.lees(a.antwoord, taal: taal) }
         } catch {
             fout = (error as? TaalDienst.Fout ?? .mislukt).melding
         }

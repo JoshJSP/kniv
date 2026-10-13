@@ -47,11 +47,12 @@ struct LeesInTalenKnop: View {
         defer { bezig = false }
         var vraag = URLRequest(url: url, timeoutInterval: 10)
         vraag.setValue("Mozilla/5.0 (iPhone) Kniv", forHTTPHeaderField: "User-Agent")
-        guard let (data, _) = try? await URLSession.shared.data(for: vraag),
-              let html = String(data: data.prefix(1_000_000), encoding: .utf8) ?? String(data: data.prefix(1_000_000), encoding: .isoLatin1) else {
+        guard let (data, antwoord) = try? await URLSession.shared.data(for: vraag),
+              (200..<300).contains((antwoord as? HTTPURLResponse)?.statusCode ?? 200) else {
             melding = String(localized: "De pagina laden lukte niet.")
             return
         }
+        let html = Leestaal.tekst(data.prefix(1_000_000), tekenset: antwoord.textEncodingName)
         let tekst = Leestaal.platteTekst(html)
         guard let code = Leestaal.vreemd(tekst) else {
             melding = String(localized: "Deze pagina is Nederlands of te kort om te lezen.")

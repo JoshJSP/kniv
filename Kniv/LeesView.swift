@@ -209,7 +209,15 @@ struct WoordKaart: View {
             }
             Spacer(minLength: 0)
             Button {
-                ctx.insert(BewaardWoord(taal: taal, woord: woord, betekenis: betekenis ?? "", zin: zin))
+                // Al bewaard (uit een ander stukje)? Dan niet nog een keer, wel een ontbrekende betekenis aanvullen.
+                let t = taal
+                let al = ((try? ctx.fetch(FetchDescriptor<BewaardWoord>(predicate: #Predicate { $0.taal == t }))) ?? [])
+                    .first { $0.woord.lowercased() == woord.lowercased() }
+                if let al {
+                    if al.betekenis.isEmpty, let betekenis, !betekenis.isEmpty { al.betekenis = betekenis; al.gewijzigd = Date() }
+                } else {
+                    ctx.insert(BewaardWoord(taal: taal, woord: woord, betekenis: betekenis ?? "", zin: zin))
+                }
                 try? ctx.save()
                 bewaard = true
             } label: {
