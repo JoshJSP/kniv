@@ -191,6 +191,12 @@ public static class Sync
     {
         while (_bezig) await Task.Delay(100);
         await Nu();   // eerst nog versturen wat er ligt
+        if (Wie != null && Opslag.Data.Weg.Count > 0)
+        {
+            // Offline: dan zouden verwijderde notities op de server blijven staan en na inloggen terugkomen.
+            Zet("Uitloggen kan nu niet: er staan nog wijzigingen klaar. Probeer het als je weer internet hebt.");
+            return;
+        }
         var token = Wie?.AccessToken;
         Afmelden();
         Opruimen();
@@ -278,9 +284,10 @@ public static class Sync
     /// Voor Mijn woorden: alleen lezen, los van de notitie-sync en zijn ophaalcursor.
     public static async Task<List<Rij>?> HaalSoort(string soort)
     {
-        if (await Token() is not { } token) return null;
         try
         {
+            // ook het verversen van het token kan offline mislukken
+            if (await Token() is not { } token) return null;
             var r = await Http.SendAsync(Verzoek(HttpMethod.Get,
                 $"/rest/v1/records?select=*&soort=eq.{Uri.EscapeDataString(soort)}&verwijderd=eq.false&order=gewijzigd.desc&limit=2000", token));
             return r.IsSuccessStatusCode ? await r.Content.ReadFromJsonAsync<List<Rij>>() : null;

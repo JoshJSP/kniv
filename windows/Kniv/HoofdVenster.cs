@@ -217,7 +217,8 @@ static class Invoer
                 e.Handled = true;
                 await Bestanden(await inhoud.GetStorageItemsAsync(), tb, bewaard);
             }
-            else if (inhoud.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap))
+            else if (inhoud.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap)
+                     && !inhoud.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
             {
                 e.Handled = true;
                 try

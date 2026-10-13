@@ -52,7 +52,7 @@ enum BonParser {
     static let heelWoord: Set<String> = ["pin", "btw", "vat", "cash", "change", "visa"]
 
     static func bevat(_ klein: String, _ woorden: [String]) -> Bool {
-        woorden.contains { heelWoord.contains($0) ? klein.range(of: "\b\($0)\b", options: .regularExpression) != nil : klein.contains($0) }
+        woorden.contains { heelWoord.contains($0) ? klein.range(of: #"\b"# + $0 + #"\b"#, options: .regularExpression) != nil : klein.contains($0) }
     }
 
     static func regels(_ tekst: String) -> [Regel] {

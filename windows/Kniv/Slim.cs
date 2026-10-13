@@ -37,14 +37,14 @@ public static class Kenteken
 
     static string? Veld(System.Text.Json.JsonElement e, string veld) => e.TryGetProperty(veld, out var v) ? v.GetString() : null;
 
-    /// Eén regel: "GZ-738-T · Mitsubishi Asx · wit · 2015 · APK tot 26-09-2027 · verzekerd". Null als de RDW het niet kent.
+    /// Eén regel: "GZ-738-T · Mitsubishi Asx · wit · 2015 · APK tot 26-09-2027 · verzekerd". Null als het opzoeken mislukte.
     public static async Task<string?> Zoek(string k)
     {
         try
         {
             var json = await Http.GetStringAsync($"https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken={k}");
             using var doc = System.Text.Json.JsonDocument.Parse(json);
-            if (doc.RootElement.GetArrayLength() == 0) return null;
+            if (doc.RootElement.GetArrayLength() == 0) return $"{Mooi(k)}: onbekend bij de RDW";
             var v = doc.RootElement[0];
             var ti = CultureInfo.InvariantCulture.TextInfo;
             var merk = Veld(v, "merk") ?? "";

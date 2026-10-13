@@ -104,7 +104,14 @@ public sealed class SnelVenster : Window
     {
         var uitkomst = await Kenteken.Zoek(k);
         if (k != _kenteken) return;       // intussen verder getypt
-        _kentekenUitkomst = uitkomst ?? $"{Kenteken.Mooi(k)}: onbekend bij de RDW";
+        if (uitkomst == null)
+        {
+            _kenteken = null;             // de volgende keer opnieuw proberen
+            _uitkomst.Visibility = Visibility.Collapsed;
+            _status.Text = "Kenteken opzoeken lukt nu niet. Geen internet?";
+            return;
+        }
+        _kentekenUitkomst = uitkomst;
         if (Kenteken.Normaal(_invoer.Text) == k) ToonCommando();
     }
 
@@ -143,6 +150,7 @@ public sealed class SnelVenster : Window
 
     public void Toon()
     {
+        _keer++;
         _vraag.Visibility = Visibility.Collapsed;
         _status.Text = Uitleg;
         ToonCommando();
@@ -168,13 +176,16 @@ public sealed class SnelVenster : Window
         _vraag.Visibility = Visibility.Visible;
     }
 
+    int _keer;   // telt het openen; een oude Klaar sluit een net weer geopend venster niet
+
     async void Klaar(string tekst)
     {
+        var keer = _keer;
         _vraag.Visibility = Visibility.Collapsed;
         _status.Text = tekst;
         VulRecent();
         await Task.Delay(700);
-        if (_invoer.Text == "") AppWindow.Hide();
+        if (keer == _keer && _invoer.Text == "") AppWindow.Hide();
     }
 
     void VulRecent()
