@@ -115,7 +115,9 @@ create policy "records schrijven" on records for insert to authenticated
     with check ((eigenaar = auth.uid() and groep is null) or (groep is not null and is_lid(groep)));
 drop policy if exists "records wijzigen" on records;
 create policy "records wijzigen" on records for update to authenticated
-    using (eigenaar = auth.uid() or (groep is not null and is_lid(groep)));
+    using (eigenaar = auth.uid() or (groep is not null and is_lid(groep)))
+    -- zelfde regel als bij maken: een eigen record niet in een groep schuiven waar je geen lid van bent
+    with check ((eigenaar = auth.uid() and groep is null) or (groep is not null and is_lid(groep)));
 
 drop policy if exists "eigen vrienden" on vrienden;
 create policy "eigen vrienden" on vrienden for all to authenticated using (gebruiker = auth.uid()) with check (gebruiker = auth.uid());
