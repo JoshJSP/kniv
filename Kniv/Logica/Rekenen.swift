@@ -48,11 +48,18 @@ enum BonParser {
     static let overslaan = ["totaal", "total", "subtotaal", "btw", "pin", "contant", "wisselgeld", "te betalen", "betaald",
                             "bankpas", "vat", "change", "cash", "visa", "mastercard", "maestro", "saldo", "bonuskaart"]
 
+    /// Korte woorden alleen als heel woord: "pin" wel, "pindakaas" en "spinazie" niet.
+    static let heelWoord: Set<String> = ["pin", "btw", "vat", "cash", "change", "visa"]
+
+    static func bevat(_ klein: String, _ woorden: [String]) -> Bool {
+        woorden.contains { heelWoord.contains($0) ? klein.range(of: "\b\($0)\b", options: .regularExpression) != nil : klein.contains($0) }
+    }
+
     static func regels(_ tekst: String) -> [Regel] {
         tekst.components(separatedBy: .newlines).compactMap { r in
             let regel = r.trimmingCharacters(in: .whitespaces)
             let klein = regel.lowercased()
-            guard !overslaan.contains(where: klein.contains),
+            guard !bevat(klein, overslaan),
                   let m = Herinnering.eersteMatch(#"^(.*?\p{L}.*?)\s+(?:€\s*)?(-?\d{1,4}[.,]\d{2})\s*\p{L}?$"#, in: regel),
                   let prijs = bedrag(m[2]) else { return nil }
             return Regel(naam: m[1].trimmingCharacters(in: .whitespaces), prijs: prijs)
@@ -61,7 +68,7 @@ enum BonParser {
 
     static func lijktBon(_ tekst: String) -> Bool {
         let klein = tekst.lowercased()
-        return regels(tekst).count >= 2 && ["totaal", "total", "btw", "te betalen", "pin"].contains(where: klein.contains)
+        return regels(tekst).count >= 2 && bevat(klein, ["totaal", "total", "btw", "te betalen", "pin"])
     }
 
     static func bedrag(_ s: String) -> Double? { Double(s.replacingOccurrences(of: ",", with: ".")) }
@@ -161,7 +168,7 @@ enum Omzetter {
             let som = a + (m[3] == "+" ? d : -d)
             let dagen = Int((Double(som) / 1440).rounded(.down))
             let r = som - dagen * 1440
-            let extra = dagen > 0 ? " (volgende dag)" : dagen < 0 ? " (dag ervoor)" : ""
+            let extra = dagen == 0 ? "" : dagen == 1 ? " (volgende dag)" : dagen == -1 ? " (dag ervoor)" : " (\(dagen > 0 ? "+" : "")\(dagen) dagen)"
             return "\(m[1]):\(m[2]) \(m[3]) \(duurTekst(d)) = \(r / 60):\(String(format: "%02d", r % 60))\(extra)"
         }
         return nil
@@ -249,7 +256,8 @@ enum Omzetter {
         let f = NumberFormatter()
         f.locale = locale
         f.numberStyle = .decimal
-        f.maximumFractionDigits = v.magnitude < 10 ? 2 : v.magnitude < 100 ? 1 : 0
+        // heel kleine uitkomsten ("1 mb in gb") niet afronden naar 0
+        f.maximumFractionDigits = v != 0 && v.magnitude < 0.01 ? 6 : v.magnitude < 10 ? 2 : v.magnitude < 100 ? 1 : 0
         return f.string(from: NSNumber(value: v)) ?? "\(v)"
     }
 

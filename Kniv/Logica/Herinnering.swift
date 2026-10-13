@@ -30,7 +30,7 @@ enum Herinnering {
             return .elke(dagen: m[2].hasPrefix("w") ? n * 7 : n)
         }
         if !woorden.isDisjoint(with: ["dagelijks", "daily"])
-            || eersteMatch(#"\b(?:elke|iedere|every)\s+(?:dag|day|ochtend|middag|avond|morning|evening|night)\b"#, in: klein) != nil { return .dagelijks }
+            || eersteMatch(#"\b(?:elke|iedere|every)\s+(?:dag|day|ochtend|morgen|middag|avond|nacht|morning|evening|night)\b"#, in: klein) != nil { return .dagelijks }
         if !woorden.isDisjoint(with: ["wekelijks", "weekly"])
             || eersteMatch(#"\b(?:elke|iedere|every)\s+(week|\w+)\b"#, in: klein).map({ $0[1] == "week" || dagen[$0[1]] != nil }) == true { return .wekelijks }
         return nil
@@ -51,7 +51,7 @@ enum Herinnering {
             dag = vandaag
         } else if let wd = dagen.first(where: { woorden.contains($0.key) })?.value {
             dag = kal.nextDate(after: vandaag, matching: DateComponents(weekday: wd), matchingPolicy: .nextTime)
-        } else if let m = eersteMatch(#"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)"#, in: klein),
+        } else if let m = eersteMatch(#"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)(?:uari|uary|ruari|ruary|rt|ch|il|i|e|y|ustus|ust|tember|t|ober|ember)?\b"#, in: klein),
                   let d = Int(m[1]), let maand = maanden[m[2]] {
             var c = kal.dateComponents([.year], from: nu)
             c.month = maand
@@ -63,8 +63,10 @@ enum Herinnering {
 
         var tijd: (uur: Int, minuut: Int)?
         // "14:30", of "om 14.30"; een los "2.50" is een prijs, geen tijd.
-        let ochtend = !woorden.isDisjoint(with: ["ochtend", "morgens", "vroeg", "am"])
-        func middag(_ u: Int) -> Int { (1...7).contains(u) && !ochtend ? u + 12 : u }
+        let ochtend = !woorden.isDisjoint(with: ["ochtend", "ochtends", "morgens", "vroeg", "am"])
+        let avond = !woorden.isDisjoint(with: ["vanavond", "avond", "avonds", "tonight", "pm"])
+        // "om 3" is 15:00; "vanavond om 8" is 20:00.
+        func middag(_ u: Int) -> Int { !ochtend && ((1...7).contains(u) || (avond && (1...11).contains(u))) ? u + 12 : u }
         if let m = eersteMatch(#"\b(\d{1,2}):(\d{2})\b"#, in: klein) ?? eersteMatch(#"\bom (\d{1,2})\.(\d{2})\b"#, in: klein),
            let u = Int(m[1]), let mi = Int(m[2]), u < 24, mi < 60 {
             tijd = (u, mi)

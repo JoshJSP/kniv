@@ -24,9 +24,15 @@ enum Kenteken {
 
     /// Zoekt een kenteken in tekst van de camera, zoals "GZ-738-T" of "12-ABC-3".
     static func vind(in tekst: String) -> String? {
-        let patroon = #"\b([A-Z0-9]{1,3})[\s-]([A-Z0-9]{2,3})[\s-]([A-Z0-9]{1,3})\b"#
-        guard let m = Herinnering.eersteMatch(patroon, in: tekst.uppercased()) else { return nil }
-        return normaal(m[1] + m[2] + m[3])
+        // In een lookahead, zodat "NL GZ-738-T" na de mislukte kandidaat "NL GZ 738" ook "GZ-738-T" probeert.
+        let patroon = #"(?=\b([A-Z0-9]{1,3})[\s-]([A-Z0-9]{2,3})[\s-]([A-Z0-9]{1,3})\b)"#
+        let t = tekst.uppercased()
+        guard let re = try? NSRegularExpression(pattern: patroon) else { return nil }
+        for m in re.matches(in: t, range: NSRange(t.startIndex..., in: t)) {
+            let delen = (1...3).compactMap { Range(m.range(at: $0), in: t).map { String(t[$0]) } }
+            if delen.count == 3, let k = normaal(delen.joined()) { return k }
+        }
+        return nil
     }
 
     /// RDW-datum "20270926" → Date.

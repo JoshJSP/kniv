@@ -25,7 +25,7 @@ enum Verjaardag {
     static func vind(in tekst: String) -> (dag: Int, maand: Int)? {
         let klein = tekst.lowercased()
         guard ["verjaardag", "jarig", "birthday", "bday"].contains(where: klein.contains) else { return nil }
-        if let m = Herinnering.eersteMatch(#"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)"#, in: klein),
+        if let m = Herinnering.eersteMatch(#"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)(?:uari|uary|ruari|ruary|rt|ch|il|i|e|y|ustus|ust|tember|t|ober|ember)?\b"#, in: klein),
            let d = Int(m[1]), let maand = Herinnering.maanden[m[2]], (1...31).contains(d) {
             return (d, maand)
         }
