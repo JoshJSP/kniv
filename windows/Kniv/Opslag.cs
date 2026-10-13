@@ -142,7 +142,14 @@ public static class Opslag
     /// Schrijft via een tijdelijk bestand (echt op schijf) en houdt de vorige versie als .bak, zodat een crash nooit de data kost.
     public static void Bewaar()
     {
-        if (!_geladen) { App.Log("Niet bewaard: kniv.json kon bij het starten niet gelezen worden."); return; }
+        if (!_geladen)
+        {
+            // kniv.json niet overschrijven, maar wat je deze sessie deed ook niet kwijtraken: apart bewaren.
+            App.Log("kniv.json kon bij het starten niet gelezen worden; deze sessie staat in kniv.json.sessie");
+            try { File.WriteAllText(Bestand + ".sessie", JsonSerializer.Serialize(Data, Json)); } catch (Exception e) { App.Log(e); }
+            Gewijzigd?.Invoke();
+            return;
+        }
         var tmp = Bestand + ".tmp";
         using (var f = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None))
         {
