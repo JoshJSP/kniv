@@ -446,23 +446,30 @@ struct BakjeRij: View {
     @Bindable var bakje: Bakje
     @Environment(\.modelContext) private var ctx
     @State private var naam = ""
+    @FocusState private var focus: Bool
 
     var body: some View {
         HStack {
             Image(systemName: bakje.symbool).foregroundStyle(Color.accentColor).frame(width: 26)
             TextField("Naam", text: $naam)
+                .focused($focus)
                 .onSubmit(hernoem)
+                .onChange(of: focus) { _, nu in if !nu { hernoem() } }   // ook bewaren als je wegtikt
                 .disabled(bakje.vast)
             Toggle(isOn: $bakje.vergrendeld) { Image(systemName: bakje.vergrendeld ? "lock.fill" : "lock.open") }
                 .toggleStyle(.button)
                 .accessibilityLabel(bakje.vergrendeld ? "Vergrendeld met Face ID" : "Niet vergrendeld")
         }
         .onAppear { naam = bakje.naam }
+        .deleteDisabled(bakje.vast)   // vaste bakjes kunnen niet weg, dus ook niet wegvegen
     }
 
     private func hernoem() {
         let nieuw = naam.trimmingCharacters(in: .whitespaces)
         guard !nieuw.isEmpty, nieuw != bakje.naam else { naam = bakje.naam; return }
+        // Twee bakjes met dezelfde naam zouden hun notities door elkaar halen.
+        let alle = (try? ctx.fetch(FetchDescriptor<Bakje>())) ?? []
+        guard !alle.contains(where: { $0 !== bakje && $0.naam.caseInsensitiveCompare(nieuw) == .orderedSame }) else { naam = bakje.naam; return }
         let oud: String? = bakje.naam
         let notities = (try? ctx.fetch(FetchDescriptor<Notitie>(predicate: #Predicate { $0.bakjeNaam == oud }))) ?? []
         notities.forEach { $0.bakjeNaam = nieuw }
