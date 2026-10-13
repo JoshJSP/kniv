@@ -393,12 +393,14 @@ struct PotView: View {
     @State private var nieuw = false
     @State private var koersen: [String: Double] = [:]
     @State private var deelToken: String?
+    @State private var ik: String?   // mijnNaam staat in UserDefaults; dit laat het scherm meteen verversen
 
     var body: some View {
         List {
-            if pot.mijnNaam == nil {
+            if (ik ?? pot.mijnNaam) == nil {
                 Section {
-                    Picker("Wie ben jij in dit potje?", selection: Binding(get: { pot.mijnNaam ?? "" }, set: { pot.mijnNaam = $0 })) {
+                    Picker("Wie ben jij in dit potje?", selection: Binding(get: { ik ?? pot.mijnNaam ?? "" },
+                                                                           set: { pot.mijnNaam = $0; ik = $0.isEmpty ? nil : $0 })) {
                         Text("Kies…").tag("")
                         ForEach(pot.leden, id: \.self) { Text($0).tag($0) }
                     }
