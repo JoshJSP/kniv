@@ -63,7 +63,7 @@ export default async function Gedeeld({ params }: Props) {
     return (
       <main className="wrap smal">
         <section className="glas midden" style={{ marginTop: "12vh" }}>
-          <img src="/icon.png" alt="" width={64} height={64} style={{ borderRadius: 14 }} />
+          <img src="/icon-256.png" alt="" width={64} height={64} style={{ borderRadius: 14 }} />
           <h2 style={{ marginTop: 16 }}>Deze link werkt niet (meer)</h2>
           <p className="zacht">De link is verlopen of bestaat niet. Vraag degene die hem stuurde om een nieuwe.</p>
         </section>
@@ -80,7 +80,7 @@ export default async function Gedeeld({ params }: Props) {
     <main className="wrap smal stapel">
       <header>
         <div className="kop">
-          <img src="/icon.png" alt="" width={44} height={44} />
+          <img src="/icon-256.png" alt="" width={44} height={44} />
           <h1>{deel.titel || "Gedeeld"}</h1>
         </div>
         <p className="zacht" style={{ margin: "12px 0 0", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>

@@ -10,7 +10,7 @@ export default function Fout({ reset }: { reset: () => void }) {
   return (
     <main className="wrap smal">
       <section className="glas midden" style={{ marginTop: "12vh" }}>
-        <img src="/icon.png" alt="" width={64} height={64} style={{ borderRadius: 14 }} />
+        <img src="/icon-256.png" alt="" width={64} height={64} style={{ borderRadius: 14 }} />
         <h2 style={{ marginTop: 16 }}>Even geen verbinding</h2>
         <p className="zacht">Kniv kan de lijst nu niet ophalen. Hij probeert het zo opnieuw.</p>
         <button className="knop" onClick={reset} style={{ marginTop: 12 }}>Opnieuw proberen</button>

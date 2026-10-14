@@ -25,7 +25,7 @@ export default function Installeren() {
   return (
     <main className="wrap stapel">
       <header className="hero">
-        <img src="/icon.png" alt="" width={104} height={104} />
+        <img src="/icon-256.png" alt="" width={104} height={104} />
         <h1>Kniv</h1>
         <p>Een zakmes vol kleine handige dingen.</p>
       </header>
@@ -52,7 +52,7 @@ export default function Installeren() {
 
       <section className="glas" id="iphone">
         <h2>iPhone</h2>
-        <p className="zacht">Kniv staat niet in de App Store; je installeert hem gratis via SideStore.</p>
+        <p className="zacht">Kniv staat niet in de App Store. Je installeert hem gratis via SideStore.</p>
         <ol className="stappen">
           <li>
             <div>

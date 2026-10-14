@@ -12,7 +12,7 @@ export default function Privacy() {
     <main className="wrap stapel tekstpagina">
       <header className="hero">
         <a href="/">
-          <img src="/icon.png" alt="Kniv" width={72} height={72} style={{ width: 72, height: 72, borderRadius: 16 }} />
+          <img src="/icon-256.png" alt="Kniv" width={72} height={72} style={{ width: 72, height: 72, borderRadius: 16 }} />
         </a>
         <h1>Privacy</h1>
         <nav className="taal">

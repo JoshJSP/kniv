@@ -71,7 +71,7 @@ export function samenvatting(d: Deel): string {
   const doel = doelVan(d);
   if (d.soort === "countdown" && doel) {
     const n = dagenTot(doel);
-    return n === 0 ? "vandaag!" : n === 1 ? "nog 1 dag" : `nog ${n} dagen`;
+    return n === 0 ? "vandaag" : n === 1 ? "nog 1 dag" : `nog ${n} dagen`;
   }
   const potUitgaven = d.records.filter((r) => r.soort === "uitgave");
   if (d.soort === "prik") {

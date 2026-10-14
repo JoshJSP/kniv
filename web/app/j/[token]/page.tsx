@@ -24,7 +24,7 @@ export default async function Uitnodiging({ params }: Props) {
   return (
     <main className="wrap smal">
       <section className="glas midden" style={{ marginTop: "10vh", padding: "36px 24px" }}>
-        <img src="/icon.png" alt="" width={88} height={88} style={{ borderRadius: 20, boxShadow: "0 14px 36px rgba(213,43,30,.3)" }} />
+        <img src="/icon-256.png" alt="" width={88} height={88} style={{ borderRadius: 20, boxShadow: "0 14px 36px rgba(213,43,30,.3)" }} />
         {deel ? (
           <>
             <p className="zacht" style={{ margin: "20px 0 6px" }}>
