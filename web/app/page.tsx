@@ -10,6 +10,7 @@ const MESJES = [
   ["Kiezen", "Rad, vingerkiezer, glazen dobbelstenen, scoreblok, en samen live kiezen"],
   ["Scanner", "QR-codes, documenten naar PDF, loep, zaklamp met morse, en je scherm als bordje"],
   ["Meten", "Waterpas, AR-liniaal, geluid, hoogte, snelheid, en een kompas terug naar je fiets"],
+  ["Talen", "Korte stukjes lezen en luisteren op jouw niveau, kaartjes van je eigen woorden, en een gesprekje"],
 ];
 
 const EXTRA = [
@@ -31,13 +32,13 @@ export default function Installeren() {
       </header>
 
       <section className="glas">
-        <h2>Zes mesjes</h2>
+        <h2>Zeven mesjes</h2>
         <p className="zacht">
           Alles wat je even snel nodig hebt, in één app. Werkt offline en synct met je laptop en vrienden.
         </p>
         <div className="mesjes">
           {MESJES.map(([naam, uitleg]) => (
-            <div className="mesje" key={naam}>
+            <div className={naam === "Talen" ? "mesje breed" : "mesje"} key={naam}>
               <b>{naam}</b>
               <span>{uitleg}</span>
             </div>

@@ -94,6 +94,7 @@ p { margin: 0 0 12px; }
 @media (max-width: 420px) { .mesjes { grid-template-columns: repeat(2, 1fr); } }
 .mesje { background: var(--rood-zacht); border-radius: 18px; padding: 14px; }
 .mesje b { display: block; font-size: 16px; }
+.mesje.breed { grid-column: 1 / -1; }   /* Talen: brede tegel onder het raster, net als in de app */
 .mesje span { font-size: 13px; color: var(--zacht); line-height: 1.3; display: block; margin-top: 2px; }
 
 .knop {

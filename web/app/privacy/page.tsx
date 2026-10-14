@@ -23,7 +23,7 @@ export default function Privacy() {
 
       <article className="glas" id="nl" lang="nl">
         <h2 style={{ marginTop: 0 }}>Privacybeleid</h2>
-        <p className="zacht klein">Laatst bijgewerkt: 27 september 2026</p>
+        <p className="zacht klein">Laatst bijgewerkt: 14 oktober 2026</p>
         <p>
           Kniv is een app van Josh Kramer. Dit beleid legt uit welke gegevens Kniv gebruikt en waarom. Kort gezegd: zo
           weinig mogelijk, en nooit om te verkopen.
@@ -43,12 +43,27 @@ export default function Privacy() {
             (inclusief tekst die uit een foto is gehaald).
           </li>
           <li>Welke groepen je deelt en wie daarin zit.</li>
+          <li>Bij Talen: welke talen je leert, je leesstukjes en de woorden die je bewaart.</li>
           <li>Hoe vaak je de slimme functies (AI) gebruikt, zodat er een daglimiet kan gelden.</li>
         </ul>
         <p>
-          <b>Foto's en spraakopnames blijven op je telefoon.</b> Dingen die je op &quot;privé&quot; zet, verlaten je
-          telefoon nooit.
+          <b>Foto's blijven op je telefoon.</b> Spraakopnames ook, behalve in het geval hieronder. Dingen die je op
+          &quot;privé&quot; zet, verlaten je telefoon nooit.
         </p>
+
+        <h2>Slimme functies</h2>
+        <p>
+          Het meeste doet je iPhone zelf. Lukt dat niet, dan gaat alleen dat ene stukje via Kniv naar <b>Groq</b>, een
+          AI-dienst uit de VS:
+        </p>
+        <ul>
+          <li>Verstond je iPhone een spraakopname niet goed, dan gaat die opname naar Groq om hem uit te schrijven.</li>
+          <li>
+            Bij Talen gaat de tekst van je vraag naar Groq (een stukje maken, een woord opzoeken, een zin nakijken, een
+            gesprekje) als je iPhone die taal niet zelf kan.
+          </li>
+        </ul>
+        <p>Groq krijgt daarbij geen naam of e-mailadres. Kniv bewaart de opname niet op de server.</p>
 
         <h2>Waar het staat</h2>
         <p>
@@ -67,7 +82,8 @@ export default function Privacy() {
         <h2>Verwijderen</h2>
         <p>
           In de app ga je naar <b>Instellingen → Account verwijderen</b>. Dan worden je account en al je gegevens
-          gewist. Lijstjes die je met anderen deelt, gaan over op het lid dat er het langst in zit.
+          gewist. Lijstjes die je met anderen deelt, gaan over op het lid dat er het langst in zit. Uitgaven die je in
+          het potje van iemand anders zette, blijven in dat potje staan, zodat de stand voor de anderen blijft kloppen.
         </p>
 
         <h2>Contact</h2>
@@ -78,7 +94,7 @@ export default function Privacy() {
 
       <article className="glas" id="en" lang="en">
         <h2 style={{ marginTop: 0 }}>Privacy policy</h2>
-        <p className="zacht klein">Last updated: 27 September 2026</p>
+        <p className="zacht klein">Last updated: 14 October 2026</p>
         <p>
           Kniv is an app made by Josh Kramer. This policy explains which data Kniv uses and why. In short: as little as
           possible, and never to sell.
@@ -98,12 +114,27 @@ export default function Privacy() {
             extracted from a photo).
           </li>
           <li>Which groups you share and who is in them.</li>
+          <li>In Languages: which languages you learn, your reading pieces and the words you save.</li>
           <li>How often you use the smart (AI) features, so a daily limit can apply.</li>
         </ul>
         <p>
-          <b>Photos and voice recordings stay on your phone.</b> Anything you mark as &quot;private&quot; never leaves
-          your phone.
+          <b>Photos stay on your phone.</b> So do voice recordings, except in the case below. Anything you mark as
+          &quot;private&quot; never leaves your phone.
         </p>
+
+        <h2>Smart features</h2>
+        <p>
+          Most of it runs on your iPhone. When that doesn&apos;t work, only that one piece goes through Kniv to{" "}
+          <b>Groq</b>, an AI service based in the US:
+        </p>
+        <ul>
+          <li>If your iPhone didn&apos;t understand a voice recording well, that recording goes to Groq to be written out.</li>
+          <li>
+            In Languages, the text of your request goes to Groq (making a reading piece, looking up a word, checking a
+            sentence, a chat) when your iPhone can&apos;t handle that language itself.
+          </li>
+        </ul>
+        <p>Groq doesn&apos;t get your name or email address. Kniv doesn&apos;t keep the recording on the server.</p>
 
         <h2>Where it is stored</h2>
         <p>
@@ -122,7 +153,8 @@ export default function Privacy() {
         <h2>Deleting your data</h2>
         <p>
           In the app, go to <b>Settings → Delete account</b>. This erases your account and all your data. Lists you
-          share with others are handed over to the longest-standing member.
+          share with others are handed over to the longest-standing member. Expenses you added to someone else&apos;s pot
+          stay in that pot, so the totals stay right for the others.
         </p>
 
         <h2>Contact</h2>

@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: "Kniv",
-  description: "Zes handige mesjes in één app: vastleggen, timers, splitten, kiezen, scannen en meten.",
+  description: "Zeven handige mesjes in één app: vastleggen, timers, splitten, kiezen, scannen, meten en talen.",
   icons: { icon: "/icon.png", apple: "/icon.png" },
   openGraph: { siteName: "Kniv", locale: "nl_NL", type: "website" },
 };
