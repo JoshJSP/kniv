@@ -51,3 +51,12 @@ enum Scores {
         }
     }
 }
+
+enum Beurt {
+    /// Iemand erbij of eraf: wie aan de beurt was blijft aan de beurt. Was dat degene die weg is, dan de volgende.
+    static func na(_ oud: [String], _ nieuw: [String], beurt: Int) -> Int {
+        guard !oud.isEmpty, !nieuw.isEmpty else { return 0 }
+        let plek = beurt % oud.count
+        return nieuw.firstIndex(of: oud[plek]) ?? plek % nieuw.count
+    }
+}

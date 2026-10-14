@@ -86,10 +86,12 @@ struct BeurtenView: View {
                 .sensoryFeedback(.success, trigger: r.wrappedValue.beurt) { _, _ in haptiek }
             }
             OptieEditor(opties: r.leden, placeholder: "Wie doen er mee?")
+                .onChange(of: r.wrappedValue.leden) { oud, nieuw in r.wrappedValue.beurt = Beurt.na(oud, nieuw, beurt: r.wrappedValue.beurt) }
+                .id(r.wrappedValue.id)   // ander rooster gekozen is geen wijziging van de leden
             if !r.wrappedValue.log.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Eerder").font(.headline)
-                    ForEach(r.wrappedValue.log, id: \.self) { Text($0).font(.subheadline).foregroundStyle(.secondary) }
+                    ForEach(Array(r.wrappedValue.log.enumerated()), id: \.offset) { Text($0.element).font(.subheadline).foregroundStyle(.secondary) }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(16)

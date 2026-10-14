@@ -237,4 +237,9 @@ check(Leestaal.tekst(Data([0x63, 0x61, 0x66, 0xE9]), tekenset: "iso-8859-1") == 
 check(Leestaal.tekst(Data([0x63, 0x61, 0x66, 0xE9]), tekenset: nil) == "café", "pagina: latin-1 als laatste")
 check(Omzetter.reken("23:00 + 2 u")?.hasSuffix("(volgende dag)") == true, "tijd: volgende dag")
 
+check(Beurt.na(["A", "B", "C"], ["B", "C"], beurt: 1) == 0, "beurt: B blijft aan de beurt als A weg is")
+check(Beurt.na(["A", "B", "C"], ["A", "C"], beurt: 4) == 1, "beurt: B weg, dan C")
+check(Beurt.na(["A", "B", "C"], ["A", "B"], beurt: 2) == 0, "beurt: laatste weg, dan weer de eerste")
+check(Beurt.na(["A", "B"], ["A", "B", "C"], beurt: 1) == 1 && Beurt.na([], ["A"], beurt: 3) == 0, "beurt: iemand erbij")
+
 print("Alle Kniv-checks geslaagd")
