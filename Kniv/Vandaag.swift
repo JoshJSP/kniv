@@ -46,7 +46,7 @@ struct VandaagKaart: View {
         }
         for (terug, label) in [(365, String(localized: "Een jaar geleden")), (30, String(localized: "Een maand geleden"))] {
             if let dag = kal.date(byAdding: .day, value: -terug, to: nu),
-               let oud = notities.first(where: { $0.bakjeNaam == "Dagboek" && kal.isDate($0.gemaakt, inSameDayAs: dag) }) {
+               let oud = notities.first(where: { $0.bakjeNaam == "Dagboek" && $0.weggegooid == nil && !$0.isVerzegeld && kal.isDate($0.gemaakt, inSameDayAs: dag) }) {
                 r.append(Regel(id: "d\(terug)", icoon: "clock.arrow.circlepath", tekst: "\(label): \(oud.titel)", mes: .vastleggen))
             }
         }
@@ -111,7 +111,7 @@ struct TerugblikKaart: View {
         if tonen {
             let weekGeleden = Date().addingTimeInterval(-7 * 86_400)
             let focus = Focuslog.week().reduce(0) { $0 + $1.minuten }
-            let vastgelegd = notities.filter { $0.gemaakt > weekGeleden }.count
+            let vastgelegd = notities.filter { $0.gemaakt > weekGeleden && $0.weggegooid == nil }.count
             let uitgegeven = uitgaven.filter { $0.datum > weekGeleden }.reduce(0) { $0 + $1.bedrag }
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
