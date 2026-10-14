@@ -169,6 +169,8 @@ enum KnivOpslag {
 
     static func verwijder(_ n: Notitie, in ctx: ModelContext, uitCloud: Bool = true) {
         if uitCloud && n.deling != "prive" { Sync.shared.markeerVerwijderd(n) }
+        Herinneraar.trekIn(n.uid)
+        Seintjes.trekIn(n.uid)
         if let f = n.fotoBestand { try? FileManager.default.removeItem(at: Fotos.url(f)) }
         if let a = n.audioBestand { try? FileManager.default.removeItem(at: Opnames.url(a)) }
         ctx.delete(n)

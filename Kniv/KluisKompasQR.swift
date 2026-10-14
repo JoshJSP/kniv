@@ -19,13 +19,8 @@ struct GarantieSectie: View {
             } else {
                 Button {
                     let aankoop = Garantie.aankoopdatum(in: notitie.fotoTekst) ?? notitie.gemaakt
-                    let tot = Garantie.tot(aankoop)
-                    notitie.garantieTot = tot
-                    if let seintje = Calendar.current.date(byAdding: .month, value: -1, to: tot), seintje > Date() {
-                        Meldingen.plan("garantie.\(notitie.uid)",
-                                       String(localized: "De garantie op \(notitie.titel) loopt over een maand af. Nog iets mis mee?"),
-                                       na: seintje.timeIntervalSinceNow)
-                    }
+                    notitie.garantieTot = Garantie.tot(aankoop)
+                    Seintjes.planGarantie(notitie)
                 } label: { Label("Bewaar in de garantiekluis", systemImage: "lock.shield") }
             }
         } header: {
@@ -33,6 +28,21 @@ struct GarantieSectie: View {
         } footer: {
             Text("Je hebt in Nederland minstens twee jaar recht op een product dat werkt. Kniv waarschuwt een maand voordat die tijd om is.")
         }
+    }
+}
+
+/// Seintjes die bij een notitie horen (garantie, uitleen, tijdcapsule).
+enum Seintjes {
+    static func planGarantie(_ notitie: Notitie) {
+        guard let tot = notitie.garantieTot, let seintje = Calendar.current.date(byAdding: .month, value: -1, to: tot), seintje > Date() else { return }
+        Meldingen.plan("garantie.\(notitie.uid)",
+                       String(localized: "De garantie op \(notitie.titel) loopt over een maand af. Nog iets mis mee?"),
+                       na: seintje.timeIntervalSinceNow)
+    }
+
+    /// Weggegooid of verwijderd: geen seintjes meer over deze notitie.
+    static func trekIn(_ uid: UUID) {
+        for soort in ["garantie", "uitleen", "capsule"] { Meldingen.annuleer("\(soort).\(uid)") }
     }
 }
 
