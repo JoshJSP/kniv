@@ -61,7 +61,8 @@ import SwiftUI
             Task { for await m in worpen { if let w: Worp = Self.lees(m) { worp = w } } },
             Task {
                 for await m in starts {
-                    if let s: StemStart = Self.lees(m) { stemming = s; stemmen = [:] }
+                    // dezelfde stemming nog eens (voor een laatkomer) mag de stemmen die al binnen zijn niet wissen
+                    if let s: StemStart = Self.lees(m), s.id != stemming?.id { stemming = s; stemmen = [:] }
                 }
             },
             Task { for await m in stemStroom { if let s: Stem = Self.lees(m) { stemmen[Self.sleutel(s.naam, s.id)] = Set(s.ja) } } },
@@ -70,8 +71,13 @@ import SwiftUI
                     let erbij = (try? p.decodeJoins(as: Aanwezig.self))?.map { Self.sleutel($0.naam, $0.id) } ?? []
                     let weg = Set((try? p.decodeLeaves(as: Aanwezig.self))?.map { Self.sleutel($0.naam, $0.id) } ?? [])
                     deelnemers = Array(Set(deelnemers + erbij).subtracting(weg)).sorted()
-                    // Laatkomer? Stuur de lopende stemming nog eens rond.
-                    if !erbij.isEmpty, let s = stemming { try? await kanaal?.broadcast(event: "stemming", message: s) }
+                    // Laatkomer? Stuur de lopende stemming en je eigen stem nog eens rond.
+                    if !erbij.isEmpty, let s = stemming {
+                        try? await kanaal?.broadcast(event: "stemming", message: s)
+                        if let mijn = stemmen[mijnSleutel] {
+                            try? await kanaal?.broadcast(event: "stem", message: Stem(naam: mijnNaam, ja: Array(mijn), id: mijnID))
+                        }
+                    }
                 }
             },
         ]
