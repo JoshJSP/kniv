@@ -15,6 +15,8 @@ Deno.serve(async (req) => {
   // Opname eerst controleren; alleen een geslaagd antwoord telt mee voor de daglimiet (net als bij taal).
   const audio = await req.arrayBuffer();
   if (audio.byteLength === 0 || audio.byteLength > 24 * 1024 * 1024) return Response.json({ fout: "Geen of te grote opname" }, { status: 400 });
+  const taal = new URL(req.url).searchParams.get("taal");
+  if (taal && !/^[a-z]{2,3}$/.test(taal)) return Response.json({ fout: "Onbekende taal" }, { status: 400 });
 
   // Plek nemen in één keer (ook bij veel verzoeken tegelijk); mislukt het uitschrijven, dan gaat hij terug.
   const dag = new Date().toISOString().slice(0, 10);
@@ -26,7 +28,6 @@ Deno.serve(async (req) => {
   form.append("file", new Blob([audio], { type: req.headers.get("Content-Type") ?? "audio/m4a" }), "spraak.m4a");
   form.append("model", "whisper-large-v3-turbo");
   form.append("response_format", "json");
-  const taal = new URL(req.url).searchParams.get("taal");
   if (taal) form.append("language", taal);
 
   try {
