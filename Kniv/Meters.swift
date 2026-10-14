@@ -193,8 +193,15 @@ struct HoogteView: View {
             kmh = max(l.speed, 0) * 3.6
             hoogste = max(hoogste, kmh)
             // Stilstaan geeft GPS-ruis van een paar meter, die telt niet als afstand.
-            if let v = vorige { if l.speed > 0.5 { afstand += l.distance(from: v) } } else { begin = begin ?? l.timestamp }
-            vorige = l
+            guard let v = vorige else { begin = begin ?? l.timestamp; vorige = l; continue }
+            let stap = l.distance(from: v)
+            if l.speed < 0 {
+                // iOS weet de snelheid niet: tel pas als je verder bent dan de GPS-onzekerheid, en houd het ijkpunt tot dan vast
+                if stap > max(l.horizontalAccuracy, 5) { afstand += stap; vorige = l }
+            } else {
+                if l.speed > 0.5 { afstand += stap }
+                vorige = l
+            }
         }
     }
 }

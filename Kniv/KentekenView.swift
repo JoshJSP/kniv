@@ -182,6 +182,7 @@ struct KentekenView: View {
             gezocht = k
             invoer = Kenteken.mooi(k)
         } catch {
+            voertuig = nil      // anders staat de vorige auto er nog onder
             fout = "De RDW is even niet bereikbaar."
         }
     }
