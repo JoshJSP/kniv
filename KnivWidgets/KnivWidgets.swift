@@ -85,6 +85,7 @@ struct SnelWidgetView: View {
             .foregroundStyle(rood)
             .background(.background.opacity(0.6), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
+        .accessibilityLabel(LocalizedStringKey(k.2))   // klein formaat heeft geen tekst, VoiceOver las alleen het icoon
     }
 }
 
