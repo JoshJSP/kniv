@@ -4,7 +4,8 @@
   --rood-zacht: rgba(213, 43, 30, 0.1);
   --bg: #f2f2f7;
   --tekst: #1c1c1e;
-  --zacht: #6e6e73;
+  --zacht: #636366;   /* 4,5:1 contrast, ook op de roze mesjes */
+  --rood-tekst: #c0271b;   /* rood als tekst: donkerder, anders te weinig contrast */
   --glas: rgba(255, 255, 255, 0.62);
   --rand: rgba(255, 255, 255, 0.8);
   --lijn: rgba(60, 60, 67, 0.12);
@@ -13,6 +14,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --rood-zacht: rgba(255, 69, 58, 0.16);
+    --rood-tekst: #ff6b60;
     --bg: #000;
     --tekst: #f5f5f7;
     --zacht: #98989d;
@@ -56,7 +58,7 @@ body::after {
   z-index: -1;
 }
 
-a { color: var(--rood); text-decoration: none; }
+a { color: var(--rood-tekst); text-decoration: none; }
 a:hover { text-decoration: underline; }
 h1, h2, h3 { letter-spacing: -0.022em; line-height: 1.1; margin: 0; }
 h1 { font-size: clamp(34px, 8vw, 56px); font-weight: 700; }
@@ -103,7 +105,7 @@ p { margin: 0 0 12px; }
 }
 .knop:hover { text-decoration: none; opacity: 0.92; }
 .knop:active { transform: scale(0.98); }
-.knop.tweede { background: var(--rood-zacht); color: var(--rood); }
+.knop.tweede { background: var(--rood-zacht); color: var(--rood-tekst); }
 .knop.groot { min-height: 60px; font-size: 19px; border-radius: 18px; }
 
 .stappen { list-style: none; padding: 0; margin: 16px 0; counter-reset: s; }
@@ -122,7 +124,7 @@ p { margin: 0 0 12px; }
 }
 .bron button {
   flex: none; padding: 0 16px; border: 0; border-radius: 14px; cursor: pointer;
-  background: var(--rood-zacht); color: var(--rood); font: inherit; font-size: 15px; font-weight: 600;
+  background: var(--rood-zacht); color: var(--rood-tekst); font: inherit; font-size: 15px; font-weight: 600;
 }
 
 .voet { text-align: center; font-size: 13px; color: var(--zacht); margin-top: 40px; }

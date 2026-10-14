@@ -24,7 +24,7 @@ export default function Prikje({ prik, alle }: { prik: KnivRecord; alle: KnivRec
                 {tijd(d)}
                 {wie.length > 0 && <span className="zacht" style={{ display: "block", fontSize: 13 }}>{wie.join(", ")}</span>}
               </span>
-              <strong style={beste ? { color: "var(--rood)" } : undefined}>{aantal(d)}</strong>
+              <strong style={beste ? { color: "var(--rood-tekst)" } : undefined}>{aantal(d)}</strong>
             </li>
           );
         })}
