@@ -6,7 +6,7 @@ export const ogSize = { width: 1200, height: 630 };
 
 /** Preview-kaart voor WhatsApp e.d.: lemmet-icoon, titel en een regel eronder. */
 export async function ogKaart(boven: string, titel: string, onder: string) {
-  const icoon = await readFile(join(process.cwd(), "public/icon.png"));
+  const icoon = await readFile(join(process.cwd(), "public/icon-256.png"));
   const src = `data:image/png;base64,${icoon.toString("base64")}`;
   return new ImageResponse(
     (

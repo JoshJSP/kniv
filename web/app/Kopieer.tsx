@@ -18,6 +18,9 @@ export default function Kopieer({ tekst }: { tekst: string }) {
       >
         {klaar ? "Gekopieerd" : "Kopieer"}
       </button>
+      <span role="status" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
+        {klaar ? "Gekopieerd" : ""}
+      </span>
     </div>
   );
 }
