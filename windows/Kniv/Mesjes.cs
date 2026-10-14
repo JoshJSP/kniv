@@ -18,6 +18,7 @@ static class Ruis
     public static readonly string[] Soorten = { "Bruin", "Roze", "Wit" };
     static Windows.Media.Playback.MediaPlayer? _speler;
     public static bool Aan => _speler != null;
+    static int _beurt;   // snel wisselen van soort: alleen de laatste Start mag gaan spelen
 
     /// 16-bit mono WAV; het eind loopt over in het begin, zodat je de herhaling niet hoort.
     public static byte[] Wav(string soort, int rate = 44100, int seconden = 20)
@@ -66,9 +67,11 @@ static class Ruis
         try
         {
             Stop();
+            var mijn = _beurt;
             var stroom = new Windows.Storage.Streams.InMemoryRandomAccessStream();
             await stroom.WriteAsync(System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBufferExtensions.AsBuffer(Wav(soort)));
             stroom.Seek(0);
+            if (mijn != _beurt) return;   // intussen gestopt of opnieuw gestart
             _speler = new Windows.Media.Playback.MediaPlayer
             {
                 Source = Windows.Media.Core.MediaSource.CreateFromStream(stroom, "audio/wav"),
@@ -84,6 +87,7 @@ static class Ruis
 
     public static void Stop()
     {
+        _beurt++;
         _speler?.Pause();
         _speler?.Dispose();
         _speler = null;
@@ -183,6 +187,7 @@ public sealed class TimersPagina : UserControl
         var minuten = Ui.Getal("Minuten", 10, 1, 24 * 60);
         var start = Ui.Knop("Start timer", () =>
         {
+            if (Ui.Waarde(minuten) <= 0) return;   // leeg vak gaf een timer die meteen klaar was
             Opslag.Data.Timers.Add(new LosseTimer { Naam = naam.Text.Trim() is { Length: > 0 } t ? t : $"Timer van {Ui.Waarde(minuten):0} min", Eind = DateTime.Now.AddMinutes(Ui.Waarde(minuten)) });
             naam.Text = "";
             Opslag.Bewaar();
@@ -553,6 +558,7 @@ public sealed class KiezenPagina : UserControl
             var namen = Regels(opties.Text);
             if (bezig || namen.Length == 0) return;
             bezig = true;
+            opties.IsReadOnly = true;   // typen tijdens het draaien gaf een winnaar die niet op het rad stond
             uit.Text = "";
             Teken();
             var hoek = 360.0 / namen.Length;
@@ -571,6 +577,7 @@ public sealed class KiezenPagina : UserControl
                 Teken(winnaar);
                 uit.Text = $"Het wordt: {namen[winnaar]}";
                 bezig = false;
+                opties.IsReadOnly = false;
             };
             sb.Begin();
         }
