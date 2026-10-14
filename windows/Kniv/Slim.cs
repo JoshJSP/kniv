@@ -240,7 +240,7 @@ public static class Omzetter
             var som = start + (p[3] == "+" ? lengte : -lengte);
             var dag = (int)Math.Floor(som / 1440.0);
             var rest = som - dag * 1440;
-            var extra = dag > 0 ? " (volgende dag)" : dag < 0 ? " (dag ervoor)" : "";
+            var extra = dag switch { 0 => "", 1 => " (volgende dag)", -1 => " (dag ervoor)", _ => $" ({(dag > 0 ? "+" : "")}{dag} dagen)" };
             return $"{p[1]}:{p[2]} {p[3]} {DuurTekst(lengte)} = {rest / 60}:{rest % 60:00}{extra}";
         }
         return null;
@@ -322,8 +322,9 @@ public static class Omzetter
 
     public static string Mooi(double v)
     {
-        var dec = Math.Abs(v) < 10 ? 2 : Math.Abs(v) < 100 ? 1 : 0;
-        return Math.Round(v, dec, MidpointRounding.ToEven).ToString("#,0.##", Cultuur);
+        // heel kleine uitkomsten ("1 mb in gb") niet afronden naar 0
+        var dec = v != 0 && Math.Abs(v) < 0.01 ? 6 : Math.Abs(v) < 10 ? 2 : Math.Abs(v) < 100 ? 1 : 0;
+        return Math.Round(v, dec, MidpointRounding.ToEven).ToString("#,0.######", Cultuur);
     }
 
     public static string Euro(double v, string code = "EUR") =>

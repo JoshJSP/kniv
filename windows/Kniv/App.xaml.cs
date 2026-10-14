@@ -274,6 +274,8 @@ static class Zelftest
         Is(R("20 min pasta") == "nil" && R("gewoon tekst") == "nil", "geen omzetting");
         Is(R("14:35 + 2u50") == "14:35 + 2 u 50 min = 17:25", "tijd optellen: " + R("14:35 + 2u50"));
         Is(R("23:30 + 45 min") == "23:30 + 45 min = 0:15 (volgende dag)", "tijd middernacht: " + R("23:30 + 45 min"));
+        Is(R("20:00 + 30 uur") == "20:00 + 30 u = 2:00 (+2 dagen)", "tijd twee dagen: " + R("20:00 + 30 uur"));
+        Is(Omzetter.Mooi(0.001) == "0,001" && Omzetter.Mooi(1.234) == "1,23", "klein getal niet 0: " + Omzetter.Mooi(0.001));
         Is(R("22:00 - 6:30").StartsWith("22:00 tot 6:30 = 8 u 30 min"), "nachtdienst: " + R("22:00 - 6:30"));
         Is(Omzetter.Reken("dagen tot 9 okt", null, new DateTime(2026, 9, 26, 10, 0, 0)) == "Nog 13 dagen", "dagen tot");
         Is(R("15:00 in tokyo").EndsWith("in Tokyo") && R("15:00 in atlantis") == "nil", "tijdzone: " + R("15:00 in tokyo"));
