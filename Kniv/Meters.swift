@@ -126,7 +126,8 @@ struct HoogteView: View {
                 }
                 // ponytail: 3 meter per verdieping, klopt voor de meeste huizen en scholen.
                 let trappen = Int((abs(stijging) / 3).rounded())
-                Label(trappen == 0 ? String(localized: "Zelfde verdieping") : String(localized: "\(trappen) verdiepingen \(stijging > 0 ? String(localized: "omhoog") : String(localized: "omlaag"))"),
+                let kant = stijging > 0 ? String(localized: "omhoog") : String(localized: "omlaag")
+                Label(trappen == 0 ? String(localized: "Zelfde verdieping") : trappen == 1 ? String(localized: "Eén verdieping \(kant)") : String(localized: "\(trappen) verdiepingen \(kant)"),
                       systemImage: "stairs")
                     .font(.title3)
                 HStack(spacing: 12) {
@@ -191,7 +192,8 @@ struct HoogteView: View {
         for l in locaties where l.horizontalAccuracy >= 0 && l.horizontalAccuracy < 30 {
             kmh = max(l.speed, 0) * 3.6
             hoogste = max(hoogste, kmh)
-            if let v = vorige { afstand += l.distance(from: v) } else { begin = begin ?? l.timestamp }
+            // Stilstaan geeft GPS-ruis van een paar meter, die telt niet als afstand.
+            if let v = vorige { if l.speed > 0.5 { afstand += l.distance(from: v) } } else { begin = begin ?? l.timestamp }
             vorige = l
         }
     }
