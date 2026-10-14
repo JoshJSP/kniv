@@ -80,14 +80,16 @@ static class Rx
 public static class TimerParser
 {
     static readonly HashSet<string> Vulwoorden = new() { "over", "timer", "na", "in", "voor", "zet", "een" };
-    const string Patroon = @"\b(\d{1,3})\s*(minuten|minuut|min|m|uur|u|seconden|sec|s)\b";
+    // "1,5 uur" is anderhalf uur, niet 5 uur; een kloktijd ("14:30") is geen duur. Zoals Kniv/Logica/TimerParser.swift.
+    const string Patroon = @"(?<![\d.,:])(\d{1,3}(?:[.,]\d)?)\s*(minuten|minuut|min|m|uur|u|seconden|sec|s)\b";
 
     public static (string naam, int seconden)? Vind(string tekst)
     {
-        if (Rx.Eerste(Patroon, tekst.ToLowerInvariant()) is not { } m || !int.TryParse(m[1], out var n) || n <= 0) return null;
+        if (Rx.Eerste(Patroon, tekst.ToLowerInvariant()) is not { } m
+            || !double.TryParse(m[1].Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var n) || n <= 0) return null;
         var factor = m[2].StartsWith('u') ? 3600 : m[2].StartsWith('s') ? 1 : 60;
-        var seconden = n * factor;
-        if (seconden > 24 * 3600) return null;
+        var seconden = (int)Math.Round(n * factor);
+        if (seconden <= 0 || seconden > 24 * 3600) return null;
         var zonderDuur = Regex.Replace(tekst, Patroon, " ", RegexOptions.IgnoreCase);
         var naam = string.Join(" ", zonderDuur.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Where(w => !Vulwoorden.Contains(w.ToLowerInvariant())));
         return (naam == "" ? "Timer" : char.ToUpper(naam[0]) + naam[1..], seconden);
@@ -122,12 +124,12 @@ public static class Herinnering
         if (woorden.Contains("overmorgen")) dag = vandaag.AddDays(2);
         else if (woorden.Contains("morgen") || woorden.Contains("tomorrow")) dag = vandaag.AddDays(1);
         else if (woorden.Overlaps(new[] { "vandaag", "vanavond", "today", "tonight" })) dag = vandaag;
-        else if (Dagen.FirstOrDefault(d => woorden.Contains(d.Key)) is { Key: not null } wd)
+        else if (Dagen.Where(d => woorden.Contains(d.Key)).OrderBy(d => klein.IndexOf(d.Key)).FirstOrDefault() is { Key: not null } wd)   // bij twee dagen: de eerste in de tekst
         {
             var verschil = ((int)wd.Value - (int)vandaag.DayOfWeek + 7) % 7;
             dag = vandaag.AddDays(verschil == 0 ? 7 : verschil);
         }
-        else if (Rx.Eerste(@"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)", klein) is { } m
+        else if (Rx.Eerste(@"\b(\d{1,2})\s*(jan|feb|mrt|maa|mar|apr|mei|may|jun|jul|aug|sep|okt|oct|nov|dec)(?:uari|uary|ruari|ruary|rt|ch|il|i|e|y|ustus|ust|tember|t|ober|ember)?\b", klein) is { } m
                  && int.TryParse(m[1], out var d) && d >= 1 && d <= DateTime.DaysInMonth(nu.Year, Maanden[m[2]]))
         {
             var kandidaat = new DateTime(nu.Year, Maanden[m[2]], d);
@@ -136,8 +138,10 @@ public static class Herinnering
 
         (int uur, int minuut)? tijd = null;
         // "14:30", of "om 14.30"; een los "2.50" is een prijs, geen tijd. "om 3" is 's middags, tenzij het ochtend is.
-        var ochtend = woorden.Overlaps(new[] { "ochtend", "morgens", "vroeg", "am" });
-        int Middag(int u) => u is >= 1 and <= 7 && !ochtend ? u + 12 : u;
+        var ochtend = woorden.Overlaps(new[] { "ochtend", "ochtends", "morgens", "vroeg", "am" });
+        var avond = woorden.Overlaps(new[] { "vanavond", "avond", "avonds", "tonight", "pm" });
+        // "om 3" is 15:00; "vanavond om 8" is 20:00.
+        int Middag(int u) => !ochtend && (u is >= 1 and <= 7 || (avond && u is >= 1 and <= 11)) ? u + 12 : u;
         if ((Rx.Eerste(@"\b(\d{1,2}):(\d{2})\b", klein) ?? Rx.Eerste(@"\bom (\d{1,2})\.(\d{2})\b", klein)) is { } t1 && int.Parse(t1[1]) < 24 && int.Parse(t1[2]) < 60) tijd = (int.Parse(t1[1]), int.Parse(t1[2]));
         else if (Rx.Eerste(@"\bom (\d{1,2})\b", klein) is { } t2 && int.Parse(t2[1]) < 24) tijd = (Middag(int.Parse(t2[1])), 0);
         else if (woorden.Overlaps(new[] { "vanavond", "tonight" })) tijd = (19, 0);

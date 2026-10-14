@@ -292,6 +292,7 @@ static class Zelftest
         Is(TimerParser.Vind("pasta 9 minuten")?.seconden == 540, "pasta 9 minuten");
         Is(TimerParser.Vind("1 uur")?.naam == "Timer", "naamloze timer");
         Is(TimerParser.Vind("tandarts om 14:30") == null, "kloktijd is geen timer");
+        Is(TimerParser.Vind("1,5 uur rijst")?.seconden == 5400 && TimerParser.Vind("pasta 2.5 min")?.seconden == 150, "kommagetal timer: " + TimerParser.Vind("1,5 uur rijst"));
         Is(Weer.Bepaal(new[] { (14, 10, 0.0, 15.0), (15, 70, 1.2, 14.0) }) == "Regen rond 15:00, paraplu mee", "weer regen");
         Is(Weer.Bepaal(new[] { (8, 0, 0.0, 4.0) }) == "Fris vandaag (4°), jas aan" && Weer.Bepaal(new[] { (12, 0, 0.0, 18.0) }) == null, "weer koud/droog");
         Is(Rekenmachine.Uitkomst("12*3+4") == 40 && Rekenmachine.Uitkomst("2^10") == 1024 && Rekenmachine.Uitkomst("-3*-2") == 6, "rekenen");
@@ -311,6 +312,11 @@ static class Zelftest
         Is(Herinnering.Vind("morgen om 7 vroeg", zaterdag)?.dag == new DateTime(2026, 9, 27, 7, 0, 0), "om 7 vroeg = ochtend");
         Is(Herinnering.Vind("om 14.30 tandarts", zaterdag)?.dag == new DateTime(2026, 9, 26, 14, 30, 0), "om 14.30");
         Is(Herinnering.Vind("brood 2.50", zaterdag) == null, "prijs is geen tijd");
+        Is(Herinnering.Vind("vanavond om 8 eten", zaterdag)?.dag.Hour == 20, "vanavond om 8 = 20:00");
+        Is(Herinnering.Vind("morgen om 7 uur 's ochtends", zaterdag)?.dag.Hour == 7 && Herinnering.Vind("morgen om 3 uur 's ochtends vroeg", zaterdag)?.dag.Hour == 3, "'s ochtends");
+        Is(Herinnering.Vind("over 2 maanden afspraak plannen", zaterdag) == null && Herinnering.Vind("3 meisjes uitnodigen", zaterdag) == null, "maanden/meisjes is geen datum");
+        Is(Herinnering.Vind("feest 3 oktober", zaterdag)?.dag == new DateTime(2026, 10, 3), "voluit maand");
+        Is(Herinnering.Vind("dinsdag of anders donderdag", zaterdag)?.dag == new DateTime(2026, 9, 29), "eerste weekdag");
         Is(Herinnering.Vind("gewoon tekst", zaterdag) == null && Herinnering.Vind("morgenochtend", zaterdag) == null, "geen moment");
 
         // Sync: een rij van de server wordt een notitie, een oudere rij wint niet, verwijderd haalt hem weg.
