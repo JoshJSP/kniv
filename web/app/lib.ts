@@ -114,3 +114,6 @@ export function afrekenen(uitgaven: Uitgave[]) {
   }
   return uit;
 }
+
+/** Code van een samen-kiezen-link: vier letters, hoofdletters. */
+export const schoon = (code: string) => code.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4);

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { schoon } from "../../lib";
 
 type Props = { params: Promise<{ code: string }> };
 
-const schoon = (code: string) => code.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const code = schoon((await params).code);
