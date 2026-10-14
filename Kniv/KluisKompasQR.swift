@@ -40,6 +40,12 @@ enum Seintjes {
                        na: seintje.timeIntervalSinceNow)
     }
 
+    static func planCapsule(_ notitie: Notitie) {
+        guard let tot = notitie.verzegeldTot, tot > Date() else { return }
+        Meldingen.plan("capsule.\(notitie.uid)", String(localized: "Je tijdcapsule is open: \(notitie.titel)"),
+                       na: tot.timeIntervalSinceNow)
+    }
+
     /// Weggegooid of verwijderd: geen seintjes meer over deze notitie.
     static func trekIn(_ uid: UUID) {
         for soort in ["garantie", "uitleen", "capsule"] { Meldingen.annuleer("\(soort).\(uid)") }

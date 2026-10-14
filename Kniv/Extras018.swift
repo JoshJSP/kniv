@@ -50,8 +50,7 @@ struct TijdcapsuleSectie: View {
                 Button {
                     notitie.verzegeldTot = datum
                     notitie.gewijzigd = Date()
-                    Meldingen.plan("capsule.\(notitie.uid)", String(localized: "Je tijdcapsule is open: \(notitie.titel)"),
-                                   na: datum.timeIntervalSinceNow)
+                    Seintjes.planCapsule(notitie)
                 } label: { Label("Verzegel als tijdcapsule", systemImage: "hourglass") }
             }
         } header: {

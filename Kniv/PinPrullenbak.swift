@@ -73,6 +73,7 @@ enum Prullenbak {
     @MainActor static func zetTerug(_ n: Notitie) {
         n.weggegooid = nil
         Seintjes.planGarantie(n)
+        Seintjes.planCapsule(n)
         n.gesynct = nil           // gaat opnieuw naar de cloud
         n.gewijzigd = Date()
     }
