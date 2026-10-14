@@ -1,31 +1,4 @@
-import { geldFormaat, zelfdeId, type KnivRecord } from "../../lib";
-
-type Uitgave = { omschrijving?: string; bedrag?: number; betaaldDoor?: string; voor?: string[]; datum?: string; pot?: string };
-
-/** Zelfde regels als de app (Kniv/Logica/Rekenen.swift): saldo per persoon, dan zo min mogelijk overboekingen. */
-function afrekenen(uitgaven: Uitgave[]) {
-  const saldo: Record<string, number> = {};
-  for (const u of uitgaven) {
-    const voor = u.voor ?? [];
-    if (!voor.length || !u.betaaldDoor || !u.bedrag) continue;
-    saldo[u.betaaldDoor] = (saldo[u.betaaldDoor] ?? 0) + u.bedrag;
-    for (const p of voor) saldo[p] = (saldo[p] ?? 0) - u.bedrag / voor.length;
-  }
-  const krijgers = Object.entries(saldo).filter(([, v]) => v > 0.005).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  const betalers = Object.entries(saldo).filter(([, v]) => v < -0.005).map(([k, v]) => [k, -v] as [string, number])
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  const uit: { van: string; naar: string; bedrag: number }[] = [];
-  let i = 0, j = 0;
-  while (i < betalers.length && j < krijgers.length) {
-    const b = Math.min(betalers[i][1], krijgers[j][1]);
-    uit.push({ van: betalers[i][0], naar: krijgers[j][0], bedrag: Math.round(b * 100) / 100 });
-    betalers[i][1] -= b;
-    krijgers[j][1] -= b;
-    if (betalers[i][1] < 0.005) i++;
-    if (krijgers[j][1] < 0.005) j++;
-  }
-  return uit;
-}
+import { afrekenen, geldFormaat, zelfdeId, type KnivRecord, type Uitgave } from "../../lib";
 
 export default function Potje({ pot, alle }: { pot: KnivRecord; alle: KnivRecord[] }) {
   const geld = geldFormaat(pot.data?.valuta);
